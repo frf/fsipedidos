@@ -3,57 +3,8 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "aa34dbea728751b6153645cf5256ec2a",
+    "hash": "e0300b2c2b263978f1af460485d1f9a3",
     "packages": [
-        {
-            "name": "netglue/zf2-log-module",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://bitbucket.org/netglue/zf2-log-module.git",
-                "reference": "3a933ec3a6faaa995e7ffa3d654be9fafec7d063"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://bitbucket.org/netglue/zf2-log-module/get/3a933ec3a6faaa995e7ffa3d654be9fafec7d063.zip",
-                "reference": "3a933ec3a6faaa995e7ffa3d654be9fafec7d063",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3",
-                "zendframework/zendframework": "2.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "NetglueLog": "src/"
-                },
-                "classmap": [
-                    "./"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "George Steel",
-                    "email": "george@net-glue.co.uk",
-                    "homepage": "http://netglue.co/"
-                }
-            ],
-            "description": "ZF2 Module that provides a standard, centralised logger that other modules can use as a dependency and provides view scripts for viewing log files",
-            "homepage": "https://bitbucket.org/netglue/zf2-log-module",
-            "keywords": [
-                "log",
-                "module",
-                "netglue",
-                "zend",
-                "zf2"
-            ],
-            "time": "2013-04-22 15:58:22"
-        },
         {
             "name": "phing/phing",
             "version": "2.5.0",
@@ -286,9 +237,9 @@
 
     ],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "netglue/zf2-log-module": 20
-    },
+    "stability-flags": [
+
+    ],
     "platform": {
         "php": ">=5.3.3"
     },
