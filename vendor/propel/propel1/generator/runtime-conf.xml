@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<config>
+        <propel>
+            <datasources default="semp">
+                <datasource id="semp">
+                    <!-- the Propel adapter (usually same as phptype of connection DSN) -->
+                    <adapter>pgsql</adapter>
+                    <connection>
+                            <dsn>pgsql:host=localhost dbname=representante user=representante password=ch4ng3m3</dsn>		            
+		    </connection>
+                </datasource>
+            </datasources>
+        </propel>
+        <log>
+            <type>file</type>
+            <name>/projetos/representante/vendor/propel/tmp/logs/propel.log</name>
+            <ident>propel</ident>
+            <level>2</level> <!-- PEAR_LOG_DEBUG -->
+            <conf></conf>
+        </log>
+</config>
