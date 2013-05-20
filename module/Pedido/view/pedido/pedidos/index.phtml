@@ -1,0 +1,57 @@
+ <div id="content-header">
+    <div id="breadcrumb"> 
+        <a href="/" title="Home" class="tip-bottom"><i class="icon-home"></i> Home</a>
+        <a href="/pedidos/index" title="Clientes" class="tip-bottom"><i class="icon-user"></i> Pedidos</a>
+    </div>
+  </div>
+<div class="container-fluid">
+    <br>
+    <a class="btn btn-success" href="<?php echo $this->url('pedidos', array('action' => 'novo'))?>">Novo Pedido</a>
+    <div class="row-fluid">
+      <div class="span12">
+          
+        <div class="widget-box">
+          <div class="widget-title">
+             <span class="icon"><i class="icon-th"></i></span> 
+            <h5>Lista de Pedidos</h5>
+          </div>
+          <div class="widget-content nopadding">
+            <table class="table table-bordered data-table">
+              <thead>
+                <tr>
+                   <th>#</th>
+                    <th>Nome</th>
+                    <th>Tel. Principal</th>
+                    <th>Data Cadastro</th>  
+                    <th>Ação</th>  
+                </tr>
+              </thead>
+              <tbody>
+                  <?php 
+                  $i=0;
+                  foreach($this->aPedido as $oPedido){ 
+                      if($i%2){
+                          $grade = "gradeX";
+                      }else{
+                          $grade = "gradeC";
+                      }
+                      ?>
+                    <tr class="<?php echo $grade; ?>">
+                        <td><?php echo $oPedido->getCoCliente();; ?></td>
+                        <td><?php echo $oPedido->getNoCliente(); ?></td>
+                        <td><?php #echo $oCliente->getNuTelefone(); ?></td>
+                        <td><?php echo $oPedido->getDtCadastro("d/m/Y"); ?></td>
+                        <td>
+                            <a class="btn btn-mini btn-info" href="<?php echo $this->url('pedidos', array("action" => "detalhes", "id" => $i,)); ?>">Visualizar</a>
+                            <a class="btn btn-mini btn-warning" href="<?php echo $this->url('pedidos', array("action" => "editar", "id" => $i,)); ?>">Editar</a>
+                            <a class="btn btn-mini btn-danger" href="<?php echo $this->url('pedidos', array("action" => "deletar", "id" => $i,)); ?>">Apagar</a>
+                        </td>
+                    </tr>
+                <?php } ?>                
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>

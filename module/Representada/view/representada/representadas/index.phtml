@@ -1,0 +1,58 @@
+ <div id="content-header">
+    <div id="breadcrumb"> 
+        <a href="/" title="Home" class="tip-bottom"><i class="icon-home"></i> Home</a>
+        <a href="/representadas/index" title="Representada" class="tip-bottom"><i class="icon-user"></i> Representadas</a>
+    </div>
+  </div>
+<div class="container-fluid">
+    <br>
+    <?php echo $this->message($this->message); ?>
+    <a class="btn btn-success" href="<?php echo $this->url('representadas', array('action' => 'novo'))?>">Nova Representada</a>
+    <div class="row-fluid">
+      <div class="span12">
+          
+        <div class="widget-box">
+          <div class="widget-title">
+             <span class="icon"><i class="icon-th"></i></span> 
+            <h5>Lista de Representada</h5>
+          </div>
+          <div class="widget-content nopadding">
+            <table class="table table-bordered data-table">
+              <thead>
+                <tr>
+                   <th>#</th>
+                    <th>Nome</th>
+                    <th>Cnpj</th>
+                    <th>Data Cadastro</th>  
+                    <th>Ação</th>  
+                </tr>
+              </thead>
+              <tbody>
+                  <?php 
+                  $i=0;
+                  foreach($this->aRepresentada as $oRepresentada){ 
+                      if($i%2){
+                          $grade = "gradeX";
+                      }else{
+                          $grade = "gradeC";
+                      }
+                      ?>
+                    <tr class="<?php echo $grade; ?>">
+                        <td><?php echo $oRepresentada->getCoRepresentada(); ?></td>
+                        <td><?php echo $oRepresentada->getNoRepresentada(); ?></td>
+                        <td><?php echo $oRepresentada->getNuCnpj(); ?></td>
+                        <td><?php echo $oRepresentada->getDtCadastro("d/m/Y"); ?></td>
+                        <td>
+                            <a class="btn btn-mini btn-info" href="<?php echo $this->url('representadas', array("action" => "detalhes", "id" => $oRepresentada->getCoRepresentada(),)); ?>">Visualizar</a>
+                            <a class="btn btn-mini btn-warning" href="<?php echo $this->url('representadas', array("action" => "editar", "id" => $oRepresentada->getCoRepresentada(),)); ?>">Editar</a>
+                            <a class="btn btn-mini btn-danger" href="<?php echo $this->url('representadas', array("action" => "deletar", "id" => $oRepresentada->getCoRepresentada(),)); ?>">Apagar</a>
+                        </td>
+                    </tr>
+                <?php } ?>                
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>

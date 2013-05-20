@@ -1,0 +1,65 @@
+
+<div id="content-header">
+    <div id="breadcrumb"> 
+        <a href="/" title="Home" class="tip-bottom"><i class="icon-home"></i> Home</a>
+        <a href="/clientes/index" title="Clientes" class="tip-bottom"><i class="icon-user"></i> Clientes</a>
+    </div>
+  </div>
+<div class="container-fluid">
+    <br>
+    <?php echo $this->message($this->message); ?>
+    <a class="btn btn-success" href="<?php echo $this->url('clientes', array('action' => 'novo'))?>">Novo Cliente</a>
+    
+    <div class="row-fluid">
+        
+      <div class="span12">
+           
+        <div class="widget-box">
+           
+          <div class="widget-title">
+             <span class="icon"><i class="icon-th"></i></span> 
+            <h5>Lista de Clientes</h5>
+          </div>
+            
+          <div class="widget-content nopadding">
+              
+              
+            <table class="table table-bordered data-table">
+              <thead>
+                <tr>
+                   <th>#</th>
+                    <th>Nome</th>
+                    <th>Cnpj</th>
+                    <th>Data Cadastro</th>  
+                    <th>Ação</th>  
+                </tr>
+              </thead>
+              <tbody>
+                  <?php 
+                  $i=0;
+                  foreach($this->aCliente as $oCliente){ 
+                      if($i%2){
+                          $grade = "gradeX";
+                      }else{
+                          $grade = "gradeC";
+                      }
+                      ?>
+                    <tr class="<?php echo $grade; ?>">
+                        <td><?php echo $oCliente->getCoCliente();; ?></td>
+                        <td><?php echo $oCliente->getNoCliente(); ?></td>
+                         <td><?php echo $oCliente->getNuCnpj(); ?></td>
+                        <td><?php echo $oCliente->getDtCadastro("d/m/Y"); ?></td>
+                        <td>
+                            <a class="btn btn-mini btn-info" href="<?php echo $this->url('clientes', array("action" => "detalhes", "id" => $oCliente->getCoCliente(),)); ?>">Visualizar</a>
+                            <a class="btn btn-mini btn-warning" href="<?php echo $this->url('clientes', array("action" => "editar", "id" => $oCliente->getCoCliente(),)); ?>">Editar</a>
+                            <a class="btn btn-mini btn-danger" href="<?php echo $this->url('clientes', array("action" => "deletar", "id" => $oCliente->getCoCliente(),)); ?>">Apagar</a>
+                        </td>
+                    </tr>
+                <?php } ?>                
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>

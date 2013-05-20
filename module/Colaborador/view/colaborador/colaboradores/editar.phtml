@@ -1,0 +1,149 @@
+<script src="/js/bootstrap-datepicker.js"></script> 
+<script>
+    $(document).ready(function(){
+        $('.datepicker').datepicker();
+    });
+</script>
+<div id="content-header">
+    <div id="breadcrumb"> 
+        <a href="/" title="Home" class="tip-bottom"><i class="icon-home"></i> Home</a>
+        <a href="/colaboradores/index" title="Lista de colaboradores" class="tip-bottom">
+            <i class="icon-user"></i> Colaboradores</a>
+        <a href="/colaboradores/editar/<?php echo $id;?>" title="Editar Colaborador" class="tip-bottom">Editar</a>
+    </div>
+  </div>
+ <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="span6">
+            <div class="widget-box">
+              <div class="widget-title"> <span class="icon"> <i class="icon-align-justify"></i> </span>
+                <h5>Cadastro de Colaboradores</h5>
+              </div>
+              <div class="widget-content nopadding">
+                 <form method="POST" action="<?php echo $this->url('colaboradores', array('action' => 'adicionar')); ?>" class="form-horizontal">
+                    <input type="hidden" name="CoColaborador" value="<?php echo $form->getCoColaborador(); ?>">
+
+                  <div class="control-group">
+                    <label class="control-label">Nome:</label>
+                    <div class="controls">                      
+                        <input type="text" name="NoColaborador" value="<?php echo $form->getNoColaborador(); ?>">
+                    </div>
+                  </div>
+                  <div class="control-group">
+                    <label class="control-label">E-Mail:</label>
+                    <div class="controls" id="addEmail">
+                        <input type="text" name="DsEmail" id="DsEmail" value="<?php echo $form->getDsEmail(); ?>">
+                    </div>
+                  </div>
+                     <div class="control-group">
+                    <label class="control-label">Telefone:</label>
+                    <div class="controls" id="addEmail">
+                        <input type="text" name="DsTelefone" id="DsTelefone" value="<?php echo $form->getDsTelefone(); ?>">
+                    </div>
+                  </div>
+                  <div class="control-group">
+                    <label class="control-label">Senha de Acesso:</label>
+                    <div class="controls">
+                        <input type="password" name="DsSenha" value="<?php echo $form->getDsSenha(); ?>">
+                    </div>
+                  </div>
+                  <div class="control-group">
+                    <label class="control-label">Administrador:</label>
+                    <div class="controls">
+                        <input type="checkbox" name="DsSenha" <?php if($form->getTpAdministrador()){ ?>checked="true"<?php } ?> value="<?php echo $form->getTpAdministrador(); ?>">
+                      <span class="help-block">Administradores podem visualizar e alterar todos os pedidos do sistema.</span> </div>
+                  </div>    
+                  <div class="control-group">
+                   
+                        <div class="widget-box">
+                            <div class="widget-title"> <span class="icon">
+                              <div class="checker" id="uniform-title-checkbox">
+                                  <span class="">
+                                      <input type="checkbox" id="title-checkbox" name="title-checkbox" >
+                                  </span></div>
+                              </span>
+                              <h5>Lista de Representadas</h5>
+                              
+                            </div>
+                            <div class="widget-content nopadding">
+                              <table class="table table-bordered table-striped with-check">
+                                <thead>
+                                  <tr>
+                                    <th><i class="icon-resize-vertical"></i></th>
+                                    <th>Representada</th>
+                                    <th>Comissão</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td>
+                                        <div class="checker" id="uniform-undefined">
+                                            <span class="">
+                                                <input type="checkbox"></span>
+                                        </div>
+                                    </td>
+                                    <td>Redley</td>
+                                    <td>
+                                        <div class="input-append">
+                                            <input type="text" placeholder="5" class="span3">
+                                            <span class="add-on">%</span> 
+                                        </div> 
+                                        
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td><div class="checker" id="uniform-undefined">
+                                            <span class="">
+                                                <input type="checkbox"></span></div></td>
+                                    <td>Cantão</td>
+                                    <td>
+                                        <div class="input-append">
+                                            <input type="text" placeholder="5" class="span3">
+                                            <span class="add-on">%</span> 
+                                        </div>                                        
+                                    </td>
+                                  </tr>
+
+                                </tbody>
+                              </table>
+                                
+                            </div>
+                            <span class="help-block">Quais representadas este colaborador vai ter acesso e sua comissão.</span>
+                          </div>
+                   
+                      
+                  </div> 
+
+                        
+                      
+                  <!--
+                  <div class="control-group">
+                    <label class="control-label">Telefone:</label>
+                    <div class="controls" id="addEmail">
+                        <input type="text" name="DsEmail[]" id="DsEmail">
+                        <input type="button" class="btn btn-primary" value="Adicionar" onclick="addEmail()">
+                    </div>
+                  </div>
+                  <div class="control-group">
+                    <label class="control-label">E-Mail:</label>
+                    <div class="controls" id="addTelefone">                 
+                        <input type="text" name="DsTelefone[]" id="DsTelefone">
+                        <input type="button" class="btn btn-primary" value="Adicionar" onclick="addTelefone()">
+                    </div>
+                  </div>
+                  -->
+                  
+                  <div class="form-actions">
+                    <button type="submit" class="btn btn-success">Salvar</button>
+                    <a href="<?php echo $this->url('colaboradores'); ?>" class="btn">Voltar</a>
+                  </div>
+                 </form>
+              </div>
+            </div>
+          </div>        
+        </div>
+        <hr>    
+     
+</div>    
+
+<script src="/js/maruti.form_common.js"></script> 

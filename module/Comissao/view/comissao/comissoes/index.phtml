@@ -1,0 +1,66 @@
+ <div id="content-header">
+    <div id="breadcrumb"> 
+        <a href="/" title="Home" class="tip-bottom"><i class="icon-home"></i> Home</a>
+        <a href="/comissoes/index" title="Clientes" class="tip-bottom"><i class="icon-user"></i> Comissões</a>
+    </div>
+  </div>
+<script language="javascript" type="text/javascript" src="/js/jquery.jqplot.min.js"></script>
+<script type="text/javascript" src="/js/plugins/jqplot.highlighter.min.js"></script>
+<script type="text/javascript" src="/js/plugins/jqplot.cursor.min.js"></script>
+<script type="text/javascript" src="/js/plugins/jqplot.dateAxisRenderer.min.js"></script>
+
+<script>
+  $(document).ready(function(){
+        var line1=[['23-May-08', 578.55], ['20-Jun-08', 566.5], ['25-Jul-08', 480.88], ['22-Aug-08', 509.84],
+            ['26-Sep-08', 454.13], ['24-Oct-08', 379.75], ['21-Nov-08', 303], ['26-Dec-08', 308.56],
+            ['23-Jan-09', 299.14], ['20-Feb-09', 346.51], ['20-Mar-09', 325.99], ['24-Apr-09', 386.15]];
+        var line2=[['23-May-08', 178.55], ['20-Jun-08', 566.5], ['25-Jul-08', 480.88], ['22-Aug-08', 509.84],
+            ['26-Sep-08', 154.13], ['24-Oct-08', 179.75], ['21-Nov-08', 303], ['26-Dec-08', 308.56],
+            ['23-Jan-09', 199.14], ['20-Feb-09', 146.51], ['20-Mar-09', 225.99], ['24-Apr-09', 386.15]];
+        var plot1 = $.jqplot('chart1', [line1,line2], {
+            title:'Previsão de Comissões',
+            axes:{
+              xaxis:{
+                renderer:$.jqplot.DateAxisRenderer,
+                tickOptions:{
+                  formatString:'%b&nbsp;%#d'
+                }
+              },
+              yaxis:{
+                tickOptions:{
+                  formatString:'$%.2f'
+                  }
+              }
+            },
+            highlighter: {
+              show: true,
+              sizeAdjust: 7.5
+            },
+            cursor: {
+              show: false
+            }
+        });
+    });
+</script>
+<style>
+div.jqplot-target {
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    font-size: 0.8em;
+}
+.span6{width: 987px !important;}
+</style>
+<div class="span6">
+        <div class="widget-box">
+          <div class="widget-title"> <span class="icon"> <i class="icon-signal"></i> </span>
+            <h5>Line chart</h5>
+          </div>
+          <div class="widget-content">
+            <div class="chart" id="chart1"   style="padding: 0px; position: relative;">
+               
+          </div>
+        </div>
+      </div>
+</div>
+

@@ -1,0 +1,77 @@
+<script src="/js/jquery.maskedinput.js" type="text/javascript"></script>
+<script>
+    $(document).ready(function(){
+        $("#cnpj").mask("99.999.999/9999-99"); 
+        $("#nu_comissao").mask("9?99"); 
+    });
+</script>
+<style>
+    textarea {resize: none;height: 150px}
+    .control-label{font-weight: bold !important}
+</style>
+
+<div id="content-header">
+    <div id="breadcrumb"> 
+        <a href="/" title="Home" class="tip-bottom"><i class="icon-home"></i> Home</a>
+        <a href="/representadas/index" title="Lista de Representada" class="tip-bottom">
+            <i class="icon-user"></i> Representada</a>
+        <a href="/representadas/detalhes/<?php echo $this->id; ?>" title="Detalhes Representada" class="tip-bottom">Detalhes</a>
+    </div>
+  </div>
+ <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="span6">
+            <div class="widget-box">
+              <div class="widget-title"> <span class="icon"> <i class="icon-align-justify"></i> </span>
+                <h5>Detalhes da Representada</h5>
+              </div>
+                <form method="POST" action="<?php echo $this->url('representadas', array('action' => 'adicionar')); ?>" class="form-horizontal">
+                 <div class="widget-content nopadding">
+                    <div class="control-group">
+                    <label class="control-label">Razão Social:</label>
+                    <div class="controls">
+                        <?php echo $this->form->getDsRazaoSocial();?>
+                    </div>
+                  </div>
+                  <div class="control-group">
+                    <label class="control-label">Nome Fantasia:</label>
+                    <div class="controls">
+                        <?php echo $this->form->getNoRepresentada();?>
+                    </div>
+                  </div>
+                  <div class="control-group">
+                    <label class="control-label">CNPJ</label>
+                    <div class="controls">
+                        <?php echo $this->form->getNuCnpj();?>
+                    </div>
+                  </div>
+                 </div>
+                 <div class="widget-content nopadding">
+                    <div class="control-group">
+                    <label class="control-label">Comissão:</label>
+                    <div class="controls">
+                        <?php echo $this->form->getNuComissao();?>
+                    </div>
+                  </div>
+                 </div>
+                 <div class="widget-content nopadding">
+                    <div class="control-group">
+                    <label class="control-label">Informações Adicionais:</label>
+                    <div class="controls">
+                        <?php echo $this->form->getDsInfoAdicionais();?>
+                    </div>
+                  </div>
+                 </div>
+                 <div class="widget-content nopadding">
+                    <div class="form-actions">
+                      <a href="<?php echo $this->url('representadas', array('action' => 'editar', 'id' => $this->id)); ?>" class="btn btn-warning">Editar Representada</a>
+                      <a href="<?php echo $this->url('representadas'); ?>" class="btn">Voltar</a>
+                    </div>                         
+                  </div>
+               </form> 
+             
+            </div>
+          </div>        
+        </div>
+        <hr>     
+</div>    
