@@ -22,7 +22,8 @@ class ClientesController extends AbstractActionController
     // GET /clientes/novo
     public function novoAction()
     {
-        return array('message' => $this->getFlashMessenger());
+        $cliente_tributacao = \ClienteTributacaoQuery::create()->find();
+        return array('cliente_tributacao'=>$cliente_tributacao,'message' => $this->getFlashMessenger());
     }
  
     // POST /clientes/adicionar
@@ -51,7 +52,7 @@ class ClientesController extends AbstractActionController
                 }  catch (Exception $e){
                      // adicionar mensagem de sucesso
                     $this->flashMessenger()->addSuccessMessage($e->getMessage());
-                    $this->logger()->info($e->getMessage());
+                    #$this->logger()->info($e->getMessage());
                     
                      return $this->redirect()->toRoute('clientes');
                 }
@@ -59,14 +60,14 @@ class ClientesController extends AbstractActionController
 
                 // adicionar mensagem de sucesso
                 $this->flashMessenger()->addSuccessMessage("Cliente adicionado com sucesso");
-                $this->logger()->info('Cliente adicionado com sucesso');
+                #$this->logger()->info('Cliente adicionado com sucesso');
 
                 // redirecionar para action index no controller clientes
                 return $this->redirect()->toRoute('clientes');
             } else {
                 // adicionar mensagem de erro
                 $this->flashMessenger()->addErrorMessage("Erro ao adicionar cliente");
-                $this->logger()->err('Erro ao adicionar cliente');
+                #$this->logger()->err('Erro ao adicionar cliente');
 
                 // redirecionar para action novo no controllers clientes
                 return $this->redirect()->toRoute('clientes', array('action' => 'novo'));
@@ -96,10 +97,17 @@ class ClientesController extends AbstractActionController
 
         // formulário com dados preenchidos
          $cliente = \ClienteQuery::create()->filterByCoCliente($id)->findOne();
-
+         $endereco = \EnderecoQuery::create()->filterByCoPessoa($id)->find();
+         $email = \EmailQuery::create()->filterByCoPessoa($id)->find();
+         $telefone = \TelefoneQuery::create()->filterByCoPessoa($id)->find();
 
         // dados eviados para detalhes.phtml
-        return array('id' => $id, 'oCliente' => $cliente, 'message' => $this->getFlashMessenger());
+        return array('id' => $id, 
+            'oCliente' => $cliente, 
+            'endereco' => $endereco, 
+            'email' => $email, 
+            'telefone' => $telefone, 
+            'message' => $this->getFlashMessenger());
     }
  
     // GET /clientes/editar/id
@@ -128,9 +136,10 @@ class ClientesController extends AbstractActionController
         // formulário com dados preenchidos
         
         $cliente = \ClienteQuery::create()->filterByCoCliente($id)->findOne();
+        $cliente_tributacao = \ClienteTributacaoQuery::create()->find();
 
         // dados eviados para editar.phtml
-        return array('id' => $id, 'oCliente' => $cliente, 'message' => $this->getFlashMessenger());
+        return array('id' => $id,'cliente_tributacao'=>$cliente_tributacao, 'oCliente' => $cliente, 'message' => $this->getFlashMessenger());
     }
  
     // PUT /clientes/editar/id
@@ -157,7 +166,7 @@ class ClientesController extends AbstractActionController
                 }  catch (Exception $e){
                      // adicionar mensagem de sucesso
                     $this->flashMessenger()->addSuccessMessage($e->getMessage());
-                    $this->logger()->info($e->getMessage());
+                    #$this->logger()->info($e->getMessage());
                     
                      return $this->redirect()->toRoute('clientes');
                 }
@@ -197,12 +206,15 @@ class ClientesController extends AbstractActionController
                  $oPessoa = \PessoaQuery::create()->filterByCoPessoa($id)->findOne();
                  
                  $oCliente->delete();
+                 $oPessoa->getEmails()->delete();
+                 $oPessoa->getEnderecos()->delete();
+                 $oPessoa->getTelefones()->delete();
                  $oPessoa->delete();
                  
                 }  catch (Exception $e){
                      // adicionar mensagem de sucesso
                     $this->flashMessenger()->addSuccessMessage($e->getMessage());
-                    $this->logger()->info($e->getMessage());
+                    #$this->logger()->info($e->getMessage());
                     
                      return $this->redirect()->toRoute('clientes');
                 }

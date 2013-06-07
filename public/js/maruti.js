@@ -156,9 +156,9 @@ $(document).ready(function(){
 		
 	});
 	
-	$('#lightbox').live('click', function() { 
+	$('#lightbox').on('click', function() { 
+            alert('Hello');
 		$('#lightbox').hide(200);
 	});
-	
 });
 

@@ -16,12 +16,14 @@
 class Cliente extends BaseCliente
 {
     public function getTipoCliente(){
-        if($this->getNuCpf() != ""){
-            return "F";
+        if($this->getPessoa()){
+            if($this->getPessoa()->getNuCpf() != ""){
+                return "F";
+            }
+            if($this->getPessoa()->getNuCnpj() != ""){
+                return "J";
+            }    
         }
-        if($this->getNuCnpj() != ""){
-            return "J";
-        }    
     }
     public function getNoCliente(){
         if($this->getPessoa()){
@@ -36,6 +38,11 @@ class Cliente extends BaseCliente
     public function getNuCpf(){
         if($this->getPessoa()){
             return $this->getPessoa()->getNuCpf();
+        }
+    }
+    public function getNoTributacao(){
+        if($this->getClienteTributacao()){
+            return $this->getClienteTributacao()->getNoTributacao();
         }
     }
 }

@@ -40,11 +40,11 @@ class PermissaoTableMap extends TableMap
         // columns
         $this->addForeignPrimaryKey('co_perfil', 'CoPerfil', 'INTEGER' , 'perfil', 'co_perfil', true, null, null);
         $this->addColumn('dt_alteracao', 'DtAlteracao', 'TIMESTAMP', false, null, null);
-        $this->addForeignKey('co_usuario_alteracao', 'CoUsuarioAlteracao', 'INTEGER', 'usuario', 'co_usuario', false, null, null);
+        $this->addColumn('co_usuario_alteracao', 'CoUsuarioAlteracao', 'INTEGER', false, null, null);
         $this->addForeignPrimaryKey('co_recurso', 'CoRecurso', 'INTEGER' , 'recurso', 'co_recurso', true, null, null);
         $this->addColumn('st_permissao', 'StPermissao', 'BOOLEAN', true, null, true);
         $this->addColumn('dt_cadastro', 'DtCadastro', 'TIMESTAMP', true, null, 'now()');
-        $this->addForeignKey('co_usuario_cadastro', 'CoUsuarioCadastro', 'INTEGER', 'usuario', 'co_usuario', false, null, null);
+        $this->addColumn('co_usuario_cadastro', 'CoUsuarioCadastro', 'INTEGER', false, null, null);
         // validators
     } // initialize()
 
@@ -55,8 +55,6 @@ class PermissaoTableMap extends TableMap
     {
         $this->addRelation('Perfil', 'Perfil', RelationMap::MANY_TO_ONE, array('co_perfil' => 'co_perfil', ), 'RESTRICT', 'CASCADE');
         $this->addRelation('Recurso', 'Recurso', RelationMap::MANY_TO_ONE, array('co_recurso' => 'co_recurso', ), 'RESTRICT', 'CASCADE');
-        $this->addRelation('UsuarioRelatedByCoUsuarioAlteracao', 'Usuario', RelationMap::MANY_TO_ONE, array('co_usuario_alteracao' => 'co_usuario', ), 'RESTRICT', 'CASCADE');
-        $this->addRelation('UsuarioRelatedByCoUsuarioCadastro', 'Usuario', RelationMap::MANY_TO_ONE, array('co_usuario_cadastro' => 'co_usuario', ), 'RESTRICT', 'CASCADE');
     } // buildRelations()
 
 } // PermissaoTableMap

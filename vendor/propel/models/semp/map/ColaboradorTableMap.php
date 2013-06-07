@@ -40,11 +40,8 @@ class ColaboradorTableMap extends TableMap
         // columns
         $this->addForeignPrimaryKey('co_colaborador', 'CoColaborador', 'INTEGER' , 'pessoa', 'co_pessoa', true, null, null);
         $this->addColumn('ds_email', 'DsEmail', 'VARCHAR', false, 250, null);
-        $this->addColumn('ds_senha', 'DsSenha', 'VARCHAR', false, 25, null);
-        $this->addForeignKey('co_empresa', 'CoEmpresa', 'INTEGER', 'empresa', 'co_empresa', true, null, null);
-        $this->addForeignKey('co_perfil', 'CoPerfil', 'INTEGER', 'perfil', 'co_perfil', true, null, null);
         $this->addColumn('tp_administrador', 'TpAdministrador', 'BOOLEAN', false, null, null);
-        $this->addColumn('ds_telefone', 'DsTelefone', 'VARCHAR', false, 11, null);
+        $this->addColumn('ds_telefone', 'DsTelefone', 'VARCHAR', false, 33, null);
         // validators
     } // initialize()
 
@@ -54,8 +51,6 @@ class ColaboradorTableMap extends TableMap
     public function buildRelations()
     {
         $this->addRelation('Pessoa', 'Pessoa', RelationMap::MANY_TO_ONE, array('co_colaborador' => 'co_pessoa', ), 'RESTRICT', 'CASCADE');
-        $this->addRelation('Empresa', 'Empresa', RelationMap::MANY_TO_ONE, array('co_empresa' => 'co_empresa', ), null, null);
-        $this->addRelation('Perfil', 'Perfil', RelationMap::MANY_TO_ONE, array('co_perfil' => 'co_perfil', ), null, null);
         $this->addRelation('ClienteColaborador', 'ClienteColaborador', RelationMap::ONE_TO_MANY, array('co_colaborador' => 'co_colaborador', ), null, null, 'ClienteColaboradors');
         $this->addRelation('RepresentadaColaborador', 'RepresentadaColaborador', RelationMap::ONE_TO_MANY, array('co_colaborador' => 'co_colaborador', ), null, null, 'RepresentadaColaboradors');
     } // buildRelations()

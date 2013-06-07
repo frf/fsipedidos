@@ -1,0 +1,41 @@
+<div id="content-header">
+    <div id="breadcrumb"> 
+        <a href="/" title="Principal" class="tip-bottom"><i class="icon-home"></i> Principal</a>
+        <a href="/transportadoras/index" title="Lista de Transportadoras" class="tip-bottom">
+            <i class="icon-road"></i> Transportadoras</a>
+        <a href="/transportadoras/detalhes/<?php echo $id; ?>" title="Detalhes da Transportadora" class="tip-bottom current">Detalhes</a>
+    </div>
+  </div>
+ <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="span6">
+            <div class="widget-box">
+              <div class="widget-title"> <span class="icon"> <i class="icon-align-justify"></i> </span>
+                <h5>Cadastro de Transportadora</h5>
+              </div>
+              <div class="widget-content nopadding">
+                   <form method="POST" action="" class="form-horizontal">
+                 
+                  <div class="control-group">
+                    <label class="control-label" id="no_transportadora">Nome:</label>
+                    <div class="controls">
+                        <?php echo $oTransportadora->getNoTransportadora(); ?>
+                    </div>
+                  </div>
+                   <div class="control-group">
+                    <label class="control-label" id="no_site">Site:</label>
+                    <div class="controls">
+                      <?php echo $oTransportadora->getNoSite(); ?>
+                    </div>
+                  </div>
+                  <div class="form-actions">
+                        <a href="<?php echo $this->url('transportadoras', array('action' => 'editar', 'id' => $id)); ?>" class="btn btn-warning">Editar Transportadora</a> 
+                        <a href="<?php echo $this->url('transportadoras'); ?>" class="btn">Voltar</a>                         
+                  </div>
+                   </form>
+               </div>
+            </div>
+          </div>        
+        </div>
+        <hr>     
+</div>   

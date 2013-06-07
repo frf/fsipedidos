@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework (http://framework.zend.com/)
  *
@@ -13,35 +14,74 @@ use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\ModuleManager\ModuleManager;
 
-class Module
-{
-     public function init(ModuleManager $moduleManager){
-       
-      $sharedEvents = $moduleManager->getEventManager()->getSharedManager();            
-            $sharedEvents->attach(__NAMESPACE__,'dispatch',function($e){
-                $controller = $e->getTarget();
-                $controller->layout('layout/representante');
-            });
-       
-            define("TITULO_SISTEMA","FSI Pedidos");
-            
+class Module {
+
+    public function init(ModuleManager $moduleManager) {
+
+        $sharedEvents = $moduleManager->getEventManager()->getSharedManager();
+        $sharedEvents->attach(__NAMESPACE__, 'dispatch', function($e) {
+                    $controller = $e->getTarget();
+
+                    $controller = $e->getTarget();
+                    if ($controller instanceof Controller\AuthController) {
+                        $controller->layout('layout/login');
+                    } else {
+                        $controller->layout('layout/representante');
+                    }
+                });
+
+
+        define("TITULO_SISTEMA", "FSI Pedidos");
+        define("CO_EMPRESA", 1);
+        define("VERSAO", "1.0");
+        define("DDI", "55");
+        define("MAP_ENDERECO", false);
+        define("COTACAO_DOLLAR", '2');
     }
-    public function onBootstrap(MvcEvent $e)
-    {
-        $e->getApplication()->getServiceManager()->get('translator');
-        $eventManager        = $e->getApplication()->getEventManager();
-        $moduleRouteListener = new ModuleRouteListener();
-        $moduleRouteListener->attach($eventManager);
+
+    /**
+     * Executada no bootstrap do módulo
+     * 
+     * @param MvcEvent $e
+     */
+    public function onBootstrap($e) {
+        /** @var \Zend\ModuleManager\ModuleManager $moduleManager */
+        $moduleManager = $e->getApplication()->getServiceManager()->get('modulemanager');
+        /** @var \Zend\EventManager\SharedEventManager $sharedEvents */
+        $sharedEvents = $moduleManager->getEventManager()->getSharedManager();
+
+        //adiciona eventos ao módulo
+        $sharedEvents->attach('Zend\Mvc\Controller\AbstractActionController', 
+                \Zend\Mvc\MvcEvent::EVENT_DISPATCH, array($this, 'mvcPreDispatch'), 100);
         
     }
 
-    public function getConfig()
-    {
+    /**
+     * Verifica se precisa fazer a autorização do acesso
+     * @param  MvcEvent $event Evento
+     * @return boolean
+     */
+    public function mvcPreDispatch($event) {
+        $di             = $event->getTarget()->getServiceLocator();
+        $routeMatch     = $event->getRouteMatch();
+        $moduleName     = $routeMatch->getParam('module');
+        $controllerName = $routeMatch->getParam('controller');
+       
+        if ($controllerName != 'Application\Controller\Auth') {
+            $authService = $di->get('Application\Service\Auth');
+            if (!$authService->authorize()) {
+                $redirect = $event->getTarget()->redirect();
+                $redirect->toUrl('/auth');
+            }
+        }
+        return true;
+    }
+
+    public function getConfig() {
         return include __DIR__ . '/config/module.config.php';
     }
 
-    public function getAutoloaderConfig()
-    {
+    public function getAutoloaderConfig() {
         return array(
             'Zend\Loader\StandardAutoloader' => array(
                 'namespaces' => array(
@@ -50,19 +90,5 @@ class Module
             ),
         );
     }
-    /**
-    * Retorna a configuração do service manager do módulo
-    * @return array
-    */
-   public function getServiceConfig()
-   {
-       return array(
-           'factories' => array(
-               'Application\Service\Auth' => function($sm) {
-                   $dbAdapter = $sm->get('DbAdapter');
-                   return new Service\Auth($dbAdapter);
-               },
-           ),
-       );
-   }
+
 }

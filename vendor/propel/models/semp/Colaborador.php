@@ -21,8 +21,24 @@ class Colaborador extends BaseColaborador
             }
         }
         public function getTipoPessoa(){
-            if($this->getPerfil()){
-                return $this->getPerfil()->getNoPerfil();
+            if($this->getTpAdministrador()){
+                return "Administrador";
+            }else{
+                return "Colaborador";
             }
         }
+        
+        public function getDsSenha(){
+            if($this->getPessoa()){                
+                $aObjUsuario = $this->getPessoa()->getUsuarios();
+                
+                if($aObjUsuario->count()){                
+                    if($aObjUsuario[0]->getDsPassword()){
+                        return $aObjUsuario[0]->getDsPassword();
+                    }                    
+                }
+            }
+        }
+        
+        
 }

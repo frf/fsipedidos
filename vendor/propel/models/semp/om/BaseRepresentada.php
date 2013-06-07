@@ -66,6 +66,12 @@ abstract class BaseRepresentada extends BaseObject implements Persistent
     protected $aPessoa;
 
     /**
+     * @var        PropelObjectCollection|ProdutoRepresentada[] Collection to store aggregation of ProdutoRepresentada objects.
+     */
+    protected $collProdutoRepresentadas;
+    protected $collProdutoRepresentadasPartial;
+
+    /**
      * @var        PropelObjectCollection|RepresentadaColaborador[] Collection to store aggregation of RepresentadaColaborador objects.
      */
     protected $collRepresentadaColaboradors;
@@ -90,6 +96,12 @@ abstract class BaseRepresentada extends BaseObject implements Persistent
      * @var        boolean
      */
     protected $alreadyInClearAllReferencesDeep = false;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $produtoRepresentadasScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -414,6 +426,8 @@ abstract class BaseRepresentada extends BaseObject implements Persistent
         if ($deep) {  // also de-associate any related objects?
 
             $this->aPessoa = null;
+            $this->collProdutoRepresentadas = null;
+
             $this->collRepresentadaColaboradors = null;
 
         } // if (deep)
@@ -550,6 +564,23 @@ abstract class BaseRepresentada extends BaseObject implements Persistent
                 }
                 $affectedRows += 1;
                 $this->resetModified();
+            }
+
+            if ($this->produtoRepresentadasScheduledForDeletion !== null) {
+                if (!$this->produtoRepresentadasScheduledForDeletion->isEmpty()) {
+                    ProdutoRepresentadaQuery::create()
+                        ->filterByPrimaryKeys($this->produtoRepresentadasScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->produtoRepresentadasScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collProdutoRepresentadas !== null) {
+                foreach ($this->collProdutoRepresentadas as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
             }
 
             if ($this->representadaColaboradorsScheduledForDeletion !== null) {
@@ -736,6 +767,14 @@ abstract class BaseRepresentada extends BaseObject implements Persistent
             }
 
 
+                if ($this->collProdutoRepresentadas !== null) {
+                    foreach ($this->collProdutoRepresentadas as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
+                    }
+                }
+
                 if ($this->collRepresentadaColaboradors !== null) {
                     foreach ($this->collRepresentadaColaboradors as $referrerFK) {
                         if (!$referrerFK->validate($columns)) {
@@ -832,6 +871,9 @@ abstract class BaseRepresentada extends BaseObject implements Persistent
         if ($includeForeignObjects) {
             if (null !== $this->aPessoa) {
                 $result['Pessoa'] = $this->aPessoa->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->collProdutoRepresentadas) {
+                $result['ProdutoRepresentadas'] = $this->collProdutoRepresentadas->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collRepresentadaColaboradors) {
                 $result['RepresentadaColaboradors'] = $this->collRepresentadaColaboradors->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
@@ -1005,6 +1047,12 @@ abstract class BaseRepresentada extends BaseObject implements Persistent
             // store object hash to prevent cycle
             $this->startCopy = true;
 
+            foreach ($this->getProdutoRepresentadas() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addProdutoRepresentada($relObj->copy($deepCopy));
+                }
+            }
+
             foreach ($this->getRepresentadaColaboradors() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addRepresentadaColaborador($relObj->copy($deepCopy));
@@ -1123,9 +1171,255 @@ abstract class BaseRepresentada extends BaseObject implements Persistent
      */
     public function initRelation($relationName)
     {
+        if ('ProdutoRepresentada' == $relationName) {
+            $this->initProdutoRepresentadas();
+        }
         if ('RepresentadaColaborador' == $relationName) {
             $this->initRepresentadaColaboradors();
         }
+    }
+
+    /**
+     * Clears out the collProdutoRepresentadas collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return Representada The current object (for fluent API support)
+     * @see        addProdutoRepresentadas()
+     */
+    public function clearProdutoRepresentadas()
+    {
+        $this->collProdutoRepresentadas = null; // important to set this to null since that means it is uninitialized
+        $this->collProdutoRepresentadasPartial = null;
+
+        return $this;
+    }
+
+    /**
+     * reset is the collProdutoRepresentadas collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialProdutoRepresentadas($v = true)
+    {
+        $this->collProdutoRepresentadasPartial = $v;
+    }
+
+    /**
+     * Initializes the collProdutoRepresentadas collection.
+     *
+     * By default this just sets the collProdutoRepresentadas collection to an empty array (like clearcollProdutoRepresentadas());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initProdutoRepresentadas($overrideExisting = true)
+    {
+        if (null !== $this->collProdutoRepresentadas && !$overrideExisting) {
+            return;
+        }
+        $this->collProdutoRepresentadas = new PropelObjectCollection();
+        $this->collProdutoRepresentadas->setModel('ProdutoRepresentada');
+    }
+
+    /**
+     * Gets an array of ProdutoRepresentada objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this Representada is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @return PropelObjectCollection|ProdutoRepresentada[] List of ProdutoRepresentada objects
+     * @throws PropelException
+     */
+    public function getProdutoRepresentadas($criteria = null, PropelPDO $con = null)
+    {
+        $partial = $this->collProdutoRepresentadasPartial && !$this->isNew();
+        if (null === $this->collProdutoRepresentadas || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collProdutoRepresentadas) {
+                // return empty collection
+                $this->initProdutoRepresentadas();
+            } else {
+                $collProdutoRepresentadas = ProdutoRepresentadaQuery::create(null, $criteria)
+                    ->filterByRepresentada($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collProdutoRepresentadasPartial && count($collProdutoRepresentadas)) {
+                      $this->initProdutoRepresentadas(false);
+
+                      foreach($collProdutoRepresentadas as $obj) {
+                        if (false == $this->collProdutoRepresentadas->contains($obj)) {
+                          $this->collProdutoRepresentadas->append($obj);
+                        }
+                      }
+
+                      $this->collProdutoRepresentadasPartial = true;
+                    }
+
+                    $collProdutoRepresentadas->getInternalIterator()->rewind();
+                    return $collProdutoRepresentadas;
+                }
+
+                if($partial && $this->collProdutoRepresentadas) {
+                    foreach($this->collProdutoRepresentadas as $obj) {
+                        if($obj->isNew()) {
+                            $collProdutoRepresentadas[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collProdutoRepresentadas = $collProdutoRepresentadas;
+                $this->collProdutoRepresentadasPartial = false;
+            }
+        }
+
+        return $this->collProdutoRepresentadas;
+    }
+
+    /**
+     * Sets a collection of ProdutoRepresentada objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param PropelCollection $produtoRepresentadas A Propel collection.
+     * @param PropelPDO $con Optional connection object
+     * @return Representada The current object (for fluent API support)
+     */
+    public function setProdutoRepresentadas(PropelCollection $produtoRepresentadas, PropelPDO $con = null)
+    {
+        $produtoRepresentadasToDelete = $this->getProdutoRepresentadas(new Criteria(), $con)->diff($produtoRepresentadas);
+
+        $this->produtoRepresentadasScheduledForDeletion = unserialize(serialize($produtoRepresentadasToDelete));
+
+        foreach ($produtoRepresentadasToDelete as $produtoRepresentadaRemoved) {
+            $produtoRepresentadaRemoved->setRepresentada(null);
+        }
+
+        $this->collProdutoRepresentadas = null;
+        foreach ($produtoRepresentadas as $produtoRepresentada) {
+            $this->addProdutoRepresentada($produtoRepresentada);
+        }
+
+        $this->collProdutoRepresentadas = $produtoRepresentadas;
+        $this->collProdutoRepresentadasPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related ProdutoRepresentada objects.
+     *
+     * @param Criteria $criteria
+     * @param boolean $distinct
+     * @param PropelPDO $con
+     * @return int             Count of related ProdutoRepresentada objects.
+     * @throws PropelException
+     */
+    public function countProdutoRepresentadas(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collProdutoRepresentadasPartial && !$this->isNew();
+        if (null === $this->collProdutoRepresentadas || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collProdutoRepresentadas) {
+                return 0;
+            }
+
+            if($partial && !$criteria) {
+                return count($this->getProdutoRepresentadas());
+            }
+            $query = ProdutoRepresentadaQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByRepresentada($this)
+                ->count($con);
+        }
+
+        return count($this->collProdutoRepresentadas);
+    }
+
+    /**
+     * Method called to associate a ProdutoRepresentada object to this object
+     * through the ProdutoRepresentada foreign key attribute.
+     *
+     * @param    ProdutoRepresentada $l ProdutoRepresentada
+     * @return Representada The current object (for fluent API support)
+     */
+    public function addProdutoRepresentada(ProdutoRepresentada $l)
+    {
+        if ($this->collProdutoRepresentadas === null) {
+            $this->initProdutoRepresentadas();
+            $this->collProdutoRepresentadasPartial = true;
+        }
+        if (!in_array($l, $this->collProdutoRepresentadas->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddProdutoRepresentada($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	ProdutoRepresentada $produtoRepresentada The produtoRepresentada object to add.
+     */
+    protected function doAddProdutoRepresentada($produtoRepresentada)
+    {
+        $this->collProdutoRepresentadas[]= $produtoRepresentada;
+        $produtoRepresentada->setRepresentada($this);
+    }
+
+    /**
+     * @param	ProdutoRepresentada $produtoRepresentada The produtoRepresentada object to remove.
+     * @return Representada The current object (for fluent API support)
+     */
+    public function removeProdutoRepresentada($produtoRepresentada)
+    {
+        if ($this->getProdutoRepresentadas()->contains($produtoRepresentada)) {
+            $this->collProdutoRepresentadas->remove($this->collProdutoRepresentadas->search($produtoRepresentada));
+            if (null === $this->produtoRepresentadasScheduledForDeletion) {
+                $this->produtoRepresentadasScheduledForDeletion = clone $this->collProdutoRepresentadas;
+                $this->produtoRepresentadasScheduledForDeletion->clear();
+            }
+            $this->produtoRepresentadasScheduledForDeletion[]= clone $produtoRepresentada;
+            $produtoRepresentada->setRepresentada(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Representada is new, it will return
+     * an empty collection; or if this Representada has previously
+     * been saved, it will retrieve related ProdutoRepresentadas from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Representada.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|ProdutoRepresentada[] List of ProdutoRepresentada objects
+     */
+    public function getProdutoRepresentadasJoinMoeda($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = ProdutoRepresentadaQuery::create(null, $criteria);
+        $query->joinWith('Moeda', $join_behavior);
+
+        return $this->getProdutoRepresentadas($query, $con);
     }
 
     /**
@@ -1404,6 +1698,11 @@ abstract class BaseRepresentada extends BaseObject implements Persistent
     {
         if ($deep && !$this->alreadyInClearAllReferencesDeep) {
             $this->alreadyInClearAllReferencesDeep = true;
+            if ($this->collProdutoRepresentadas) {
+                foreach ($this->collProdutoRepresentadas as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collRepresentadaColaboradors) {
                 foreach ($this->collRepresentadaColaboradors as $o) {
                     $o->clearAllReferences($deep);
@@ -1416,6 +1715,10 @@ abstract class BaseRepresentada extends BaseObject implements Persistent
             $this->alreadyInClearAllReferencesDeep = false;
         } // if ($deep)
 
+        if ($this->collProdutoRepresentadas instanceof PropelCollection) {
+            $this->collProdutoRepresentadas->clearIterator();
+        }
+        $this->collProdutoRepresentadas = null;
         if ($this->collRepresentadaColaboradors instanceof PropelCollection) {
             $this->collRepresentadaColaboradors->clearIterator();
         }

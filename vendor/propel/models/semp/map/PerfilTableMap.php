@@ -51,7 +51,6 @@ class PerfilTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Colaborador', 'Colaborador', RelationMap::ONE_TO_MANY, array('co_perfil' => 'co_perfil', ), null, null, 'Colaboradors');
         $this->addRelation('Permissao', 'Permissao', RelationMap::ONE_TO_MANY, array('co_perfil' => 'co_perfil', ), 'RESTRICT', 'CASCADE', 'Permissaos');
         $this->addRelation('Usuario', 'Usuario', RelationMap::ONE_TO_MANY, array('co_perfil' => 'co_perfil', ), 'RESTRICT', 'CASCADE', 'Usuarios');
     } // buildRelations()

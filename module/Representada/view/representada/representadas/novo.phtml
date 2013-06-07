@@ -1,4 +1,7 @@
+<script src="/js/maruti.form_validation.js"></script>
+<script src="/js/maruti.form_common.js"></script>
 <script src="/js/jquery.maskedinput.js" type="text/javascript"></script>
+
 <script>
     $(document).ready(function(){
         $("#cnpj").mask("99.999.999/9999-99"); 
@@ -11,10 +14,10 @@
 
 <div id="content-header">
     <div id="breadcrumb"> 
-        <a href="/" title="Home" class="tip-bottom"><i class="icon-home"></i> Home</a>
+        <a href="/" title="Principal" class="tip-bottom"><i class="icon-home"></i> Principal</a>
         <a href="/representadas/index" title="Lista de Representada" class="tip-bottom">
             <i class="icon-user"></i> Representada</a>
-        <a href="/representadas/novo" title="Cadastro de Representada" class="tip-bottom">Novo</a>
+        <a href="/representadas/novo" title="Cadastro de Representada" class="tip-bottom current">Novo</a>
     </div>
   </div>
  <div class="container-fluid">
@@ -24,24 +27,24 @@
               <div class="widget-title"> <span class="icon"> <i class="icon-align-justify"></i> </span>
                 <h5>Cadastro da Representada</h5>
               </div>
-                <form method="POST" action="<?php echo $this->url('representadas', array('action' => 'adicionar')); ?>" class="form-horizontal">
+                <form method="POST" action="<?php echo $this->url('representadas', array('action' => 'adicionar')); ?>" class="form-horizontal"  name="basic_validate_representada" id="basic_validate_representada" novalidate="novalidate">
                  <div class="widget-content nopadding">
                     <div class="control-group">
                     <label class="control-label">Razão Social:</label>
                     <div class="controls">
-                      <input type="text" class="span11" name="r_social" placeholder="Razão Social" />
+                      <input type="text" class="span11" name="r_social" placeholder="Razão Social"  id="required"  />
                     </div>
                   </div>
                   <div class="control-group">
                     <label class="control-label">Nome Fantasia:</label>
                     <div class="controls">
-                        <input type="text" class="span11" placeholder="Nome Fantasia" name="no_representada" />
+                        <input type="text" class="span11" placeholder="Nome Fantasia" name="no_representada"  id="required"  />
                     </div>
                   </div>
                   <div class="control-group">
                     <label class="control-label">CNPJ</label>
                     <div class="controls">
-                      <input type="text"  class="span11" placeholder="CNPJ" name="cnpj" id="cnpj" />
+                      <input type="text"  class="span11" placeholder="CNPJ" name="cnpj" id="required"  />
                     </div>
                   </div>
                  </div>
@@ -49,7 +52,7 @@
                     <div class="control-group">
                     <label class="control-label">Comissão:</label>
                     <div class="controls">
-                      <input type="text" class="span3" placeholder="Comissão" id="nu_comissao" name="nu_comissao" /> %
+                      <input type="text" class="span3" placeholder="Comissão" id="required" name="nu_comissao" /> %
                     </div>
                   </div>
                  </div>

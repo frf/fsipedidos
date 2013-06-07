@@ -13,7 +13,7 @@
         </propel>
         <log>
             <type>file</type>
-            <name>/projetos/representante/vendor/propel/tmp/logs/propel.log</name>
+            <name>/projetos/fsipedidos/vendor/propel/tmp/logs/propel.log</name>
             <ident>propel</ident>
             <level>2</level> <!-- PEAR_LOG_DEBUG -->
             <conf></conf>

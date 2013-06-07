@@ -54,6 +54,17 @@ abstract class BasePessoa extends BaseObject implements Persistent
     protected $nu_cnpj;
 
     /**
+     * The value for the co_empresa field.
+     * @var        int
+     */
+    protected $co_empresa;
+
+    /**
+     * @var        Empresa
+     */
+    protected $aEmpresa;
+
+    /**
      * @var        Cliente one-to-one related Cliente object
      */
     protected $singleCliente;
@@ -64,9 +75,33 @@ abstract class BasePessoa extends BaseObject implements Persistent
     protected $singleColaborador;
 
     /**
+     * @var        PropelObjectCollection|Email[] Collection to store aggregation of Email objects.
+     */
+    protected $collEmails;
+    protected $collEmailsPartial;
+
+    /**
+     * @var        PropelObjectCollection|Endereco[] Collection to store aggregation of Endereco objects.
+     */
+    protected $collEnderecos;
+    protected $collEnderecosPartial;
+
+    /**
      * @var        Representada one-to-one related Representada object
      */
     protected $singleRepresentada;
+
+    /**
+     * @var        PropelObjectCollection|Telefone[] Collection to store aggregation of Telefone objects.
+     */
+    protected $collTelefones;
+    protected $collTelefonesPartial;
+
+    /**
+     * @var        PropelObjectCollection|Usuario[] Collection to store aggregation of Usuario objects.
+     */
+    protected $collUsuarios;
+    protected $collUsuariosPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -104,7 +139,31 @@ abstract class BasePessoa extends BaseObject implements Persistent
      * An array of objects scheduled for deletion.
      * @var		PropelObjectCollection
      */
+    protected $emailsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $enderecosScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
     protected $representadasScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $telefonesScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $usuariosScheduledForDeletion = null;
 
     /**
      * Get the [co_pessoa] column value.
@@ -144,6 +203,16 @@ abstract class BasePessoa extends BaseObject implements Persistent
     public function getNuCnpj()
     {
         return $this->nu_cnpj;
+    }
+
+    /**
+     * Get the [co_empresa] column value.
+     *
+     * @return int
+     */
+    public function getCoEmpresa()
+    {
+        return $this->co_empresa;
     }
 
     /**
@@ -231,6 +300,31 @@ abstract class BasePessoa extends BaseObject implements Persistent
     } // setNuCnpj()
 
     /**
+     * Set the value of [co_empresa] column.
+     *
+     * @param int $v new value
+     * @return Pessoa The current object (for fluent API support)
+     */
+    public function setCoEmpresa($v)
+    {
+        if ($v !== null && is_numeric($v)) {
+            $v = (int) $v;
+        }
+
+        if ($this->co_empresa !== $v) {
+            $this->co_empresa = $v;
+            $this->modifiedColumns[] = PessoaPeer::CO_EMPRESA;
+        }
+
+        if ($this->aEmpresa !== null && $this->aEmpresa->getCoEmpresa() !== $v) {
+            $this->aEmpresa = null;
+        }
+
+
+        return $this;
+    } // setCoEmpresa()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -266,6 +360,7 @@ abstract class BasePessoa extends BaseObject implements Persistent
             $this->no_pessoa = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
             $this->nu_cpf = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
             $this->nu_cnpj = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
+            $this->co_empresa = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -274,7 +369,7 @@ abstract class BasePessoa extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
             $this->postHydrate($row, $startcol, $rehydrate);
-            return $startcol + 4; // 4 = PessoaPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 5; // 5 = PessoaPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Pessoa object", $e);
@@ -297,6 +392,9 @@ abstract class BasePessoa extends BaseObject implements Persistent
     public function ensureConsistency()
     {
 
+        if ($this->aEmpresa !== null && $this->co_empresa !== $this->aEmpresa->getCoEmpresa()) {
+            $this->aEmpresa = null;
+        }
     } // ensureConsistency
 
     /**
@@ -336,11 +434,20 @@ abstract class BasePessoa extends BaseObject implements Persistent
 
         if ($deep) {  // also de-associate any related objects?
 
+            $this->aEmpresa = null;
             $this->singleCliente = null;
 
             $this->singleColaborador = null;
 
+            $this->collEmails = null;
+
+            $this->collEnderecos = null;
+
             $this->singleRepresentada = null;
+
+            $this->collTelefones = null;
+
+            $this->collUsuarios = null;
 
         } // if (deep)
     }
@@ -455,6 +562,18 @@ abstract class BasePessoa extends BaseObject implements Persistent
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their coresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aEmpresa !== null) {
+                if ($this->aEmpresa->isModified() || $this->aEmpresa->isNew()) {
+                    $affectedRows += $this->aEmpresa->save($con);
+                }
+                $this->setEmpresa($this->aEmpresa);
+            }
+
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -496,6 +615,40 @@ abstract class BasePessoa extends BaseObject implements Persistent
                 }
             }
 
+            if ($this->emailsScheduledForDeletion !== null) {
+                if (!$this->emailsScheduledForDeletion->isEmpty()) {
+                    EmailQuery::create()
+                        ->filterByPrimaryKeys($this->emailsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->emailsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collEmails !== null) {
+                foreach ($this->collEmails as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->enderecosScheduledForDeletion !== null) {
+                if (!$this->enderecosScheduledForDeletion->isEmpty()) {
+                    EnderecoQuery::create()
+                        ->filterByPrimaryKeys($this->enderecosScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->enderecosScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collEnderecos !== null) {
+                foreach ($this->collEnderecos as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             if ($this->representadasScheduledForDeletion !== null) {
                 if (!$this->representadasScheduledForDeletion->isEmpty()) {
                     RepresentadaQuery::create()
@@ -508,6 +661,40 @@ abstract class BasePessoa extends BaseObject implements Persistent
             if ($this->singleRepresentada !== null) {
                 if (!$this->singleRepresentada->isDeleted() && ($this->singleRepresentada->isNew() || $this->singleRepresentada->isModified())) {
                         $affectedRows += $this->singleRepresentada->save($con);
+                }
+            }
+
+            if ($this->telefonesScheduledForDeletion !== null) {
+                if (!$this->telefonesScheduledForDeletion->isEmpty()) {
+                    TelefoneQuery::create()
+                        ->filterByPrimaryKeys($this->telefonesScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->telefonesScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collTelefones !== null) {
+                foreach ($this->collTelefones as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->usuariosScheduledForDeletion !== null) {
+                if (!$this->usuariosScheduledForDeletion->isEmpty()) {
+                    UsuarioQuery::create()
+                        ->filterByPrimaryKeys($this->usuariosScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->usuariosScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collUsuarios !== null) {
+                foreach ($this->collUsuarios as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
                 }
             }
 
@@ -559,6 +746,9 @@ abstract class BasePessoa extends BaseObject implements Persistent
         if ($this->isColumnModified(PessoaPeer::NU_CNPJ)) {
             $modifiedColumns[':p' . $index++]  = 'nu_cnpj';
         }
+        if ($this->isColumnModified(PessoaPeer::CO_EMPRESA)) {
+            $modifiedColumns[':p' . $index++]  = 'co_empresa';
+        }
 
         $sql = sprintf(
             'INSERT INTO pessoa (%s) VALUES (%s)',
@@ -581,6 +771,9 @@ abstract class BasePessoa extends BaseObject implements Persistent
                         break;
                     case 'nu_cnpj':
                         $stmt->bindValue($identifier, $this->nu_cnpj, PDO::PARAM_STR);
+                        break;
+                    case 'co_empresa':
+                        $stmt->bindValue($identifier, $this->co_empresa, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -669,6 +862,18 @@ abstract class BasePessoa extends BaseObject implements Persistent
             $failureMap = array();
 
 
+            // We call the validate method on the following object(s) if they
+            // were passed to this object by their coresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aEmpresa !== null) {
+                if (!$this->aEmpresa->validate($columns)) {
+                    $failureMap = array_merge($failureMap, $this->aEmpresa->getValidationFailures());
+                }
+            }
+
+
             if (($retval = PessoaPeer::doValidate($this, $columns)) !== true) {
                 $failureMap = array_merge($failureMap, $retval);
             }
@@ -686,9 +891,41 @@ abstract class BasePessoa extends BaseObject implements Persistent
                     }
                 }
 
+                if ($this->collEmails !== null) {
+                    foreach ($this->collEmails as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
+                    }
+                }
+
+                if ($this->collEnderecos !== null) {
+                    foreach ($this->collEnderecos as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
+                    }
+                }
+
                 if ($this->singleRepresentada !== null) {
                     if (!$this->singleRepresentada->validate($columns)) {
                         $failureMap = array_merge($failureMap, $this->singleRepresentada->getValidationFailures());
+                    }
+                }
+
+                if ($this->collTelefones !== null) {
+                    foreach ($this->collTelefones as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
+                    }
+                }
+
+                if ($this->collUsuarios !== null) {
+                    foreach ($this->collUsuarios as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
                     }
                 }
 
@@ -739,6 +976,9 @@ abstract class BasePessoa extends BaseObject implements Persistent
             case 3:
                 return $this->getNuCnpj();
                 break;
+            case 4:
+                return $this->getCoEmpresa();
+                break;
             default:
                 return null;
                 break;
@@ -772,16 +1012,32 @@ abstract class BasePessoa extends BaseObject implements Persistent
             $keys[1] => $this->getNoPessoa(),
             $keys[2] => $this->getNuCpf(),
             $keys[3] => $this->getNuCnpj(),
+            $keys[4] => $this->getCoEmpresa(),
         );
         if ($includeForeignObjects) {
+            if (null !== $this->aEmpresa) {
+                $result['Empresa'] = $this->aEmpresa->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
             if (null !== $this->singleCliente) {
                 $result['Cliente'] = $this->singleCliente->toArray($keyType, $includeLazyLoadColumns, $alreadyDumpedObjects, true);
             }
             if (null !== $this->singleColaborador) {
                 $result['Colaborador'] = $this->singleColaborador->toArray($keyType, $includeLazyLoadColumns, $alreadyDumpedObjects, true);
             }
+            if (null !== $this->collEmails) {
+                $result['Emails'] = $this->collEmails->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collEnderecos) {
+                $result['Enderecos'] = $this->collEnderecos->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
             if (null !== $this->singleRepresentada) {
                 $result['Representada'] = $this->singleRepresentada->toArray($keyType, $includeLazyLoadColumns, $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->collTelefones) {
+                $result['Telefones'] = $this->collTelefones->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collUsuarios) {
+                $result['Usuarios'] = $this->collUsuarios->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -829,6 +1085,9 @@ abstract class BasePessoa extends BaseObject implements Persistent
             case 3:
                 $this->setNuCnpj($value);
                 break;
+            case 4:
+                $this->setCoEmpresa($value);
+                break;
         } // switch()
     }
 
@@ -857,6 +1116,7 @@ abstract class BasePessoa extends BaseObject implements Persistent
         if (array_key_exists($keys[1], $arr)) $this->setNoPessoa($arr[$keys[1]]);
         if (array_key_exists($keys[2], $arr)) $this->setNuCpf($arr[$keys[2]]);
         if (array_key_exists($keys[3], $arr)) $this->setNuCnpj($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setCoEmpresa($arr[$keys[4]]);
     }
 
     /**
@@ -872,6 +1132,7 @@ abstract class BasePessoa extends BaseObject implements Persistent
         if ($this->isColumnModified(PessoaPeer::NO_PESSOA)) $criteria->add(PessoaPeer::NO_PESSOA, $this->no_pessoa);
         if ($this->isColumnModified(PessoaPeer::NU_CPF)) $criteria->add(PessoaPeer::NU_CPF, $this->nu_cpf);
         if ($this->isColumnModified(PessoaPeer::NU_CNPJ)) $criteria->add(PessoaPeer::NU_CNPJ, $this->nu_cnpj);
+        if ($this->isColumnModified(PessoaPeer::CO_EMPRESA)) $criteria->add(PessoaPeer::CO_EMPRESA, $this->co_empresa);
 
         return $criteria;
     }
@@ -938,6 +1199,7 @@ abstract class BasePessoa extends BaseObject implements Persistent
         $copyObj->setNoPessoa($this->getNoPessoa());
         $copyObj->setNuCpf($this->getNuCpf());
         $copyObj->setNuCnpj($this->getNuCnpj());
+        $copyObj->setCoEmpresa($this->getCoEmpresa());
 
         if ($deepCopy && !$this->startCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -956,9 +1218,33 @@ abstract class BasePessoa extends BaseObject implements Persistent
                 $copyObj->setColaborador($relObj->copy($deepCopy));
             }
 
+            foreach ($this->getEmails() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addEmail($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getEnderecos() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addEndereco($relObj->copy($deepCopy));
+                }
+            }
+
             $relObj = $this->getRepresentada();
             if ($relObj) {
                 $copyObj->setRepresentada($relObj->copy($deepCopy));
+            }
+
+            foreach ($this->getTelefones() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addTelefone($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getUsuarios() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addUsuario($relObj->copy($deepCopy));
+                }
             }
 
             //unflag object copy
@@ -1011,6 +1297,58 @@ abstract class BasePessoa extends BaseObject implements Persistent
         return self::$peer;
     }
 
+    /**
+     * Declares an association between this object and a Empresa object.
+     *
+     * @param             Empresa $v
+     * @return Pessoa The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setEmpresa(Empresa $v = null)
+    {
+        if ($v === null) {
+            $this->setCoEmpresa(NULL);
+        } else {
+            $this->setCoEmpresa($v->getCoEmpresa());
+        }
+
+        $this->aEmpresa = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the Empresa object, it will not be re-added.
+        if ($v !== null) {
+            $v->addPessoa($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated Empresa object
+     *
+     * @param PropelPDO $con Optional Connection object.
+     * @param $doQuery Executes a query to get the object if required
+     * @return Empresa The associated Empresa object.
+     * @throws PropelException
+     */
+    public function getEmpresa(PropelPDO $con = null, $doQuery = true)
+    {
+        if ($this->aEmpresa === null && ($this->co_empresa !== null) && $doQuery) {
+            $this->aEmpresa = EmpresaQuery::create()->findPk($this->co_empresa, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aEmpresa->addPessoas($this);
+             */
+        }
+
+        return $this->aEmpresa;
+    }
+
 
     /**
      * Initializes a collection based on the name of a relation.
@@ -1022,6 +1360,18 @@ abstract class BasePessoa extends BaseObject implements Persistent
      */
     public function initRelation($relationName)
     {
+        if ('Email' == $relationName) {
+            $this->initEmails();
+        }
+        if ('Endereco' == $relationName) {
+            $this->initEnderecos();
+        }
+        if ('Telefone' == $relationName) {
+            $this->initTelefones();
+        }
+        if ('Usuario' == $relationName) {
+            $this->initUsuarios();
+        }
     }
 
     /**
@@ -1097,6 +1447,442 @@ abstract class BasePessoa extends BaseObject implements Persistent
     }
 
     /**
+     * Clears out the collEmails collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return Pessoa The current object (for fluent API support)
+     * @see        addEmails()
+     */
+    public function clearEmails()
+    {
+        $this->collEmails = null; // important to set this to null since that means it is uninitialized
+        $this->collEmailsPartial = null;
+
+        return $this;
+    }
+
+    /**
+     * reset is the collEmails collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialEmails($v = true)
+    {
+        $this->collEmailsPartial = $v;
+    }
+
+    /**
+     * Initializes the collEmails collection.
+     *
+     * By default this just sets the collEmails collection to an empty array (like clearcollEmails());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initEmails($overrideExisting = true)
+    {
+        if (null !== $this->collEmails && !$overrideExisting) {
+            return;
+        }
+        $this->collEmails = new PropelObjectCollection();
+        $this->collEmails->setModel('Email');
+    }
+
+    /**
+     * Gets an array of Email objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this Pessoa is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @return PropelObjectCollection|Email[] List of Email objects
+     * @throws PropelException
+     */
+    public function getEmails($criteria = null, PropelPDO $con = null)
+    {
+        $partial = $this->collEmailsPartial && !$this->isNew();
+        if (null === $this->collEmails || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collEmails) {
+                // return empty collection
+                $this->initEmails();
+            } else {
+                $collEmails = EmailQuery::create(null, $criteria)
+                    ->filterByPessoa($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collEmailsPartial && count($collEmails)) {
+                      $this->initEmails(false);
+
+                      foreach($collEmails as $obj) {
+                        if (false == $this->collEmails->contains($obj)) {
+                          $this->collEmails->append($obj);
+                        }
+                      }
+
+                      $this->collEmailsPartial = true;
+                    }
+
+                    $collEmails->getInternalIterator()->rewind();
+                    return $collEmails;
+                }
+
+                if($partial && $this->collEmails) {
+                    foreach($this->collEmails as $obj) {
+                        if($obj->isNew()) {
+                            $collEmails[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collEmails = $collEmails;
+                $this->collEmailsPartial = false;
+            }
+        }
+
+        return $this->collEmails;
+    }
+
+    /**
+     * Sets a collection of Email objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param PropelCollection $emails A Propel collection.
+     * @param PropelPDO $con Optional connection object
+     * @return Pessoa The current object (for fluent API support)
+     */
+    public function setEmails(PropelCollection $emails, PropelPDO $con = null)
+    {
+        $emailsToDelete = $this->getEmails(new Criteria(), $con)->diff($emails);
+
+        $this->emailsScheduledForDeletion = unserialize(serialize($emailsToDelete));
+
+        foreach ($emailsToDelete as $emailRemoved) {
+            $emailRemoved->setPessoa(null);
+        }
+
+        $this->collEmails = null;
+        foreach ($emails as $email) {
+            $this->addEmail($email);
+        }
+
+        $this->collEmails = $emails;
+        $this->collEmailsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Email objects.
+     *
+     * @param Criteria $criteria
+     * @param boolean $distinct
+     * @param PropelPDO $con
+     * @return int             Count of related Email objects.
+     * @throws PropelException
+     */
+    public function countEmails(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collEmailsPartial && !$this->isNew();
+        if (null === $this->collEmails || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collEmails) {
+                return 0;
+            }
+
+            if($partial && !$criteria) {
+                return count($this->getEmails());
+            }
+            $query = EmailQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByPessoa($this)
+                ->count($con);
+        }
+
+        return count($this->collEmails);
+    }
+
+    /**
+     * Method called to associate a Email object to this object
+     * through the Email foreign key attribute.
+     *
+     * @param    Email $l Email
+     * @return Pessoa The current object (for fluent API support)
+     */
+    public function addEmail(Email $l)
+    {
+        if ($this->collEmails === null) {
+            $this->initEmails();
+            $this->collEmailsPartial = true;
+        }
+        if (!in_array($l, $this->collEmails->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddEmail($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	Email $email The email object to add.
+     */
+    protected function doAddEmail($email)
+    {
+        $this->collEmails[]= $email;
+        $email->setPessoa($this);
+    }
+
+    /**
+     * @param	Email $email The email object to remove.
+     * @return Pessoa The current object (for fluent API support)
+     */
+    public function removeEmail($email)
+    {
+        if ($this->getEmails()->contains($email)) {
+            $this->collEmails->remove($this->collEmails->search($email));
+            if (null === $this->emailsScheduledForDeletion) {
+                $this->emailsScheduledForDeletion = clone $this->collEmails;
+                $this->emailsScheduledForDeletion->clear();
+            }
+            $this->emailsScheduledForDeletion[]= clone $email;
+            $email->setPessoa(null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collEnderecos collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return Pessoa The current object (for fluent API support)
+     * @see        addEnderecos()
+     */
+    public function clearEnderecos()
+    {
+        $this->collEnderecos = null; // important to set this to null since that means it is uninitialized
+        $this->collEnderecosPartial = null;
+
+        return $this;
+    }
+
+    /**
+     * reset is the collEnderecos collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialEnderecos($v = true)
+    {
+        $this->collEnderecosPartial = $v;
+    }
+
+    /**
+     * Initializes the collEnderecos collection.
+     *
+     * By default this just sets the collEnderecos collection to an empty array (like clearcollEnderecos());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initEnderecos($overrideExisting = true)
+    {
+        if (null !== $this->collEnderecos && !$overrideExisting) {
+            return;
+        }
+        $this->collEnderecos = new PropelObjectCollection();
+        $this->collEnderecos->setModel('Endereco');
+    }
+
+    /**
+     * Gets an array of Endereco objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this Pessoa is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @return PropelObjectCollection|Endereco[] List of Endereco objects
+     * @throws PropelException
+     */
+    public function getEnderecos($criteria = null, PropelPDO $con = null)
+    {
+        $partial = $this->collEnderecosPartial && !$this->isNew();
+        if (null === $this->collEnderecos || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collEnderecos) {
+                // return empty collection
+                $this->initEnderecos();
+            } else {
+                $collEnderecos = EnderecoQuery::create(null, $criteria)
+                    ->filterByPessoa($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collEnderecosPartial && count($collEnderecos)) {
+                      $this->initEnderecos(false);
+
+                      foreach($collEnderecos as $obj) {
+                        if (false == $this->collEnderecos->contains($obj)) {
+                          $this->collEnderecos->append($obj);
+                        }
+                      }
+
+                      $this->collEnderecosPartial = true;
+                    }
+
+                    $collEnderecos->getInternalIterator()->rewind();
+                    return $collEnderecos;
+                }
+
+                if($partial && $this->collEnderecos) {
+                    foreach($this->collEnderecos as $obj) {
+                        if($obj->isNew()) {
+                            $collEnderecos[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collEnderecos = $collEnderecos;
+                $this->collEnderecosPartial = false;
+            }
+        }
+
+        return $this->collEnderecos;
+    }
+
+    /**
+     * Sets a collection of Endereco objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param PropelCollection $enderecos A Propel collection.
+     * @param PropelPDO $con Optional connection object
+     * @return Pessoa The current object (for fluent API support)
+     */
+    public function setEnderecos(PropelCollection $enderecos, PropelPDO $con = null)
+    {
+        $enderecosToDelete = $this->getEnderecos(new Criteria(), $con)->diff($enderecos);
+
+        $this->enderecosScheduledForDeletion = unserialize(serialize($enderecosToDelete));
+
+        foreach ($enderecosToDelete as $enderecoRemoved) {
+            $enderecoRemoved->setPessoa(null);
+        }
+
+        $this->collEnderecos = null;
+        foreach ($enderecos as $endereco) {
+            $this->addEndereco($endereco);
+        }
+
+        $this->collEnderecos = $enderecos;
+        $this->collEnderecosPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Endereco objects.
+     *
+     * @param Criteria $criteria
+     * @param boolean $distinct
+     * @param PropelPDO $con
+     * @return int             Count of related Endereco objects.
+     * @throws PropelException
+     */
+    public function countEnderecos(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collEnderecosPartial && !$this->isNew();
+        if (null === $this->collEnderecos || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collEnderecos) {
+                return 0;
+            }
+
+            if($partial && !$criteria) {
+                return count($this->getEnderecos());
+            }
+            $query = EnderecoQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByPessoa($this)
+                ->count($con);
+        }
+
+        return count($this->collEnderecos);
+    }
+
+    /**
+     * Method called to associate a Endereco object to this object
+     * through the Endereco foreign key attribute.
+     *
+     * @param    Endereco $l Endereco
+     * @return Pessoa The current object (for fluent API support)
+     */
+    public function addEndereco(Endereco $l)
+    {
+        if ($this->collEnderecos === null) {
+            $this->initEnderecos();
+            $this->collEnderecosPartial = true;
+        }
+        if (!in_array($l, $this->collEnderecos->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddEndereco($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	Endereco $endereco The endereco object to add.
+     */
+    protected function doAddEndereco($endereco)
+    {
+        $this->collEnderecos[]= $endereco;
+        $endereco->setPessoa($this);
+    }
+
+    /**
+     * @param	Endereco $endereco The endereco object to remove.
+     * @return Pessoa The current object (for fluent API support)
+     */
+    public function removeEndereco($endereco)
+    {
+        if ($this->getEnderecos()->contains($endereco)) {
+            $this->collEnderecos->remove($this->collEnderecos->search($endereco));
+            if (null === $this->enderecosScheduledForDeletion) {
+                $this->enderecosScheduledForDeletion = clone $this->collEnderecos;
+                $this->enderecosScheduledForDeletion->clear();
+            }
+            $this->enderecosScheduledForDeletion[]= clone $endereco;
+            $endereco->setPessoa(null);
+        }
+
+        return $this;
+    }
+
+    /**
      * Gets a single Representada object, which is related to this object by a one-to-one relationship.
      *
      * @param PropelPDO $con optional connection object
@@ -1133,6 +1919,467 @@ abstract class BasePessoa extends BaseObject implements Persistent
     }
 
     /**
+     * Clears out the collTelefones collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return Pessoa The current object (for fluent API support)
+     * @see        addTelefones()
+     */
+    public function clearTelefones()
+    {
+        $this->collTelefones = null; // important to set this to null since that means it is uninitialized
+        $this->collTelefonesPartial = null;
+
+        return $this;
+    }
+
+    /**
+     * reset is the collTelefones collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialTelefones($v = true)
+    {
+        $this->collTelefonesPartial = $v;
+    }
+
+    /**
+     * Initializes the collTelefones collection.
+     *
+     * By default this just sets the collTelefones collection to an empty array (like clearcollTelefones());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initTelefones($overrideExisting = true)
+    {
+        if (null !== $this->collTelefones && !$overrideExisting) {
+            return;
+        }
+        $this->collTelefones = new PropelObjectCollection();
+        $this->collTelefones->setModel('Telefone');
+    }
+
+    /**
+     * Gets an array of Telefone objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this Pessoa is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @return PropelObjectCollection|Telefone[] List of Telefone objects
+     * @throws PropelException
+     */
+    public function getTelefones($criteria = null, PropelPDO $con = null)
+    {
+        $partial = $this->collTelefonesPartial && !$this->isNew();
+        if (null === $this->collTelefones || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collTelefones) {
+                // return empty collection
+                $this->initTelefones();
+            } else {
+                $collTelefones = TelefoneQuery::create(null, $criteria)
+                    ->filterByPessoa($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collTelefonesPartial && count($collTelefones)) {
+                      $this->initTelefones(false);
+
+                      foreach($collTelefones as $obj) {
+                        if (false == $this->collTelefones->contains($obj)) {
+                          $this->collTelefones->append($obj);
+                        }
+                      }
+
+                      $this->collTelefonesPartial = true;
+                    }
+
+                    $collTelefones->getInternalIterator()->rewind();
+                    return $collTelefones;
+                }
+
+                if($partial && $this->collTelefones) {
+                    foreach($this->collTelefones as $obj) {
+                        if($obj->isNew()) {
+                            $collTelefones[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collTelefones = $collTelefones;
+                $this->collTelefonesPartial = false;
+            }
+        }
+
+        return $this->collTelefones;
+    }
+
+    /**
+     * Sets a collection of Telefone objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param PropelCollection $telefones A Propel collection.
+     * @param PropelPDO $con Optional connection object
+     * @return Pessoa The current object (for fluent API support)
+     */
+    public function setTelefones(PropelCollection $telefones, PropelPDO $con = null)
+    {
+        $telefonesToDelete = $this->getTelefones(new Criteria(), $con)->diff($telefones);
+
+        $this->telefonesScheduledForDeletion = unserialize(serialize($telefonesToDelete));
+
+        foreach ($telefonesToDelete as $telefoneRemoved) {
+            $telefoneRemoved->setPessoa(null);
+        }
+
+        $this->collTelefones = null;
+        foreach ($telefones as $telefone) {
+            $this->addTelefone($telefone);
+        }
+
+        $this->collTelefones = $telefones;
+        $this->collTelefonesPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Telefone objects.
+     *
+     * @param Criteria $criteria
+     * @param boolean $distinct
+     * @param PropelPDO $con
+     * @return int             Count of related Telefone objects.
+     * @throws PropelException
+     */
+    public function countTelefones(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collTelefonesPartial && !$this->isNew();
+        if (null === $this->collTelefones || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collTelefones) {
+                return 0;
+            }
+
+            if($partial && !$criteria) {
+                return count($this->getTelefones());
+            }
+            $query = TelefoneQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByPessoa($this)
+                ->count($con);
+        }
+
+        return count($this->collTelefones);
+    }
+
+    /**
+     * Method called to associate a Telefone object to this object
+     * through the Telefone foreign key attribute.
+     *
+     * @param    Telefone $l Telefone
+     * @return Pessoa The current object (for fluent API support)
+     */
+    public function addTelefone(Telefone $l)
+    {
+        if ($this->collTelefones === null) {
+            $this->initTelefones();
+            $this->collTelefonesPartial = true;
+        }
+        if (!in_array($l, $this->collTelefones->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddTelefone($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	Telefone $telefone The telefone object to add.
+     */
+    protected function doAddTelefone($telefone)
+    {
+        $this->collTelefones[]= $telefone;
+        $telefone->setPessoa($this);
+    }
+
+    /**
+     * @param	Telefone $telefone The telefone object to remove.
+     * @return Pessoa The current object (for fluent API support)
+     */
+    public function removeTelefone($telefone)
+    {
+        if ($this->getTelefones()->contains($telefone)) {
+            $this->collTelefones->remove($this->collTelefones->search($telefone));
+            if (null === $this->telefonesScheduledForDeletion) {
+                $this->telefonesScheduledForDeletion = clone $this->collTelefones;
+                $this->telefonesScheduledForDeletion->clear();
+            }
+            $this->telefonesScheduledForDeletion[]= clone $telefone;
+            $telefone->setPessoa(null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collUsuarios collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return Pessoa The current object (for fluent API support)
+     * @see        addUsuarios()
+     */
+    public function clearUsuarios()
+    {
+        $this->collUsuarios = null; // important to set this to null since that means it is uninitialized
+        $this->collUsuariosPartial = null;
+
+        return $this;
+    }
+
+    /**
+     * reset is the collUsuarios collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialUsuarios($v = true)
+    {
+        $this->collUsuariosPartial = $v;
+    }
+
+    /**
+     * Initializes the collUsuarios collection.
+     *
+     * By default this just sets the collUsuarios collection to an empty array (like clearcollUsuarios());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initUsuarios($overrideExisting = true)
+    {
+        if (null !== $this->collUsuarios && !$overrideExisting) {
+            return;
+        }
+        $this->collUsuarios = new PropelObjectCollection();
+        $this->collUsuarios->setModel('Usuario');
+    }
+
+    /**
+     * Gets an array of Usuario objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this Pessoa is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @return PropelObjectCollection|Usuario[] List of Usuario objects
+     * @throws PropelException
+     */
+    public function getUsuarios($criteria = null, PropelPDO $con = null)
+    {
+        $partial = $this->collUsuariosPartial && !$this->isNew();
+        if (null === $this->collUsuarios || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collUsuarios) {
+                // return empty collection
+                $this->initUsuarios();
+            } else {
+                $collUsuarios = UsuarioQuery::create(null, $criteria)
+                    ->filterByPessoa($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collUsuariosPartial && count($collUsuarios)) {
+                      $this->initUsuarios(false);
+
+                      foreach($collUsuarios as $obj) {
+                        if (false == $this->collUsuarios->contains($obj)) {
+                          $this->collUsuarios->append($obj);
+                        }
+                      }
+
+                      $this->collUsuariosPartial = true;
+                    }
+
+                    $collUsuarios->getInternalIterator()->rewind();
+                    return $collUsuarios;
+                }
+
+                if($partial && $this->collUsuarios) {
+                    foreach($this->collUsuarios as $obj) {
+                        if($obj->isNew()) {
+                            $collUsuarios[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collUsuarios = $collUsuarios;
+                $this->collUsuariosPartial = false;
+            }
+        }
+
+        return $this->collUsuarios;
+    }
+
+    /**
+     * Sets a collection of Usuario objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param PropelCollection $usuarios A Propel collection.
+     * @param PropelPDO $con Optional connection object
+     * @return Pessoa The current object (for fluent API support)
+     */
+    public function setUsuarios(PropelCollection $usuarios, PropelPDO $con = null)
+    {
+        $usuariosToDelete = $this->getUsuarios(new Criteria(), $con)->diff($usuarios);
+
+        $this->usuariosScheduledForDeletion = unserialize(serialize($usuariosToDelete));
+
+        foreach ($usuariosToDelete as $usuarioRemoved) {
+            $usuarioRemoved->setPessoa(null);
+        }
+
+        $this->collUsuarios = null;
+        foreach ($usuarios as $usuario) {
+            $this->addUsuario($usuario);
+        }
+
+        $this->collUsuarios = $usuarios;
+        $this->collUsuariosPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Usuario objects.
+     *
+     * @param Criteria $criteria
+     * @param boolean $distinct
+     * @param PropelPDO $con
+     * @return int             Count of related Usuario objects.
+     * @throws PropelException
+     */
+    public function countUsuarios(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collUsuariosPartial && !$this->isNew();
+        if (null === $this->collUsuarios || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collUsuarios) {
+                return 0;
+            }
+
+            if($partial && !$criteria) {
+                return count($this->getUsuarios());
+            }
+            $query = UsuarioQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByPessoa($this)
+                ->count($con);
+        }
+
+        return count($this->collUsuarios);
+    }
+
+    /**
+     * Method called to associate a Usuario object to this object
+     * through the Usuario foreign key attribute.
+     *
+     * @param    Usuario $l Usuario
+     * @return Pessoa The current object (for fluent API support)
+     */
+    public function addUsuario(Usuario $l)
+    {
+        if ($this->collUsuarios === null) {
+            $this->initUsuarios();
+            $this->collUsuariosPartial = true;
+        }
+        if (!in_array($l, $this->collUsuarios->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddUsuario($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	Usuario $usuario The usuario object to add.
+     */
+    protected function doAddUsuario($usuario)
+    {
+        $this->collUsuarios[]= $usuario;
+        $usuario->setPessoa($this);
+    }
+
+    /**
+     * @param	Usuario $usuario The usuario object to remove.
+     * @return Pessoa The current object (for fluent API support)
+     */
+    public function removeUsuario($usuario)
+    {
+        if ($this->getUsuarios()->contains($usuario)) {
+            $this->collUsuarios->remove($this->collUsuarios->search($usuario));
+            if (null === $this->usuariosScheduledForDeletion) {
+                $this->usuariosScheduledForDeletion = clone $this->collUsuarios;
+                $this->usuariosScheduledForDeletion->clear();
+            }
+            $this->usuariosScheduledForDeletion[]= clone $usuario;
+            $usuario->setPessoa(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Pessoa is new, it will return
+     * an empty collection; or if this Pessoa has previously
+     * been saved, it will retrieve related Usuarios from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Pessoa.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Usuario[] List of Usuario objects
+     */
+    public function getUsuariosJoinPerfil($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = UsuarioQuery::create(null, $criteria);
+        $query->joinWith('Perfil', $join_behavior);
+
+        return $this->getUsuarios($query, $con);
+    }
+
+    /**
      * Clears the current object and sets all attributes to their default values
      */
     public function clear()
@@ -1141,6 +2388,7 @@ abstract class BasePessoa extends BaseObject implements Persistent
         $this->no_pessoa = null;
         $this->nu_cpf = null;
         $this->nu_cnpj = null;
+        $this->co_empresa = null;
         $this->alreadyInSave = false;
         $this->alreadyInValidation = false;
         $this->alreadyInClearAllReferencesDeep = false;
@@ -1169,8 +2417,31 @@ abstract class BasePessoa extends BaseObject implements Persistent
             if ($this->singleColaborador) {
                 $this->singleColaborador->clearAllReferences($deep);
             }
+            if ($this->collEmails) {
+                foreach ($this->collEmails as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collEnderecos) {
+                foreach ($this->collEnderecos as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->singleRepresentada) {
                 $this->singleRepresentada->clearAllReferences($deep);
+            }
+            if ($this->collTelefones) {
+                foreach ($this->collTelefones as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collUsuarios) {
+                foreach ($this->collUsuarios as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->aEmpresa instanceof Persistent) {
+              $this->aEmpresa->clearAllReferences($deep);
             }
 
             $this->alreadyInClearAllReferencesDeep = false;
@@ -1184,10 +2455,27 @@ abstract class BasePessoa extends BaseObject implements Persistent
             $this->singleColaborador->clearIterator();
         }
         $this->singleColaborador = null;
+        if ($this->collEmails instanceof PropelCollection) {
+            $this->collEmails->clearIterator();
+        }
+        $this->collEmails = null;
+        if ($this->collEnderecos instanceof PropelCollection) {
+            $this->collEnderecos->clearIterator();
+        }
+        $this->collEnderecos = null;
         if ($this->singleRepresentada instanceof PropelCollection) {
             $this->singleRepresentada->clearIterator();
         }
         $this->singleRepresentada = null;
+        if ($this->collTelefones instanceof PropelCollection) {
+            $this->collTelefones->clearIterator();
+        }
+        $this->collTelefones = null;
+        if ($this->collUsuarios instanceof PropelCollection) {
+            $this->collUsuarios->clearIterator();
+        }
+        $this->collUsuarios = null;
+        $this->aEmpresa = null;
     }
 
     /**

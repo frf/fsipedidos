@@ -1,0 +1,78 @@
+<script src="/js/maruti.form_common.js"></script>
+<script src="/js/jquery.maskedinput.js" type="text/javascript"></script>
+
+<script>
+$(document).ready(function(){
+
+      $("#basic_validate_email").validate({
+               
+		rules:{
+			ds_email:{
+				required:true
+			}
+		},
+		errorClass: "help-inline",
+		errorElement: "span",
+		highlight:function(element, errorClass, validClass) {
+			$(element).parents('.control-group').addClass('error');
+		},
+		unhighlight: function(element, errorClass, validClass) {
+			$(element).parents('.control-group').removeClass('error');
+			$(element).parents('.control-group').addClass('success');
+		}
+	});
+
+    });
+
+</script>
+    
+
+<div id="content-header">
+    <div id="breadcrumb"> 
+        <a href="/" title="Principal" class="tip-bottom"><i class="icon-home"></i> Principal</a>
+        <a href="/clientes/index" title="Lista de Clientes" class="tip-bottom">
+            <i class="icon-user"></i> Clientes</a>
+        <a href="<?php echo $this->url('clientes', array('action' => 'detalhes', 'id' => $idcli)); ?>" title="Detalhes Cliente" class="tip-bottom">
+            <i class="icon-user"></i>  <?php echo $cliente->getNoCliente();?></a>
+        <a href="<?php echo $this->url('emails', array('action' => 'editar', 'idcli' => $co_pessoa,
+            'id'=>$co_email)); ?>" title="Editando Email" class="tip-bottom">Editar</a>
+  
+        
+    </div>
+  </div>
+ <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="span6">
+            <div class="widget-box">
+              <div class="widget-title"> <span class="icon"> 
+                      <i class="icon-align-justify"></i> </span>
+                        <h5>Editando Email</h5>
+              </div>
+              <div class="widget-content nopadding">
+                <form method="POST" class="form-horizontal" action="<?php echo $this->url('emails', 
+                        array('action' => 'atualizar')); ?>" name="basic_validate_email" id="basic_validate_email" novalidate="novalidate">
+                    <input type="hidden" name="co_pessoa" value="<?php echo $co_pessoa; ?>" />
+                    <input type="hidden" name="co_email" value="<?php echo $co_email; ?>" />
+                    <div class="control-group">
+                    <label class="control-label" id="no_email">Nome do Contato:</label>
+                    <div class="controls">
+                      <input type="text" value="<?php echo $oEmail->getNoEmail(); ?>" name="no_email" class="span7" placeholder="" id="required" />
+                    </div>
+                  </div>
+                    <div class="control-group">
+                    <label class="control-label" id="ds_email">E-mail:</label>
+                    <div class="controls">
+                        <input type="text" value="<?php echo $oEmail->getDsEmail(); ?>" name="ds_email" class="span7 nu_telefone" placeholder="" id="required" />
+                    </div>
+                  </div>                   
+                  <div class="form-actions">
+                     <button type="submit" class="btn btn-success">Salvar</button>
+                    <a href="<?php echo $this->url('clientes', array('action' => 'detalhes', 'id' => $co_pessoa)); ?>" class="btn">Voltar</a>
+                  </div>
+               </form> 
+              </div>
+            </div>
+          </div>        
+        </div>
+        <hr>     
+</div>   

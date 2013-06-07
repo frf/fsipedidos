@@ -6,25 +6,19 @@
  *
  *
  *
- * @method UsuarioQuery orderByCoUsuario($order = Criteria::ASC) Order by the co_usuario column
- * @method UsuarioQuery orderByNuCpf($order = Criteria::ASC) Order by the nu_cpf column
  * @method UsuarioQuery orderByDsPassword($order = Criteria::ASC) Order by the ds_password column
- * @method UsuarioQuery orderByNoUsuario($order = Criteria::ASC) Order by the no_usuario column
- * @method UsuarioQuery orderByDsLogin($order = Criteria::ASC) Order by the ds_login column
  * @method UsuarioQuery orderByDtUltimoLogin($order = Criteria::ASC) Order by the dt_ultimo_login column
- * @method UsuarioQuery orderByDsEmail($order = Criteria::ASC) Order by the ds_email column
+ * @method UsuarioQuery orderByDsLogin($order = Criteria::ASC) Order by the ds_login column
  * @method UsuarioQuery orderByCoPerfil($order = Criteria::ASC) Order by the co_perfil column
- * @method UsuarioQuery orderByNuCelular($order = Criteria::ASC) Order by the nu_celular column
+ * @method UsuarioQuery orderByCoPessoa($order = Criteria::ASC) Order by the co_pessoa column
+ * @method UsuarioQuery orderByCoUsuario($order = Criteria::ASC) Order by the co_usuario column
  *
- * @method UsuarioQuery groupByCoUsuario() Group by the co_usuario column
- * @method UsuarioQuery groupByNuCpf() Group by the nu_cpf column
  * @method UsuarioQuery groupByDsPassword() Group by the ds_password column
- * @method UsuarioQuery groupByNoUsuario() Group by the no_usuario column
- * @method UsuarioQuery groupByDsLogin() Group by the ds_login column
  * @method UsuarioQuery groupByDtUltimoLogin() Group by the dt_ultimo_login column
- * @method UsuarioQuery groupByDsEmail() Group by the ds_email column
+ * @method UsuarioQuery groupByDsLogin() Group by the ds_login column
  * @method UsuarioQuery groupByCoPerfil() Group by the co_perfil column
- * @method UsuarioQuery groupByNuCelular() Group by the nu_celular column
+ * @method UsuarioQuery groupByCoPessoa() Group by the co_pessoa column
+ * @method UsuarioQuery groupByCoUsuario() Group by the co_usuario column
  *
  * @method UsuarioQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method UsuarioQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -34,35 +28,25 @@
  * @method UsuarioQuery rightJoinPerfil($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Perfil relation
  * @method UsuarioQuery innerJoinPerfil($relationAlias = null) Adds a INNER JOIN clause to the query using the Perfil relation
  *
- * @method UsuarioQuery leftJoinPermissaoRelatedByCoUsuarioAlteracao($relationAlias = null) Adds a LEFT JOIN clause to the query using the PermissaoRelatedByCoUsuarioAlteracao relation
- * @method UsuarioQuery rightJoinPermissaoRelatedByCoUsuarioAlteracao($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PermissaoRelatedByCoUsuarioAlteracao relation
- * @method UsuarioQuery innerJoinPermissaoRelatedByCoUsuarioAlteracao($relationAlias = null) Adds a INNER JOIN clause to the query using the PermissaoRelatedByCoUsuarioAlteracao relation
- *
- * @method UsuarioQuery leftJoinPermissaoRelatedByCoUsuarioCadastro($relationAlias = null) Adds a LEFT JOIN clause to the query using the PermissaoRelatedByCoUsuarioCadastro relation
- * @method UsuarioQuery rightJoinPermissaoRelatedByCoUsuarioCadastro($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PermissaoRelatedByCoUsuarioCadastro relation
- * @method UsuarioQuery innerJoinPermissaoRelatedByCoUsuarioCadastro($relationAlias = null) Adds a INNER JOIN clause to the query using the PermissaoRelatedByCoUsuarioCadastro relation
+ * @method UsuarioQuery leftJoinPessoa($relationAlias = null) Adds a LEFT JOIN clause to the query using the Pessoa relation
+ * @method UsuarioQuery rightJoinPessoa($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Pessoa relation
+ * @method UsuarioQuery innerJoinPessoa($relationAlias = null) Adds a INNER JOIN clause to the query using the Pessoa relation
  *
  * @method Usuario findOne(PropelPDO $con = null) Return the first Usuario matching the query
  * @method Usuario findOneOrCreate(PropelPDO $con = null) Return the first Usuario matching the query, or a new Usuario object populated from the query conditions when no match is found
  *
- * @method Usuario findOneByNuCpf(string $nu_cpf) Return the first Usuario filtered by the nu_cpf column
  * @method Usuario findOneByDsPassword(string $ds_password) Return the first Usuario filtered by the ds_password column
- * @method Usuario findOneByNoUsuario(string $no_usuario) Return the first Usuario filtered by the no_usuario column
- * @method Usuario findOneByDsLogin(string $ds_login) Return the first Usuario filtered by the ds_login column
  * @method Usuario findOneByDtUltimoLogin(string $dt_ultimo_login) Return the first Usuario filtered by the dt_ultimo_login column
- * @method Usuario findOneByDsEmail(string $ds_email) Return the first Usuario filtered by the ds_email column
+ * @method Usuario findOneByDsLogin(string $ds_login) Return the first Usuario filtered by the ds_login column
  * @method Usuario findOneByCoPerfil(int $co_perfil) Return the first Usuario filtered by the co_perfil column
- * @method Usuario findOneByNuCelular(string $nu_celular) Return the first Usuario filtered by the nu_celular column
+ * @method Usuario findOneByCoPessoa(int $co_pessoa) Return the first Usuario filtered by the co_pessoa column
  *
- * @method array findByCoUsuario(int $co_usuario) Return Usuario objects filtered by the co_usuario column
- * @method array findByNuCpf(string $nu_cpf) Return Usuario objects filtered by the nu_cpf column
  * @method array findByDsPassword(string $ds_password) Return Usuario objects filtered by the ds_password column
- * @method array findByNoUsuario(string $no_usuario) Return Usuario objects filtered by the no_usuario column
- * @method array findByDsLogin(string $ds_login) Return Usuario objects filtered by the ds_login column
  * @method array findByDtUltimoLogin(string $dt_ultimo_login) Return Usuario objects filtered by the dt_ultimo_login column
- * @method array findByDsEmail(string $ds_email) Return Usuario objects filtered by the ds_email column
+ * @method array findByDsLogin(string $ds_login) Return Usuario objects filtered by the ds_login column
  * @method array findByCoPerfil(int $co_perfil) Return Usuario objects filtered by the co_perfil column
- * @method array findByNuCelular(string $nu_celular) Return Usuario objects filtered by the nu_celular column
+ * @method array findByCoPessoa(int $co_pessoa) Return Usuario objects filtered by the co_pessoa column
+ * @method array findByCoUsuario(int $co_usuario) Return Usuario objects filtered by the co_usuario column
  *
  * @package    propel.generator.semp.om
  */
@@ -166,7 +150,7 @@ abstract class BaseUsuarioQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT co_usuario, nu_cpf, ds_password, no_usuario, ds_login, dt_ultimo_login, ds_email, co_perfil, nu_celular FROM usuario WHERE co_usuario = :p0';
+        $sql = 'SELECT ds_password, dt_ultimo_login, ds_login, co_perfil, co_pessoa, co_usuario FROM usuario WHERE co_usuario = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -256,77 +240,6 @@ abstract class BaseUsuarioQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the co_usuario column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByCoUsuario(1234); // WHERE co_usuario = 1234
-     * $query->filterByCoUsuario(array(12, 34)); // WHERE co_usuario IN (12, 34)
-     * $query->filterByCoUsuario(array('min' => 12)); // WHERE co_usuario >= 12
-     * $query->filterByCoUsuario(array('max' => 12)); // WHERE co_usuario <= 12
-     * </code>
-     *
-     * @param     mixed $coUsuario The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return UsuarioQuery The current query, for fluid interface
-     */
-    public function filterByCoUsuario($coUsuario = null, $comparison = null)
-    {
-        if (is_array($coUsuario)) {
-            $useMinMax = false;
-            if (isset($coUsuario['min'])) {
-                $this->addUsingAlias(UsuarioPeer::CO_USUARIO, $coUsuario['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($coUsuario['max'])) {
-                $this->addUsingAlias(UsuarioPeer::CO_USUARIO, $coUsuario['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(UsuarioPeer::CO_USUARIO, $coUsuario, $comparison);
-    }
-
-    /**
-     * Filter the query on the nu_cpf column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByNuCpf('fooValue');   // WHERE nu_cpf = 'fooValue'
-     * $query->filterByNuCpf('%fooValue%'); // WHERE nu_cpf LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $nuCpf The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return UsuarioQuery The current query, for fluid interface
-     */
-    public function filterByNuCpf($nuCpf = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($nuCpf)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $nuCpf)) {
-                $nuCpf = str_replace('*', '%', $nuCpf);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(UsuarioPeer::NU_CPF, $nuCpf, $comparison);
-    }
-
-    /**
      * Filter the query on the ds_password column
      *
      * Example usage:
@@ -353,64 +266,6 @@ abstract class BaseUsuarioQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(UsuarioPeer::DS_PASSWORD, $dsPassword, $comparison);
-    }
-
-    /**
-     * Filter the query on the no_usuario column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByNoUsuario('fooValue');   // WHERE no_usuario = 'fooValue'
-     * $query->filterByNoUsuario('%fooValue%'); // WHERE no_usuario LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $noUsuario The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return UsuarioQuery The current query, for fluid interface
-     */
-    public function filterByNoUsuario($noUsuario = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($noUsuario)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $noUsuario)) {
-                $noUsuario = str_replace('*', '%', $noUsuario);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(UsuarioPeer::NO_USUARIO, $noUsuario, $comparison);
-    }
-
-    /**
-     * Filter the query on the ds_login column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByDsLogin('fooValue');   // WHERE ds_login = 'fooValue'
-     * $query->filterByDsLogin('%fooValue%'); // WHERE ds_login LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $dsLogin The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return UsuarioQuery The current query, for fluid interface
-     */
-    public function filterByDsLogin($dsLogin = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($dsLogin)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $dsLogin)) {
-                $dsLogin = str_replace('*', '%', $dsLogin);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(UsuarioPeer::DS_LOGIN, $dsLogin, $comparison);
     }
 
     /**
@@ -457,32 +312,32 @@ abstract class BaseUsuarioQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the ds_email column
+     * Filter the query on the ds_login column
      *
      * Example usage:
      * <code>
-     * $query->filterByDsEmail('fooValue');   // WHERE ds_email = 'fooValue'
-     * $query->filterByDsEmail('%fooValue%'); // WHERE ds_email LIKE '%fooValue%'
+     * $query->filterByDsLogin('fooValue');   // WHERE ds_login = 'fooValue'
+     * $query->filterByDsLogin('%fooValue%'); // WHERE ds_login LIKE '%fooValue%'
      * </code>
      *
-     * @param     string $dsEmail The value to use as filter.
+     * @param     string $dsLogin The value to use as filter.
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return UsuarioQuery The current query, for fluid interface
      */
-    public function filterByDsEmail($dsEmail = null, $comparison = null)
+    public function filterByDsLogin($dsLogin = null, $comparison = null)
     {
         if (null === $comparison) {
-            if (is_array($dsEmail)) {
+            if (is_array($dsLogin)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $dsEmail)) {
-                $dsEmail = str_replace('*', '%', $dsEmail);
+            } elseif (preg_match('/[\%\*]/', $dsLogin)) {
+                $dsLogin = str_replace('*', '%', $dsLogin);
                 $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(UsuarioPeer::DS_EMAIL, $dsEmail, $comparison);
+        return $this->addUsingAlias(UsuarioPeer::DS_LOGIN, $dsLogin, $comparison);
     }
 
     /**
@@ -530,32 +385,89 @@ abstract class BaseUsuarioQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the nu_celular column
+     * Filter the query on the co_pessoa column
      *
      * Example usage:
      * <code>
-     * $query->filterByNuCelular('fooValue');   // WHERE nu_celular = 'fooValue'
-     * $query->filterByNuCelular('%fooValue%'); // WHERE nu_celular LIKE '%fooValue%'
+     * $query->filterByCoPessoa(1234); // WHERE co_pessoa = 1234
+     * $query->filterByCoPessoa(array(12, 34)); // WHERE co_pessoa IN (12, 34)
+     * $query->filterByCoPessoa(array('min' => 12)); // WHERE co_pessoa >= 12
+     * $query->filterByCoPessoa(array('max' => 12)); // WHERE co_pessoa <= 12
      * </code>
      *
-     * @param     string $nuCelular The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
+     * @see       filterByPessoa()
+     *
+     * @param     mixed $coPessoa The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return UsuarioQuery The current query, for fluid interface
      */
-    public function filterByNuCelular($nuCelular = null, $comparison = null)
+    public function filterByCoPessoa($coPessoa = null, $comparison = null)
     {
-        if (null === $comparison) {
-            if (is_array($nuCelular)) {
+        if (is_array($coPessoa)) {
+            $useMinMax = false;
+            if (isset($coPessoa['min'])) {
+                $this->addUsingAlias(UsuarioPeer::CO_PESSOA, $coPessoa['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($coPessoa['max'])) {
+                $this->addUsingAlias(UsuarioPeer::CO_PESSOA, $coPessoa['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $nuCelular)) {
-                $nuCelular = str_replace('*', '%', $nuCelular);
-                $comparison = Criteria::LIKE;
             }
         }
 
-        return $this->addUsingAlias(UsuarioPeer::NU_CELULAR, $nuCelular, $comparison);
+        return $this->addUsingAlias(UsuarioPeer::CO_PESSOA, $coPessoa, $comparison);
+    }
+
+    /**
+     * Filter the query on the co_usuario column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCoUsuario(1234); // WHERE co_usuario = 1234
+     * $query->filterByCoUsuario(array(12, 34)); // WHERE co_usuario IN (12, 34)
+     * $query->filterByCoUsuario(array('min' => 12)); // WHERE co_usuario >= 12
+     * $query->filterByCoUsuario(array('max' => 12)); // WHERE co_usuario <= 12
+     * </code>
+     *
+     * @param     mixed $coUsuario The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return UsuarioQuery The current query, for fluid interface
+     */
+    public function filterByCoUsuario($coUsuario = null, $comparison = null)
+    {
+        if (is_array($coUsuario)) {
+            $useMinMax = false;
+            if (isset($coUsuario['min'])) {
+                $this->addUsingAlias(UsuarioPeer::CO_USUARIO, $coUsuario['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($coUsuario['max'])) {
+                $this->addUsingAlias(UsuarioPeer::CO_USUARIO, $coUsuario['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(UsuarioPeer::CO_USUARIO, $coUsuario, $comparison);
     }
 
     /**
@@ -635,41 +547,43 @@ abstract class BaseUsuarioQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related Permissao object
+     * Filter the query by a related Pessoa object
      *
-     * @param   Permissao|PropelObjectCollection $permissao  the related object to use as filter
+     * @param   Pessoa|PropelObjectCollection $pessoa The related object(s) to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return                 UsuarioQuery The current query, for fluid interface
      * @throws PropelException - if the provided filter is invalid.
      */
-    public function filterByPermissaoRelatedByCoUsuarioAlteracao($permissao, $comparison = null)
+    public function filterByPessoa($pessoa, $comparison = null)
     {
-        if ($permissao instanceof Permissao) {
+        if ($pessoa instanceof Pessoa) {
             return $this
-                ->addUsingAlias(UsuarioPeer::CO_USUARIO, $permissao->getCoUsuarioAlteracao(), $comparison);
-        } elseif ($permissao instanceof PropelObjectCollection) {
+                ->addUsingAlias(UsuarioPeer::CO_PESSOA, $pessoa->getCoPessoa(), $comparison);
+        } elseif ($pessoa instanceof PropelObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
             return $this
-                ->usePermissaoRelatedByCoUsuarioAlteracaoQuery()
-                ->filterByPrimaryKeys($permissao->getPrimaryKeys())
-                ->endUse();
+                ->addUsingAlias(UsuarioPeer::CO_PESSOA, $pessoa->toKeyValue('PrimaryKey', 'CoPessoa'), $comparison);
         } else {
-            throw new PropelException('filterByPermissaoRelatedByCoUsuarioAlteracao() only accepts arguments of type Permissao or PropelCollection');
+            throw new PropelException('filterByPessoa() only accepts arguments of type Pessoa or PropelCollection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the PermissaoRelatedByCoUsuarioAlteracao relation
+     * Adds a JOIN clause to the query using the Pessoa relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return UsuarioQuery The current query, for fluid interface
      */
-    public function joinPermissaoRelatedByCoUsuarioAlteracao($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function joinPessoa($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('PermissaoRelatedByCoUsuarioAlteracao');
+        $relationMap = $tableMap->getRelation('Pessoa');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -684,14 +598,14 @@ abstract class BaseUsuarioQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'PermissaoRelatedByCoUsuarioAlteracao');
+            $this->addJoinObject($join, 'Pessoa');
         }
 
         return $this;
     }
 
     /**
-     * Use the PermissaoRelatedByCoUsuarioAlteracao relation Permissao object
+     * Use the Pessoa relation Pessoa object
      *
      * @see       useQuery()
      *
@@ -699,87 +613,13 @@ abstract class BaseUsuarioQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return   PermissaoQuery A secondary query class using the current class as primary query
+     * @return   PessoaQuery A secondary query class using the current class as primary query
      */
-    public function usePermissaoRelatedByCoUsuarioAlteracaoQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function usePessoaQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinPermissaoRelatedByCoUsuarioAlteracao($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'PermissaoRelatedByCoUsuarioAlteracao', 'PermissaoQuery');
-    }
-
-    /**
-     * Filter the query by a related Permissao object
-     *
-     * @param   Permissao|PropelObjectCollection $permissao  the related object to use as filter
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return                 UsuarioQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
-     */
-    public function filterByPermissaoRelatedByCoUsuarioCadastro($permissao, $comparison = null)
-    {
-        if ($permissao instanceof Permissao) {
-            return $this
-                ->addUsingAlias(UsuarioPeer::CO_USUARIO, $permissao->getCoUsuarioCadastro(), $comparison);
-        } elseif ($permissao instanceof PropelObjectCollection) {
-            return $this
-                ->usePermissaoRelatedByCoUsuarioCadastroQuery()
-                ->filterByPrimaryKeys($permissao->getPrimaryKeys())
-                ->endUse();
-        } else {
-            throw new PropelException('filterByPermissaoRelatedByCoUsuarioCadastro() only accepts arguments of type Permissao or PropelCollection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the PermissaoRelatedByCoUsuarioCadastro relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return UsuarioQuery The current query, for fluid interface
-     */
-    public function joinPermissaoRelatedByCoUsuarioCadastro($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('PermissaoRelatedByCoUsuarioCadastro');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'PermissaoRelatedByCoUsuarioCadastro');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the PermissaoRelatedByCoUsuarioCadastro relation Permissao object
-     *
-     * @see       useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return   PermissaoQuery A secondary query class using the current class as primary query
-     */
-    public function usePermissaoRelatedByCoUsuarioCadastroQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
-    {
-        return $this
-            ->joinPermissaoRelatedByCoUsuarioCadastro($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'PermissaoRelatedByCoUsuarioCadastro', 'PermissaoQuery');
+            ->joinPessoa($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Pessoa', 'PessoaQuery');
     }
 
     /**

@@ -1,7 +1,7 @@
  <div id="content-header">
     <div id="breadcrumb"> 
-        <a href="/" title="Home" class="tip-bottom"><i class="icon-home"></i> Home</a>
-        <a href="/representadas/index" title="Representada" class="tip-bottom"><i class="icon-user"></i> Representadas</a>
+        <a href="/" title="Principal" class="tip-bottom"><i class="icon-home"></i> Principal</a>
+        <a href="/representadas/index" title="Representada" class="tip-bottom current"><i class="icon-thumbs-up"></i> Representadas</a>
     </div>
   </div>
 <div class="container-fluid">
@@ -20,7 +20,6 @@
             <table class="table table-bordered data-table">
               <thead>
                 <tr>
-                   <th>#</th>
                     <th>Nome</th>
                     <th>Cnpj</th>
                     <th>Data Cadastro</th>  
@@ -38,7 +37,6 @@
                       }
                       ?>
                     <tr class="<?php echo $grade; ?>">
-                        <td><?php echo $oRepresentada->getCoRepresentada(); ?></td>
                         <td><?php echo $oRepresentada->getNoRepresentada(); ?></td>
                         <td><?php echo $oRepresentada->getNuCnpj(); ?></td>
                         <td><?php echo $oRepresentada->getDtCadastro("d/m/Y"); ?></td>

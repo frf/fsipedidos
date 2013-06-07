@@ -45,6 +45,7 @@ class ClienteTableMap extends TableMap
         $this->addColumn('ds_ramo_atividade', 'DsRamoAtividade', 'LONGVARCHAR', false, null, null);
         $this->addColumn('dt_cadastro', 'DtCadastro', 'TIMESTAMP', false, null, 'now()');
         $this->addColumn('dt_fundacao', 'DtFundacao', 'TIMESTAMP', false, null, null);
+        $this->addForeignKey('co_tributacao', 'CoTributacao', 'INTEGER', 'cliente.cliente_tributacao', 'co_tributacao', false, null, null);
         // validators
     } // initialize()
 
@@ -53,6 +54,7 @@ class ClienteTableMap extends TableMap
      */
     public function buildRelations()
     {
+        $this->addRelation('ClienteTributacao', 'ClienteTributacao', RelationMap::MANY_TO_ONE, array('co_tributacao' => 'co_tributacao', ), 'CASCADE', 'CASCADE');
         $this->addRelation('Pessoa', 'Pessoa', RelationMap::MANY_TO_ONE, array('co_cliente' => 'co_pessoa', ), null, null);
         $this->addRelation('ClienteColaborador', 'ClienteColaborador', RelationMap::ONE_TO_MANY, array('co_cliente' => 'co_cliente', ), null, null, 'ClienteColaboradors');
     } // buildRelations()

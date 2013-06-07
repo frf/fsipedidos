@@ -9,6 +9,10 @@
     <column name="ds_ramo_atividade" phpName="DsRamoAtividade" type="LONGVARCHAR" required="false"/>
     <column name="dt_cadastro" phpName="DtCadastro" type="TIMESTAMP" required="false" defaultExpr="now()"/>
     <column name="dt_fundacao" phpName="DtFundacao" type="TIMESTAMP" required="false"/>
+    <column name="co_tributacao" phpName="CoTributacao" type="INTEGER" required="false"/>
+    <foreign-key foreignTable="cliente_tributacao" foreignSchema="cliente" name="cliente_co_tributacao_fkey" onDelete="CASCADE" onUpdate="CASCADE">
+      <reference local="co_tributacao" foreign="co_tributacao"/>
+    </foreign-key>
     <foreign-key foreignTable="pessoa" name="fk_cliente_pessoa">
       <reference local="co_cliente" foreign="co_pessoa"/>
     </foreign-key>
@@ -23,34 +27,74 @@
       <reference local="co_colaborador" foreign="co_colaborador"/>
     </foreign-key>
   </table>
+  <table name="cliente.cliente_tributacao"  phpName="ClienteTributacao" idMethod="native">
+    <column name="co_tributacao" phpName="CoTributacao" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="no_tributacao" phpName="NoTributacao" type="VARCHAR" size="200" required="false"/>
+  </table>
   <table name="colaboradores.colaborador"  phpName="Colaborador" idMethod="native">
     <column name="co_colaborador" phpName="CoColaborador" type="INTEGER" primaryKey="true" required="true"/>
     <column name="ds_email" phpName="DsEmail" type="VARCHAR" size="250" required="false"/>
-    <column name="ds_senha" phpName="DsSenha" type="VARCHAR" size="25" required="false"/>
-    <column name="co_empresa" phpName="CoEmpresa" type="INTEGER" required="true"/>
-    <column name="co_perfil" phpName="CoPerfil" type="INTEGER" required="true"/>
     <column name="tp_administrador" phpName="TpAdministrador" type="BOOLEAN" required="false"/>
-    <column name="ds_telefone" phpName="DsTelefone" type="VARCHAR" size="11" required="false"/>
+    <column name="ds_telefone" phpName="DsTelefone" type="VARCHAR" size="33" required="false"/>
     <foreign-key foreignTable="pessoa" name="colaborador_co_colaborador_fkey" onDelete="RESTRICT" onUpdate="CASCADE">
       <reference local="co_colaborador" foreign="co_pessoa"/>
     </foreign-key>
-    <foreign-key foreignTable="empresa" name="fk_colaborador_empresa">
-      <reference local="co_empresa" foreign="co_empresa"/>
-    </foreign-key>
-    <foreign-key foreignTable="perfil" name="fk_colaborador_perfil">
-      <reference local="co_perfil" foreign="co_perfil"/>
+  </table>
+  <table name="email" phpName="Email" idMethod="native">
+    <column name="co_email" phpName="CoEmail" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="co_pessoa" phpName="CoPessoa" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="tp_email" phpName="TpEmail" type="VARCHAR" size="100" required="false" defaultValue="1"/>
+    <column name="ds_email" phpName="DsEmail" type="VARCHAR" size="120" required="true"/>
+    <column name="dt_cadastro" phpName="DtCadastro" type="TIMESTAMP" required="true" defaultExpr="now()"/>
+    <column name="dt_alteracao" phpName="DtAlteracao" type="TIMESTAMP" required="false"/>
+    <column name="no_email" phpName="NoEmail" type="VARCHAR" size="200" required="false"/>
+    <foreign-key foreignTable="pessoa" name="email_co_pessoa_fkey" onDelete="CASCADE" onUpdate="CASCADE">
+      <reference local="co_pessoa" foreign="co_pessoa"/>
     </foreign-key>
   </table>
   <table name="empresa" phpName="Empresa" idMethod="native">
     <column name="co_empresa" phpName="CoEmpresa" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="no_empresa" phpName="NoEmpresa" type="VARCHAR" size="200" required="false"/>
-    <column name="no_dominio" phpName="NoDominio" type="VARCHAR" required="false"/>
+    <column name="no_dominio" phpName="NoDominio" type="VARCHAR" size="200" required="false"/>
+  </table>
+  <table name="endereco" phpName="Endereco" idMethod="native">
+    <column name="co_pessoa" phpName="CoPessoa" type="INTEGER" required="true"/>
+    <column name="no_endereco" phpName="NoEndereco" type="VARCHAR" size="150" required="false"/>
+    <column name="ds_endereco" phpName="DsEndereco" type="VARCHAR" size="255" required="false"/>
+    <column name="no_logradouro" phpName="NoLogradouro" type="VARCHAR" size="255" required="false"/>
+    <column name="nu_endereco" phpName="NuEndereco" type="VARCHAR" size="30" required="false"/>
+    <column name="ds_complemento" phpName="DsComplemento" type="VARCHAR" size="150" required="false"/>
+    <column name="co_municipio" phpName="CoMunicipio" type="INTEGER" required="false"/>
+    <column name="no_municipio" phpName="NoMunicipio" type="VARCHAR" size="100" required="false"/>
+    <column name="ds_estado" phpName="DsEstado" type="VARCHAR" size="100" required="false"/>
+    <column name="co_pais" phpName="CoPais" type="INTEGER" required="false"/>
+    <column name="st_exterior" phpName="StExterior" type="BOOLEAN" required="true" defaultValue="false"/>
+    <column name="ds_ponto_referencia" phpName="DsPontoReferencia" type="VARCHAR" size="150" required="false"/>
+    <column name="ds_observacao" phpName="DsObservacao" type="LONGVARCHAR" required="false"/>
+    <column name="dt_cadastro" phpName="DtCadastro" type="TIMESTAMP" required="true" defaultExpr="now()"/>
+    <column name="co_usuario_cadastro" phpName="CoUsuarioCadastro" type="INTEGER" required="false"/>
+    <column name="dt_alteracao" phpName="DtAlteracao" type="TIMESTAMP" required="false"/>
+    <column name="co_usuario_alteracao" phpName="CoUsuarioAlteracao" type="INTEGER" required="false"/>
+    <column name="nu_latitude" phpName="NuLatitude" type="VARCHAR" size="100" required="false"/>
+    <column name="nu_longitude" phpName="NuLongitude" type="VARCHAR" size="100" required="false"/>
+    <column name="tp_endereco" phpName="TpEndereco" type="INTEGER" required="true" defaultValue="1"/>
+    <column name="no_bairro" phpName="NoBairro" type="VARCHAR" size="50" required="false"/>
+    <column name="nu_cep" phpName="NuCep" type="CHAR" size="9" required="false"/>
+    <column name="co_estado" phpName="CoEstado" type="CHAR" size="2" required="false"/>
+    <column name="co_endereco" phpName="CoEndereco" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <foreign-key foreignTable="pessoa" name="endereco_co_pessoa_fkey" onDelete="CASCADE" onUpdate="CASCADE">
+      <reference local="co_pessoa" foreign="co_pessoa"/>
+    </foreign-key>
   </table>
   <table name="modulo" phpName="Modulo" idMethod="native">
     <column name="no_modulo" phpName="NoModulo" type="VARCHAR" size="50" primaryKey="true" required="true"/>
     <column name="no_exibicao" phpName="NoExibicao" type="VARCHAR" size="100" required="true"/>
     <column name="ds_modulo" phpName="DsModulo" type="LONGVARCHAR" required="false"/>
     <column name="nu_ordem" phpName="NuOrdem" type="INTEGER" required="false" defaultValue="0"/>
+  </table>
+  <table name="moeda" phpName="Moeda" idMethod="native">
+    <column name="co_moeda" phpName="CoMoeda" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="no_moeda" phpName="NoMoeda" type="VARCHAR" size="30" required="false"/>
   </table>
   <table name="perfil" phpName="Perfil" idMethod="native">
     <column name="co_perfil" phpName="CoPerfil" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
@@ -72,18 +116,43 @@
     <foreign-key foreignTable="recurso" name="fk_permissao_recurso" onDelete="RESTRICT" onUpdate="CASCADE">
       <reference local="co_recurso" foreign="co_recurso"/>
     </foreign-key>
-    <foreign-key foreignTable="usuario" name="permissao_co_usuario_alteracao_fkey" onDelete="RESTRICT" onUpdate="CASCADE">
-      <reference local="co_usuario_alteracao" foreign="co_usuario"/>
-    </foreign-key>
-    <foreign-key foreignTable="usuario" name="permissao_co_usuario_cadastro_fkey" onDelete="RESTRICT" onUpdate="CASCADE">
-      <reference local="co_usuario_cadastro" foreign="co_usuario"/>
-    </foreign-key>
   </table>
   <table name="pessoa" phpName="Pessoa" idMethod="native">
     <column name="co_pessoa" phpName="CoPessoa" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <column name="no_pessoa" phpName="NoPessoa" type="VARCHAR" size="200" required="true"/>
     <column name="nu_cpf" phpName="NuCpf" type="VARCHAR" size="25" required="false"/>
     <column name="nu_cnpj" phpName="NuCnpj" type="VARCHAR" size="25" required="false"/>
+    <column name="co_empresa" phpName="CoEmpresa" type="INTEGER" required="false"/>
+    <foreign-key foreignTable="empresa" name="pessoa_co_empresa_fkey" onDelete="RESTRICT" onUpdate="CASCADE">
+      <reference local="co_empresa" foreign="co_empresa"/>
+    </foreign-key>
+  </table>
+  <table name="representada.produto_imagem"  phpName="ProdutoImagem" idMethod="native">
+    <column name="co_imagem" phpName="CoImagem" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="co_produto" phpName="CoProduto" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="no_imagem" phpName="NoImagem" type="VARCHAR" size="200" required="false"/>
+    <column name="dt_cadastro" phpName="DtCadastro" type="TIMESTAMP" required="false" defaultExpr="now()"/>
+    <column name="co_ordem" phpName="CoOrdem" type="INTEGER" required="false"/>
+    <foreign-key foreignTable="produto_representada" foreignSchema="representada" name="produto_imagem_co_produto_fkey">
+      <reference local="co_produto" foreign="co_produto"/>
+    </foreign-key>
+  </table>
+  <table name="representada.produto_representada"  phpName="ProdutoRepresentada" idMethod="native">
+    <column name="co_produto" phpName="CoProduto" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="cod_produto" phpName="CodProduto" type="VARCHAR" size="10" required="false"/>
+    <column name="no_produto" phpName="NoProduto" type="VARCHAR" size="200" required="false"/>
+    <column name="co_representada" phpName="CoRepresentada" type="INTEGER" required="true"/>
+    <column name="ds_valor" phpName="DsValor" type="VARCHAR" size="10" required="false"/>
+    <column name="no_unidade" phpName="NoUnidade" type="VARCHAR" size="10" required="false"/>
+    <column name="no_imagem" phpName="NoImagem" type="VARCHAR" size="200" required="false"/>
+    <column name="tp_moeda" phpName="TpMoeda" type="INTEGER" required="false" defaultValue="1"/>
+    <column name="ncm_sh" phpName="NcmSh" type="VARCHAR" required="false"/>
+    <foreign-key foreignTable="representada" foreignSchema="representada" name="produto_representada_co_representada_fkey" onDelete="RESTRICT" onUpdate="CASCADE">
+      <reference local="co_representada" foreign="co_representada"/>
+    </foreign-key>
+    <foreign-key foreignTable="moeda" name="produto_representada_tp_moeda_fkey" onDelete="CASCADE" onUpdate="CASCADE">
+      <reference local="tp_moeda" foreign="co_moeda"/>
+    </foreign-key>
   </table>
   <table name="recurso" phpName="Recurso" idMethod="native">
     <column name="co_recurso" phpName="CoRecurso" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
@@ -116,21 +185,37 @@
       <reference local="co_representada" foreign="co_representada"/>
     </foreign-key>
   </table>
+  <table name="telefone" phpName="Telefone" idMethod="native">
+    <column name="co_telefone" phpName="CoTelefone" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="co_pessoa" phpName="CoPessoa" type="INTEGER" primaryKey="true" required="true"/>
+    <column name="no_telefone" phpName="NoTelefone" type="VARCHAR" size="200" required="false"/>
+    <column name="nu_ddi" phpName="NuDdi" type="VARCHAR" size="4" required="false"/>
+    <column name="nu_ddd" phpName="NuDdd" type="CHAR" size="2" required="false"/>
+    <column name="nu_telefone" phpName="NuTelefone" type="VARCHAR" size="10" required="true"/>
+    <column name="tp_telefone" phpName="TpTelefone" type="INTEGER" required="true" defaultValue="1"/>
+    <column name="ds_telefone" phpName="DsTelefone" type="VARCHAR" size="50" required="false"/>
+    <column name="dt_cadastro" phpName="DtCadastro" type="TIMESTAMP" required="true" defaultExpr="now()"/>
+    <foreign-key foreignTable="pessoa" name="telefone_co_pessoa_fkey" onDelete="CASCADE" onUpdate="CASCADE">
+      <reference local="co_pessoa" foreign="co_pessoa"/>
+    </foreign-key>
+  </table>
+  <table name="transportadora.transportadora"  phpName="Transportadora" idMethod="native">
+    <column name="co_transportadora" phpName="CoTransportadora" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+    <column name="no_transportadora" phpName="NoTransportadora" type="VARCHAR" size="200" required="false"/>
+    <column name="no_site" phpName="NoSite" type="VARCHAR" size="200" required="false"/>
+  </table>
   <table name="usuario" phpName="Usuario" idMethod="native">
-    <column name="co_usuario" phpName="CoUsuario" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
-    <column name="nu_cpf" phpName="NuCpf" type="VARCHAR" size="11" required="false"/>
     <column name="ds_password" phpName="DsPassword" type="VARCHAR" size="200" required="false"/>
-    <column name="no_usuario" phpName="NoUsuario" type="VARCHAR" size="255" required="false"/>
-    <column name="ds_login" phpName="DsLogin" type="VARCHAR" size="39" required="false"/>
     <column name="dt_ultimo_login" phpName="DtUltimoLogin" type="TIMESTAMP" required="false"/>
-    <column name="ds_email" phpName="DsEmail" type="VARCHAR" size="120" required="false"/>
+    <column name="ds_login" phpName="DsLogin" type="VARCHAR" size="120" required="false"/>
     <column name="co_perfil" phpName="CoPerfil" type="INTEGER" required="false"/>
-    <column name="nu_celular" phpName="NuCelular" type="VARCHAR" size="15" required="false"/>
+    <column name="co_pessoa" phpName="CoPessoa" type="INTEGER" required="true"/>
+    <column name="co_usuario" phpName="CoUsuario" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
     <foreign-key foreignTable="perfil" name="user_co_perfil_fkey" onDelete="RESTRICT" onUpdate="CASCADE">
       <reference local="co_perfil" foreign="co_perfil"/>
     </foreign-key>
-    <unique name="un_usercpf">
-      <unique-column name="nu_cpf"/>
-    </unique>
+    <foreign-key foreignTable="pessoa" name="usuario_co_pessoa_fkey" onDelete="RESTRICT" onUpdate="CASCADE">
+      <reference local="co_pessoa" foreign="co_pessoa"/>
+    </foreign-key>
   </table>
 </database>

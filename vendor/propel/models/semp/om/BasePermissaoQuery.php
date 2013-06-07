@@ -34,14 +34,6 @@
  * @method PermissaoQuery rightJoinRecurso($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Recurso relation
  * @method PermissaoQuery innerJoinRecurso($relationAlias = null) Adds a INNER JOIN clause to the query using the Recurso relation
  *
- * @method PermissaoQuery leftJoinUsuarioRelatedByCoUsuarioAlteracao($relationAlias = null) Adds a LEFT JOIN clause to the query using the UsuarioRelatedByCoUsuarioAlteracao relation
- * @method PermissaoQuery rightJoinUsuarioRelatedByCoUsuarioAlteracao($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UsuarioRelatedByCoUsuarioAlteracao relation
- * @method PermissaoQuery innerJoinUsuarioRelatedByCoUsuarioAlteracao($relationAlias = null) Adds a INNER JOIN clause to the query using the UsuarioRelatedByCoUsuarioAlteracao relation
- *
- * @method PermissaoQuery leftJoinUsuarioRelatedByCoUsuarioCadastro($relationAlias = null) Adds a LEFT JOIN clause to the query using the UsuarioRelatedByCoUsuarioCadastro relation
- * @method PermissaoQuery rightJoinUsuarioRelatedByCoUsuarioCadastro($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UsuarioRelatedByCoUsuarioCadastro relation
- * @method PermissaoQuery innerJoinUsuarioRelatedByCoUsuarioCadastro($relationAlias = null) Adds a INNER JOIN clause to the query using the UsuarioRelatedByCoUsuarioCadastro relation
- *
  * @method Permissao findOne(PropelPDO $con = null) Return the first Permissao matching the query
  * @method Permissao findOneOrCreate(PropelPDO $con = null) Return the first Permissao matching the query, or a new Permissao object populated from the query conditions when no match is found
  *
@@ -349,8 +341,6 @@ abstract class BasePermissaoQuery extends ModelCriteria
      * $query->filterByCoUsuarioAlteracao(array('max' => 12)); // WHERE co_usuario_alteracao <= 12
      * </code>
      *
-     * @see       filterByUsuarioRelatedByCoUsuarioAlteracao()
-     *
      * @param     mixed $coUsuarioAlteracao The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
@@ -506,8 +496,6 @@ abstract class BasePermissaoQuery extends ModelCriteria
      * $query->filterByCoUsuarioCadastro(array('min' => 12)); // WHERE co_usuario_cadastro >= 12
      * $query->filterByCoUsuarioCadastro(array('max' => 12)); // WHERE co_usuario_cadastro <= 12
      * </code>
-     *
-     * @see       filterByUsuarioRelatedByCoUsuarioCadastro()
      *
      * @param     mixed $coUsuarioCadastro The value to use as filter.
      *              Use scalar values for equality.
@@ -690,158 +678,6 @@ abstract class BasePermissaoQuery extends ModelCriteria
         return $this
             ->joinRecurso($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Recurso', 'RecursoQuery');
-    }
-
-    /**
-     * Filter the query by a related Usuario object
-     *
-     * @param   Usuario|PropelObjectCollection $usuario The related object(s) to use as filter
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return                 PermissaoQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
-     */
-    public function filterByUsuarioRelatedByCoUsuarioAlteracao($usuario, $comparison = null)
-    {
-        if ($usuario instanceof Usuario) {
-            return $this
-                ->addUsingAlias(PermissaoPeer::CO_USUARIO_ALTERACAO, $usuario->getCoUsuario(), $comparison);
-        } elseif ($usuario instanceof PropelObjectCollection) {
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-
-            return $this
-                ->addUsingAlias(PermissaoPeer::CO_USUARIO_ALTERACAO, $usuario->toKeyValue('PrimaryKey', 'CoUsuario'), $comparison);
-        } else {
-            throw new PropelException('filterByUsuarioRelatedByCoUsuarioAlteracao() only accepts arguments of type Usuario or PropelCollection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the UsuarioRelatedByCoUsuarioAlteracao relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return PermissaoQuery The current query, for fluid interface
-     */
-    public function joinUsuarioRelatedByCoUsuarioAlteracao($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('UsuarioRelatedByCoUsuarioAlteracao');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'UsuarioRelatedByCoUsuarioAlteracao');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the UsuarioRelatedByCoUsuarioAlteracao relation Usuario object
-     *
-     * @see       useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return   UsuarioQuery A secondary query class using the current class as primary query
-     */
-    public function useUsuarioRelatedByCoUsuarioAlteracaoQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
-    {
-        return $this
-            ->joinUsuarioRelatedByCoUsuarioAlteracao($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'UsuarioRelatedByCoUsuarioAlteracao', 'UsuarioQuery');
-    }
-
-    /**
-     * Filter the query by a related Usuario object
-     *
-     * @param   Usuario|PropelObjectCollection $usuario The related object(s) to use as filter
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return                 PermissaoQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
-     */
-    public function filterByUsuarioRelatedByCoUsuarioCadastro($usuario, $comparison = null)
-    {
-        if ($usuario instanceof Usuario) {
-            return $this
-                ->addUsingAlias(PermissaoPeer::CO_USUARIO_CADASTRO, $usuario->getCoUsuario(), $comparison);
-        } elseif ($usuario instanceof PropelObjectCollection) {
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-
-            return $this
-                ->addUsingAlias(PermissaoPeer::CO_USUARIO_CADASTRO, $usuario->toKeyValue('PrimaryKey', 'CoUsuario'), $comparison);
-        } else {
-            throw new PropelException('filterByUsuarioRelatedByCoUsuarioCadastro() only accepts arguments of type Usuario or PropelCollection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the UsuarioRelatedByCoUsuarioCadastro relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return PermissaoQuery The current query, for fluid interface
-     */
-    public function joinUsuarioRelatedByCoUsuarioCadastro($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('UsuarioRelatedByCoUsuarioCadastro');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'UsuarioRelatedByCoUsuarioCadastro');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the UsuarioRelatedByCoUsuarioCadastro relation Usuario object
-     *
-     * @see       useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return   UsuarioQuery A secondary query class using the current class as primary query
-     */
-    public function useUsuarioRelatedByCoUsuarioCadastroQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
-    {
-        return $this
-            ->joinUsuarioRelatedByCoUsuarioCadastro($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'UsuarioRelatedByCoUsuarioCadastro', 'UsuarioQuery');
     }
 
     /**

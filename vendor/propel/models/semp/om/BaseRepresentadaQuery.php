@@ -26,6 +26,10 @@
  * @method RepresentadaQuery rightJoinPessoa($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Pessoa relation
  * @method RepresentadaQuery innerJoinPessoa($relationAlias = null) Adds a INNER JOIN clause to the query using the Pessoa relation
  *
+ * @method RepresentadaQuery leftJoinProdutoRepresentada($relationAlias = null) Adds a LEFT JOIN clause to the query using the ProdutoRepresentada relation
+ * @method RepresentadaQuery rightJoinProdutoRepresentada($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProdutoRepresentada relation
+ * @method RepresentadaQuery innerJoinProdutoRepresentada($relationAlias = null) Adds a INNER JOIN clause to the query using the ProdutoRepresentada relation
+ *
  * @method RepresentadaQuery leftJoinRepresentadaColaborador($relationAlias = null) Adds a LEFT JOIN clause to the query using the RepresentadaColaborador relation
  * @method RepresentadaQuery rightJoinRepresentadaColaborador($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RepresentadaColaborador relation
  * @method RepresentadaQuery innerJoinRepresentadaColaborador($relationAlias = null) Adds a INNER JOIN clause to the query using the RepresentadaColaborador relation
@@ -483,6 +487,80 @@ abstract class BaseRepresentadaQuery extends ModelCriteria
         return $this
             ->joinPessoa($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Pessoa', 'PessoaQuery');
+    }
+
+    /**
+     * Filter the query by a related ProdutoRepresentada object
+     *
+     * @param   ProdutoRepresentada|PropelObjectCollection $produtoRepresentada  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 RepresentadaQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByProdutoRepresentada($produtoRepresentada, $comparison = null)
+    {
+        if ($produtoRepresentada instanceof ProdutoRepresentada) {
+            return $this
+                ->addUsingAlias(RepresentadaPeer::CO_REPRESENTADA, $produtoRepresentada->getCoRepresentada(), $comparison);
+        } elseif ($produtoRepresentada instanceof PropelObjectCollection) {
+            return $this
+                ->useProdutoRepresentadaQuery()
+                ->filterByPrimaryKeys($produtoRepresentada->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByProdutoRepresentada() only accepts arguments of type ProdutoRepresentada or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the ProdutoRepresentada relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return RepresentadaQuery The current query, for fluid interface
+     */
+    public function joinProdutoRepresentada($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('ProdutoRepresentada');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'ProdutoRepresentada');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the ProdutoRepresentada relation ProdutoRepresentada object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   ProdutoRepresentadaQuery A secondary query class using the current class as primary query
+     */
+    public function useProdutoRepresentadaQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    {
+        return $this
+            ->joinProdutoRepresentada($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'ProdutoRepresentada', 'ProdutoRepresentadaQuery');
     }
 
     /**

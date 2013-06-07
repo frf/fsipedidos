@@ -1,29 +1,35 @@
-<script src="/js/bootstrap-datepicker.js"></script> 
-<script src="/js/jquery.maskedinput.js" type="text/javascript"></script>
-<script>
-    $(document).ready(function(){
-        $('.datepicker').datepicker();
-        $("#cnpj").mask("99.999.999/9999-99"); 
-        $("#cpf").mask("999.999.999-99"); 
-    });
 
-</script>
-    
 
 <div id="content-header">
     <div id="breadcrumb"> 
-        <a href="/" title="Home" class="tip-bottom"><i class="icon-home"></i> Home</a>
+        <a href="/" title="Principal" class="tip-bottom"><i class="icon-home"></i> Principal</a>
         <a href="/clientes/index" title="Lista de Clientes" class="tip-bottom">
             <i class="icon-user"></i> Clientes</a>
-        <a href="/clientes/detalhes/<?php echo $this->id; ?>" title="Detalhes Cliente" class="tip-bottom">Detalhes</a>
+        <a href="/clientes/detalhes/<?php echo $this->id; ?>" title="Detalhes Cliente" class="tip-bottom current">Detalhes</a>
+        
     </div>
   </div>
- <div class="container-fluid">
-        <div class="row-fluid">
-          <div class="span6">
+<div class="widget-content">
+<p>
+    <a href="<?php echo $this->url('enderecos', array('action' => 'novo', 'idcli' => $this->id)); ?>" class="btn btn-primary">Adicionar Endereço</a>
+    <a href="<?php echo $this->url('telefones', array('action' => 'novo', 'idcli' => $this->id)); ?>" class="btn btn-primary">Adicionar Telefone</a>
+    <a href="<?php echo $this->url('emails', array('action' => 'novo', 'idcli' => $this->id)); ?>" class="btn btn-primary">Adicionar Email</a>
+    <a href="<?php echo $this->url('clientes', array('action' => 'editar', 'id' => $this->id)); ?>" class="btn btn-warning">Editar Cliente</a>
+    <a href="<?php echo $this->url('clientes'); ?>" class="btn">Voltar</a>
+           
+</p>
+</div>
+<br>
+<?php echo $this->message($this->message); ?>   
+ <div class="container-fluid">     
+    <div class="row-fluid">
+          <div class="span5">
             <div class="widget-box">
               <div class="widget-title"> <span class="icon"> <i class="icon-align-justify"></i> </span>
-                <h5>Cadastro de Cliente</h5>
+                <h5 id="principal">Cadastro de Cliente</h5>
+                <a id="telefoneS"><img src="/images/icons/phone.png" title="Telefone" alt="Telefone" style="vertical-align:top;cursor: pointer"></a>
+                <a id="emailS"><img src="/images/icons/mail.png" title="Email" alt="Email" style="vertical-align:top;cursor: pointer"></a>
+                <a id="enderecoS"><img src="/images/icons/childish_map.png" title="Endereço" alt="Endereço" style="vertical-align:top;cursor: pointer"></a>                
               </div>
               <div class="widget-content nopadding">
                 <form method="POST" action="<?php echo $this->url('clientes', array('action' => 'atualizar')); ?>" class="form-horizontal">
@@ -37,80 +43,209 @@
                   </label>
                 </div>
               </div>
+               <?php if($this->oCliente->getTipoCliente() == "J"){ ?>
                     <div class="control-group" id="r_social"> 
                     <label class="control-label">Razão Social:</label>
                     <div class="controls">
                       <?php echo $this->oCliente->getDsRazaoSocial(); ?>
                     </div>
                   </div>
+              <?php  } ?>
+              <?php if($this->oCliente->getTipoCliente() == "J" || $this->oCliente->getTipoCliente() == "F"){ ?>
                   <div class="control-group">
-                    <label class="control-label" id="no_cliente_label">Nome Fantasia:</label>
+                    <label class="control-label" id="no_cliente_label">Nome:</label>
                     <div class="controls">
                      <?php echo $this->oCliente->getNoCliente(); ?>
                     </div>
                   </div>
+              <?php  } ?>
+                <?php if($this->oCliente->getTipoCliente() == "J"){ ?>
                   <div class="control-group" id="cnpj_line">
                     <label class="control-label">CNPJ</label>
                     <div class="controls">
                       <?php echo $this->oCliente->getNuCnpj(); ?>
                     </div>
                   </div>
+              <?php  } ?>
                     <div class="control-group"  id="cpf_line" style="display:none">
                     <label class="control-label">CPF</label>
                     <div class="controls">
                       <?php echo $this->oCliente->getNuCpf(); ?>
                     </div>
                   </div>
+                    <?php if($this->oCliente->getTipoCliente() == "J"){ ?>
                   <div class="control-group" id="i_estadual">
                     <label class="control-label">Inscrição Estadual:</label>
                     <div class="controls">
                       <?php echo $this->oCliente->getDsInscricaoEstadual(); ?>
                     </div>
                   </div>
+                    <?php  } ?>
                   <div class="control-group" id="ramo_atividade">
                     <label class="control-label">Ramo de atividade:</label>
                     <div class="controls">
                       <?php echo $this->oCliente->getDsRamoAtividade(); ?>
                       
                   </div>       
-                  <div class="control-group" id="data_fundacao">
-                    <label class="control-label">Data de Fundação</label>
+                  </div>
+                  <div class="control-group" id="ramo_atividade">
+                    <label class="control-label">Tipo Tributação:</label>
                     <div class="controls">
-                      
-                        <?php echo $this->oCliente->getDtFundacao('d/m/Y'); ?>
-                       
-                    </div>
-                  </div>    
-                  <div class="form-actions">
-                    <a href="<?php echo $this->url('clientes', array('action' => 'editar', 'id' => $this->id)); ?>" class="btn btn-warning">Editar Contato</a>
-                    <a href="<?php echo $this->url('clientes'); ?>" class="btn">Voltar</a>
+                      <?php echo $oCliente->getNoTributacao(); ?>
+                  </div>       
                   </div>
                </form> 
               </div>
             </div>
-          </div>        
-        </div>
-        <hr>    
-     
-</div>    
+          </div>  
+    </div>
+    <div class="row-fluid">
+        <div class="span5">     
+            <div class="widget-box">
+                <div class="widget-title">
+                        <span class="icon">
+                                <i class="icon-arrow-right"></i>
+                        </span>
+                    <h5 id="telefone">Telefone</h5>
+                </div>        
+                <div class="widget-content nopadding">           
+                        <table class="table table-bordered">
+                                <thead>
+                                        <tr>
+                                                <th>Nome</th>
+                                                <th>Telefone</th>
+                                                <th>&nbsp;</th>
+                                        </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($telefone as $oTelefone){?>
+                                        <tr>
 
-<script src="/js/maruti.form_common.js"></script> 
+                                            <td><?php echo $oTelefone->getNoTelefone(); ?><br></td>
+                                            <td><?php echo $oTelefone->getTelefone(); ?><br></td>
+                                            <td>
+
+                                                    <a href="<?php echo $this->url('telefones', array('action' => 'editar', 'idcli' => $id,'id'=>$oTelefone->getCoTelefone())); ?>" class="btn btn-primary btn-mini">Alterar</a> 
+                                                    <a href="<?php echo $this->url('telefones', array('action' => 'deletar', 'idcli' => $id,'id'=>$oTelefone->getCoTelefone())); ?>" class="btn btn-danger btn-mini">Excluir</a>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+
+
+                                </tbody>
+                        </table>
+                    </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span5">     
+            <div class="widget-box">
+                <div class="widget-title">
+                        <span class="icon">
+                                <i class="icon-arrow-right"></i>
+                        </span>
+                    <h5 id="email">Email</h5>
+                </div>        
+                <div class="widget-content nopadding">           
+                        <table class="table table-bordered">
+                                <thead>
+                                        <tr>
+                                                <th>Nome</th>
+                                                <th>Email</th>
+                                                <th>&nbsp;</th>
+                                        </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($email as $oEmail){?>
+                                        <tr>
+
+                                            <td><?php echo $oEmail->getNoEmail(); ?><br></td>
+                                            <td><?php echo $oEmail->getDsEmail(); ?><br></td>
+                                            <td>
+
+                                                    <a href="<?php echo $this->url('emails', array('action' => 'editar', 'idcli' => $id,'id'=>$oEmail->getCoEmail())); ?>" class="btn btn-primary btn-mini">Alterar</a> 
+                                                    <a href="<?php echo $this->url('emails', array('action' => 'deletar', 'idcli' => $id,'id'=>$oEmail->getCoEmail())); ?>" class="btn btn-danger btn-mini">Excluir</a>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+
+
+                                </tbody>
+                        </table>
+                    </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span5">     
+            <div class="widget-box">
+                <div class="widget-title">
+                        <span class="icon">
+                                <i class="icon-arrow-right"></i>
+                        </span>
+                        <h5 id="endereco">Endereço</h5>
+                       
+                </div>        
+                <div class="widget-content nopadding">           
+                        <table class="table table-bordered">
+                                <thead>
+                                        <tr>
+                                                <th>Nome</th>
+                                                <th>&nbsp;</th>
+                                        </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($endereco as $oEndereco){?>
+                                        <tr>
+
+                                            <td><?php echo $oEndereco->getNoLogradouro(); ?><br></td>
+                                            <td>
+
+                                                    <a href="<?php echo $this->url('enderecos', array('action' => 'editar', 'idcli' => $id,'id'=>$oEndereco->getCoEndereco())); ?>" class="btn btn-primary btn-mini">Alterar</a> 
+                                                    <a href="<?php echo $this->url('enderecos', array('action' => 'deletar', 'idcli' => $id,'id'=>$oEndereco->getCoEndereco())); ?>" class="btn btn-danger btn-mini">Excluir</a>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+
+
+                                </tbody>
+                        </table>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
-    var tipo_pessoa = $("input:radio:checked").val();
-       if(tipo_pessoa == "F"){
-           $("#no_cliente_label").html("Nome Cliente:");
-           $("#r_social").css({'display':'none'});
-           $("#i_estadual").css({'display':'none'});
-           $("#cnpj_line").css({'display':'none'});
-           $("#cpf_line").css({'display':''});
-           $("#data_fundacao").css({'display':'none'});
-       }
-       if(tipo_pessoa == "J"){
-           $("#no_cliente_label").html("Nome Fantasia:");
-           $("#r_social").css({'display':''});
-           $("#i_estadual").css({'display':''});
-           $("#cnpj_line").css({'display':''});
-           $("#cpf_line").css({'display':'none'});
-           $("#data_fundacao").css({'display':''});
-       }   
+    // When the Document Object Model is ready
+$(document).ready(function(){
+	// 'catTopPosition' is the amount of pixels #cat
+	// is from the top of the document
+	var catTelefone = $('#telefone').offset().top;
+	var catEmail = $('#email').offset().top;
+	var catEndereco = $('#endereco').offset().top;
+	var catPrincipal = $('#header').offset().top;
+	
+	// When #scroll is clicked
+	$('#telefoneS').click(function(){
+		// Scroll down to 'catTopPosition'
+		$('html, body').animate({scrollTop:catTelefone}, 'slow');
+		// Stop the link from acting like a normal anchor link
+		return false;
+	});
+	$('#emailS').click(function(){
+		// Scroll down to 'catTopPosition'
+		$('html, body').animate({scrollTop:catEmail}, 'slow');
+		// Stop the link from acting like a normal anchor link
+		return false;
+	});
+	$('#enderecoS').click(function(){
+		// Scroll down to 'catTopPosition'
+		$('html, body').animate({scrollTop:catEndereco}, 'slow');
+		// Stop the link from acting like a normal anchor link
+		return false;
+	});
+        
+        $('html, body').animate({scrollTop:catPrincipal}, 'slow');
+});
 </script>

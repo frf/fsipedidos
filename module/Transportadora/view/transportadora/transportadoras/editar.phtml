@@ -1,0 +1,70 @@
+<script src="/js/maruti.form_validation.js"></script>
+<script src="/js/maruti.form_common.js"></script>
+<script src="/js/jquery.maskedinput.js" type="text/javascript"></script>
+
+<script>
+$(document).ready(function(){
+
+      $("#basic_validate_transportadora").validate({
+               
+		rules:{
+			no_transportadora:{
+				required:true
+			}
+		},
+		errorClass: "help-inline",
+		errorElement: "span",
+		highlight:function(element, errorClass, validClass) {
+			$(element).parents('.control-group').addClass('error');
+		},
+		unhighlight: function(element, errorClass, validClass) {
+			$(element).parents('.control-group').removeClass('error');
+			$(element).parents('.control-group').addClass('success');
+		}
+	});
+});
+</script>
+    
+
+<div id="content-header">
+    <div id="breadcrumb"> 
+        <a href="/" title="Principal" class="tip-bottom"><i class="icon-home"></i> Principal</a>
+        <a href="/transportadoras/index" title="Lista de Transportadoras" class="tip-bottom">
+            <i class="icon-road"></i> Transportadoras</a>
+        <a href="/transportadoras/novo" title="Editar Transportadora" class="tip-bottom current">Editar</a>
+    </div>
+  </div>
+ <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="span6">
+            <div class="widget-box">
+              <div class="widget-title"> <span class="icon"> <i class="icon-align-justify"></i> </span>
+                <h5>Cadastro de Transportadora</h5>
+              </div>
+              <div class="widget-content nopadding">
+                <form method="POST" class="form-horizontal" action="<?php echo $this->url('transportadoras', array('action' => 'adicionar')); ?>" name="basic_validate_transportadora" id="basic_validate_transportadora" novalidate="novalidate">
+                    <input type="hidden" name="co_transportadora" value="<?php echo $oTransportadora->getCoTransportadora(); ?>" />
+               
+                  <div class="control-group">
+                    <label class="control-label" id="no_transportadora">Nome:</label>
+                    <div class="controls">
+                        <input type="text" value="<?php echo $oTransportadora->getNoTransportadora(); ?>" name="no_transportadora" id="no_transportadora" class="span11" placeholder="Nome" id="required" />
+                    </div>
+                  </div>
+                   <div class="control-group">
+                    <label class="control-label" id="no_site">Site:</label>
+                    <div class="controls">
+                      <input type="text" value="<?php echo $oTransportadora->getNoSite(); ?>" name="no_site" id="no_site" class="span11" placeholder="www.site.com.br"  />
+                    </div>
+                  </div>
+                  <div class="form-actions">
+                     <button type="submit" class="btn btn-success">Salvar</button>
+                    <a href="<?php echo $this->url('transportadoras'); ?>" class="btn">Voltar</a>
+                  </div>
+               </form> 
+              </div>
+            </div>
+          </div>        
+        </div>
+        <hr>     
+</div>   

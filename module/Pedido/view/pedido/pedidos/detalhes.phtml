@@ -1,21 +1,115 @@
-<fieldset>
-    <legend>Detalhes Contato ID <?php echo $this->id; ?></legend>
-
-    <dl class="dl-horizontal">
-        <dt>Nome:</dt>
-        <dd><?php echo $this->form["nome"]; ?></dd>
-        <dt>Telefone Principal:</dt>
-        <dd><?php echo $this->form["telefone_principal"]; ?></dd>
-        <dt>Telefone Secundario:</dt>
-        <dd><?php echo $this->form["telefone_secundario"]; ?></dd>
-        <dt>Data Criação:</dt>
-        <dd><?php echo $this->form["data_criacao"]; ?></dd>
-        <dt>Data Atualização:</dt>
-        <dd><?php echo $this->form["data_atualizacao"]; ?></dd>
-    </dl>
-
-    <div class="form-actions">
-        <a href="<?php echo $this->url('clientes', array('action' => 'editar', 'id' => $this->id)); ?>" class="btn btn-warning">Editar Contato</a>
-        <a href="<?php echo $this->url('clientes'); ?>" class="btn">Voltar</a>
+<div id="content-header">
+    <div id="breadcrumb"> 
+        <a href="/" title="Principal" class="tip-bottom"><i class="icon-home"></i> Principal</a>
+        <a href="/colaboradores/index" title="Lista de colaboradores" class="tip-bottom">
+            <i class="icon-user"></i> Colaboradores</a>
+        <a href="/colaboradores/detalhes/<?php echo $id;?>" title="Detalhes Colaborador" class="tip-bottom">Detalhes</a>
     </div>
-</fieldset>
+  </div>
+ <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="span6">
+            <div class="widget-box">
+              <div class="widget-title"> <span class="icon"> <i class="icon-align-justify"></i> </span>
+                <h5>Detalhes do Colaborador</h5>
+              </div>
+              <div class="widget-content nopadding">
+                 <form method="POST" action="<?php echo $this->url('colaboradores', array('action' => 'atualizar')); ?>" class="form-horizontal">
+                    
+                  <div class="control-group">
+                    <label class="control-label">Nome:</label>
+                    <div class="controls">                      
+                        <?php echo $form->getNoColaborador(); ?>
+                    </div>
+                  </div>
+                  <div class="control-group">
+                    <label class="control-label">E-Mail:</label>
+                    <div class="controls" id="addEmail">
+                        <?php echo $form->getDsEmail(); ?>
+                    </div>
+                  </div>
+                     <div class="control-group">
+                    <label class="control-label">Telefone:</label>
+                    <div class="controls" id="addEmail">
+                        <?php echo $form->getDsTelefone(); ?>
+                    </div>
+                  </div>
+                  <div class="control-group">
+                    <label class="control-label">Tipo:</label>
+                    <div class="controls">
+                        <?php if($form->getTpAdministrador()){ ?>Administrador<?php }else{ ?>Colaborador<?php } ?>
+                   </div>    
+                  <div class="control-group">
+                   
+                        <div class="widget-box">
+                            <div class="widget-title"> <span class="icon">
+                              <div class="checker" id="uniform-title-checkbox">
+                                  <span class="">
+                                      <!-- <input type="checkbox" id="title-checkbox" name="title-checkbox" > -->
+                                      &nbsp;
+                                      &nbsp;
+                                  </span></div>
+                              </span>
+                              <h5>Lista de Representadas</h5>
+                              
+                            </div>
+                            <div class="widget-content nopadding">
+                              <table class="table table-bordered table-striped">
+                                <thead>
+                                  <tr>
+                                    <th>Representada</th>
+                                    <th>Comissão</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if($representada){ 
+                                                foreach($representada as $oRepresentada){ ?>
+                                    
+                                  <tr>
+                                    <td>
+                                        <?php echo $oRepresentada->getNoRepresentada(); ?>
+                                       
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <?php
+                                                if($aRepresentadasCol[$oRepresentada->getCoRepresentada()]['NuComissao'] == ""){
+                                                    echo "0";
+                                                }else{
+                                                    echo $aRepresentadasCol[$oRepresentada->getCoRepresentada()]['NuComissao'];
+                                                }
+                                                ?>
+                                            <span class="add-on">%</span> 
+                                        </div> 
+                                        
+                                    </td>
+                                  </tr>
+                                    <?php } } ?>
+                                 
+                                </tbody>
+                              </table>
+                                
+                            </div>
+                            <!-- 
+                            <span class="help-block">Quais representadas este colaborador vai ter acesso e sua comissão.</span>
+                            -->
+                          </div>
+                   
+                      
+                  </div> 
+
+                  
+                   <div class="form-actions">
+                    <a href="<?php echo $this->url('colaboradores', array('action' => 'editar', 'id' => $this->id)); ?>" class="btn btn-warning">Editar Colaborador</a>
+                    <a href="<?php echo $this->url('colaboradores'); ?>" class="btn">Voltar</a>
+                  </div>
+                 </form>
+              </div>
+            </div>
+          </div>        
+        </div>
+        <hr>    
+     
+</div>    
+
+<script src="/js/maruti.form_common.js"></script> 

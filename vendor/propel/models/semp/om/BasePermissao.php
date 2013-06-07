@@ -84,16 +84,6 @@ abstract class BasePermissao extends BaseObject implements Persistent
     protected $aRecurso;
 
     /**
-     * @var        Usuario
-     */
-    protected $aUsuarioRelatedByCoUsuarioAlteracao;
-
-    /**
-     * @var        Usuario
-     */
-    protected $aUsuarioRelatedByCoUsuarioCadastro;
-
-    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      * @var        boolean
@@ -319,10 +309,6 @@ abstract class BasePermissao extends BaseObject implements Persistent
             $this->modifiedColumns[] = PermissaoPeer::CO_USUARIO_ALTERACAO;
         }
 
-        if ($this->aUsuarioRelatedByCoUsuarioAlteracao !== null && $this->aUsuarioRelatedByCoUsuarioAlteracao->getCoUsuario() !== $v) {
-            $this->aUsuarioRelatedByCoUsuarioAlteracao = null;
-        }
-
 
         return $this;
     } // setCoUsuarioAlteracao()
@@ -421,10 +407,6 @@ abstract class BasePermissao extends BaseObject implements Persistent
             $this->modifiedColumns[] = PermissaoPeer::CO_USUARIO_CADASTRO;
         }
 
-        if ($this->aUsuarioRelatedByCoUsuarioCadastro !== null && $this->aUsuarioRelatedByCoUsuarioCadastro->getCoUsuario() !== $v) {
-            $this->aUsuarioRelatedByCoUsuarioCadastro = null;
-        }
-
 
         return $this;
     } // setCoUsuarioCadastro()
@@ -506,14 +488,8 @@ abstract class BasePermissao extends BaseObject implements Persistent
         if ($this->aPerfil !== null && $this->co_perfil !== $this->aPerfil->getCoPerfil()) {
             $this->aPerfil = null;
         }
-        if ($this->aUsuarioRelatedByCoUsuarioAlteracao !== null && $this->co_usuario_alteracao !== $this->aUsuarioRelatedByCoUsuarioAlteracao->getCoUsuario()) {
-            $this->aUsuarioRelatedByCoUsuarioAlteracao = null;
-        }
         if ($this->aRecurso !== null && $this->co_recurso !== $this->aRecurso->getCoRecurso()) {
             $this->aRecurso = null;
-        }
-        if ($this->aUsuarioRelatedByCoUsuarioCadastro !== null && $this->co_usuario_cadastro !== $this->aUsuarioRelatedByCoUsuarioCadastro->getCoUsuario()) {
-            $this->aUsuarioRelatedByCoUsuarioCadastro = null;
         }
     } // ensureConsistency
 
@@ -556,8 +532,6 @@ abstract class BasePermissao extends BaseObject implements Persistent
 
             $this->aPerfil = null;
             $this->aRecurso = null;
-            $this->aUsuarioRelatedByCoUsuarioAlteracao = null;
-            $this->aUsuarioRelatedByCoUsuarioCadastro = null;
         } // if (deep)
     }
 
@@ -688,20 +662,6 @@ abstract class BasePermissao extends BaseObject implements Persistent
                     $affectedRows += $this->aRecurso->save($con);
                 }
                 $this->setRecurso($this->aRecurso);
-            }
-
-            if ($this->aUsuarioRelatedByCoUsuarioAlteracao !== null) {
-                if ($this->aUsuarioRelatedByCoUsuarioAlteracao->isModified() || $this->aUsuarioRelatedByCoUsuarioAlteracao->isNew()) {
-                    $affectedRows += $this->aUsuarioRelatedByCoUsuarioAlteracao->save($con);
-                }
-                $this->setUsuarioRelatedByCoUsuarioAlteracao($this->aUsuarioRelatedByCoUsuarioAlteracao);
-            }
-
-            if ($this->aUsuarioRelatedByCoUsuarioCadastro !== null) {
-                if ($this->aUsuarioRelatedByCoUsuarioCadastro->isModified() || $this->aUsuarioRelatedByCoUsuarioCadastro->isNew()) {
-                    $affectedRows += $this->aUsuarioRelatedByCoUsuarioCadastro->save($con);
-                }
-                $this->setUsuarioRelatedByCoUsuarioCadastro($this->aUsuarioRelatedByCoUsuarioCadastro);
             }
 
             if ($this->isNew() || $this->isModified()) {
@@ -894,18 +854,6 @@ abstract class BasePermissao extends BaseObject implements Persistent
                 }
             }
 
-            if ($this->aUsuarioRelatedByCoUsuarioAlteracao !== null) {
-                if (!$this->aUsuarioRelatedByCoUsuarioAlteracao->validate($columns)) {
-                    $failureMap = array_merge($failureMap, $this->aUsuarioRelatedByCoUsuarioAlteracao->getValidationFailures());
-                }
-            }
-
-            if ($this->aUsuarioRelatedByCoUsuarioCadastro !== null) {
-                if (!$this->aUsuarioRelatedByCoUsuarioCadastro->validate($columns)) {
-                    $failureMap = array_merge($failureMap, $this->aUsuarioRelatedByCoUsuarioCadastro->getValidationFailures());
-                }
-            }
-
 
             if (($retval = PermissaoPeer::doValidate($this, $columns)) !== true) {
                 $failureMap = array_merge($failureMap, $retval);
@@ -1011,12 +959,6 @@ abstract class BasePermissao extends BaseObject implements Persistent
             }
             if (null !== $this->aRecurso) {
                 $result['Recurso'] = $this->aRecurso->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-            if (null !== $this->aUsuarioRelatedByCoUsuarioAlteracao) {
-                $result['UsuarioRelatedByCoUsuarioAlteracao'] = $this->aUsuarioRelatedByCoUsuarioAlteracao->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-            if (null !== $this->aUsuarioRelatedByCoUsuarioCadastro) {
-                $result['UsuarioRelatedByCoUsuarioCadastro'] = $this->aUsuarioRelatedByCoUsuarioCadastro->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
         }
 
@@ -1361,110 +1303,6 @@ abstract class BasePermissao extends BaseObject implements Persistent
     }
 
     /**
-     * Declares an association between this object and a Usuario object.
-     *
-     * @param             Usuario $v
-     * @return Permissao The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setUsuarioRelatedByCoUsuarioAlteracao(Usuario $v = null)
-    {
-        if ($v === null) {
-            $this->setCoUsuarioAlteracao(NULL);
-        } else {
-            $this->setCoUsuarioAlteracao($v->getCoUsuario());
-        }
-
-        $this->aUsuarioRelatedByCoUsuarioAlteracao = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the Usuario object, it will not be re-added.
-        if ($v !== null) {
-            $v->addPermissaoRelatedByCoUsuarioAlteracao($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated Usuario object
-     *
-     * @param PropelPDO $con Optional Connection object.
-     * @param $doQuery Executes a query to get the object if required
-     * @return Usuario The associated Usuario object.
-     * @throws PropelException
-     */
-    public function getUsuarioRelatedByCoUsuarioAlteracao(PropelPDO $con = null, $doQuery = true)
-    {
-        if ($this->aUsuarioRelatedByCoUsuarioAlteracao === null && ($this->co_usuario_alteracao !== null) && $doQuery) {
-            $this->aUsuarioRelatedByCoUsuarioAlteracao = UsuarioQuery::create()->findPk($this->co_usuario_alteracao, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aUsuarioRelatedByCoUsuarioAlteracao->addPermissaosRelatedByCoUsuarioAlteracao($this);
-             */
-        }
-
-        return $this->aUsuarioRelatedByCoUsuarioAlteracao;
-    }
-
-    /**
-     * Declares an association between this object and a Usuario object.
-     *
-     * @param             Usuario $v
-     * @return Permissao The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setUsuarioRelatedByCoUsuarioCadastro(Usuario $v = null)
-    {
-        if ($v === null) {
-            $this->setCoUsuarioCadastro(NULL);
-        } else {
-            $this->setCoUsuarioCadastro($v->getCoUsuario());
-        }
-
-        $this->aUsuarioRelatedByCoUsuarioCadastro = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the Usuario object, it will not be re-added.
-        if ($v !== null) {
-            $v->addPermissaoRelatedByCoUsuarioCadastro($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated Usuario object
-     *
-     * @param PropelPDO $con Optional Connection object.
-     * @param $doQuery Executes a query to get the object if required
-     * @return Usuario The associated Usuario object.
-     * @throws PropelException
-     */
-    public function getUsuarioRelatedByCoUsuarioCadastro(PropelPDO $con = null, $doQuery = true)
-    {
-        if ($this->aUsuarioRelatedByCoUsuarioCadastro === null && ($this->co_usuario_cadastro !== null) && $doQuery) {
-            $this->aUsuarioRelatedByCoUsuarioCadastro = UsuarioQuery::create()->findPk($this->co_usuario_cadastro, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aUsuarioRelatedByCoUsuarioCadastro->addPermissaosRelatedByCoUsuarioCadastro($this);
-             */
-        }
-
-        return $this->aUsuarioRelatedByCoUsuarioCadastro;
-    }
-
-    /**
      * Clears the current object and sets all attributes to their default values
      */
     public function clear()
@@ -1505,20 +1343,12 @@ abstract class BasePermissao extends BaseObject implements Persistent
             if ($this->aRecurso instanceof Persistent) {
               $this->aRecurso->clearAllReferences($deep);
             }
-            if ($this->aUsuarioRelatedByCoUsuarioAlteracao instanceof Persistent) {
-              $this->aUsuarioRelatedByCoUsuarioAlteracao->clearAllReferences($deep);
-            }
-            if ($this->aUsuarioRelatedByCoUsuarioCadastro instanceof Persistent) {
-              $this->aUsuarioRelatedByCoUsuarioCadastro->clearAllReferences($deep);
-            }
 
             $this->alreadyInClearAllReferencesDeep = false;
         } // if ($deep)
 
         $this->aPerfil = null;
         $this->aRecurso = null;
-        $this->aUsuarioRelatedByCoUsuarioAlteracao = null;
-        $this->aUsuarioRelatedByCoUsuarioCadastro = null;
     }
 
     /**

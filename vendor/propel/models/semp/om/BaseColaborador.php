@@ -42,24 +42,6 @@ abstract class BaseColaborador extends BaseObject implements Persistent
     protected $ds_email;
 
     /**
-     * The value for the ds_senha field.
-     * @var        string
-     */
-    protected $ds_senha;
-
-    /**
-     * The value for the co_empresa field.
-     * @var        int
-     */
-    protected $co_empresa;
-
-    /**
-     * The value for the co_perfil field.
-     * @var        int
-     */
-    protected $co_perfil;
-
-    /**
      * The value for the tp_administrador field.
      * @var        boolean
      */
@@ -75,16 +57,6 @@ abstract class BaseColaborador extends BaseObject implements Persistent
      * @var        Pessoa
      */
     protected $aPessoa;
-
-    /**
-     * @var        Empresa
-     */
-    protected $aEmpresa;
-
-    /**
-     * @var        Perfil
-     */
-    protected $aPerfil;
 
     /**
      * @var        PropelObjectCollection|ClienteColaborador[] Collection to store aggregation of ClienteColaborador objects.
@@ -148,36 +120,6 @@ abstract class BaseColaborador extends BaseObject implements Persistent
     public function getDsEmail()
     {
         return $this->ds_email;
-    }
-
-    /**
-     * Get the [ds_senha] column value.
-     *
-     * @return string
-     */
-    public function getDsSenha()
-    {
-        return $this->ds_senha;
-    }
-
-    /**
-     * Get the [co_empresa] column value.
-     *
-     * @return int
-     */
-    public function getCoEmpresa()
-    {
-        return $this->co_empresa;
-    }
-
-    /**
-     * Get the [co_perfil] column value.
-     *
-     * @return int
-     */
-    public function getCoPerfil()
-    {
-        return $this->co_perfil;
     }
 
     /**
@@ -245,77 +187,6 @@ abstract class BaseColaborador extends BaseObject implements Persistent
 
         return $this;
     } // setDsEmail()
-
-    /**
-     * Set the value of [ds_senha] column.
-     *
-     * @param string $v new value
-     * @return Colaborador The current object (for fluent API support)
-     */
-    public function setDsSenha($v)
-    {
-        if ($v !== null && is_numeric($v)) {
-            $v = (string) $v;
-        }
-
-        if ($this->ds_senha !== $v) {
-            $this->ds_senha = $v;
-            $this->modifiedColumns[] = ColaboradorPeer::DS_SENHA;
-        }
-
-
-        return $this;
-    } // setDsSenha()
-
-    /**
-     * Set the value of [co_empresa] column.
-     *
-     * @param int $v new value
-     * @return Colaborador The current object (for fluent API support)
-     */
-    public function setCoEmpresa($v)
-    {
-        if ($v !== null && is_numeric($v)) {
-            $v = (int) $v;
-        }
-
-        if ($this->co_empresa !== $v) {
-            $this->co_empresa = $v;
-            $this->modifiedColumns[] = ColaboradorPeer::CO_EMPRESA;
-        }
-
-        if ($this->aEmpresa !== null && $this->aEmpresa->getCoEmpresa() !== $v) {
-            $this->aEmpresa = null;
-        }
-
-
-        return $this;
-    } // setCoEmpresa()
-
-    /**
-     * Set the value of [co_perfil] column.
-     *
-     * @param int $v new value
-     * @return Colaborador The current object (for fluent API support)
-     */
-    public function setCoPerfil($v)
-    {
-        if ($v !== null && is_numeric($v)) {
-            $v = (int) $v;
-        }
-
-        if ($this->co_perfil !== $v) {
-            $this->co_perfil = $v;
-            $this->modifiedColumns[] = ColaboradorPeer::CO_PERFIL;
-        }
-
-        if ($this->aPerfil !== null && $this->aPerfil->getCoPerfil() !== $v) {
-            $this->aPerfil = null;
-        }
-
-
-        return $this;
-    } // setCoPerfil()
 
     /**
      * Sets the value of the [tp_administrador] column.
@@ -401,11 +272,8 @@ abstract class BaseColaborador extends BaseObject implements Persistent
 
             $this->co_colaborador = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
             $this->ds_email = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
-            $this->ds_senha = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
-            $this->co_empresa = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
-            $this->co_perfil = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
-            $this->tp_administrador = ($row[$startcol + 5] !== null) ? (boolean) $row[$startcol + 5] : null;
-            $this->ds_telefone = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
+            $this->tp_administrador = ($row[$startcol + 2] !== null) ? (boolean) $row[$startcol + 2] : null;
+            $this->ds_telefone = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -414,7 +282,7 @@ abstract class BaseColaborador extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
             $this->postHydrate($row, $startcol, $rehydrate);
-            return $startcol + 7; // 7 = ColaboradorPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 4; // 4 = ColaboradorPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Colaborador object", $e);
@@ -439,12 +307,6 @@ abstract class BaseColaborador extends BaseObject implements Persistent
 
         if ($this->aPessoa !== null && $this->co_colaborador !== $this->aPessoa->getCoPessoa()) {
             $this->aPessoa = null;
-        }
-        if ($this->aEmpresa !== null && $this->co_empresa !== $this->aEmpresa->getCoEmpresa()) {
-            $this->aEmpresa = null;
-        }
-        if ($this->aPerfil !== null && $this->co_perfil !== $this->aPerfil->getCoPerfil()) {
-            $this->aPerfil = null;
         }
     } // ensureConsistency
 
@@ -486,8 +348,6 @@ abstract class BaseColaborador extends BaseObject implements Persistent
         if ($deep) {  // also de-associate any related objects?
 
             $this->aPessoa = null;
-            $this->aEmpresa = null;
-            $this->aPerfil = null;
             $this->collClienteColaboradors = null;
 
             $this->collRepresentadaColaboradors = null;
@@ -617,20 +477,6 @@ abstract class BaseColaborador extends BaseObject implements Persistent
                 $this->setPessoa($this->aPessoa);
             }
 
-            if ($this->aEmpresa !== null) {
-                if ($this->aEmpresa->isModified() || $this->aEmpresa->isNew()) {
-                    $affectedRows += $this->aEmpresa->save($con);
-                }
-                $this->setEmpresa($this->aEmpresa);
-            }
-
-            if ($this->aPerfil !== null) {
-                if ($this->aPerfil->isModified() || $this->aPerfil->isNew()) {
-                    $affectedRows += $this->aPerfil->save($con);
-                }
-                $this->setPerfil($this->aPerfil);
-            }
-
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -704,15 +550,6 @@ abstract class BaseColaborador extends BaseObject implements Persistent
         if ($this->isColumnModified(ColaboradorPeer::DS_EMAIL)) {
             $modifiedColumns[':p' . $index++]  = 'ds_email';
         }
-        if ($this->isColumnModified(ColaboradorPeer::DS_SENHA)) {
-            $modifiedColumns[':p' . $index++]  = 'ds_senha';
-        }
-        if ($this->isColumnModified(ColaboradorPeer::CO_EMPRESA)) {
-            $modifiedColumns[':p' . $index++]  = 'co_empresa';
-        }
-        if ($this->isColumnModified(ColaboradorPeer::CO_PERFIL)) {
-            $modifiedColumns[':p' . $index++]  = 'co_perfil';
-        }
         if ($this->isColumnModified(ColaboradorPeer::TP_ADMINISTRADOR)) {
             $modifiedColumns[':p' . $index++]  = 'tp_administrador';
         }
@@ -735,15 +572,6 @@ abstract class BaseColaborador extends BaseObject implements Persistent
                         break;
                     case 'ds_email':
                         $stmt->bindValue($identifier, $this->ds_email, PDO::PARAM_STR);
-                        break;
-                    case 'ds_senha':
-                        $stmt->bindValue($identifier, $this->ds_senha, PDO::PARAM_STR);
-                        break;
-                    case 'co_empresa':
-                        $stmt->bindValue($identifier, $this->co_empresa, PDO::PARAM_INT);
-                        break;
-                    case 'co_perfil':
-                        $stmt->bindValue($identifier, $this->co_perfil, PDO::PARAM_INT);
                         break;
                     case 'tp_administrador':
                         $stmt->bindValue($identifier, $this->tp_administrador, PDO::PARAM_BOOL);
@@ -849,18 +677,6 @@ abstract class BaseColaborador extends BaseObject implements Persistent
                 }
             }
 
-            if ($this->aEmpresa !== null) {
-                if (!$this->aEmpresa->validate($columns)) {
-                    $failureMap = array_merge($failureMap, $this->aEmpresa->getValidationFailures());
-                }
-            }
-
-            if ($this->aPerfil !== null) {
-                if (!$this->aPerfil->validate($columns)) {
-                    $failureMap = array_merge($failureMap, $this->aPerfil->getValidationFailures());
-                }
-            }
-
 
             if (($retval = ColaboradorPeer::doValidate($this, $columns)) !== true) {
                 $failureMap = array_merge($failureMap, $retval);
@@ -925,18 +741,9 @@ abstract class BaseColaborador extends BaseObject implements Persistent
                 return $this->getDsEmail();
                 break;
             case 2:
-                return $this->getDsSenha();
-                break;
-            case 3:
-                return $this->getCoEmpresa();
-                break;
-            case 4:
-                return $this->getCoPerfil();
-                break;
-            case 5:
                 return $this->getTpAdministrador();
                 break;
-            case 6:
+            case 3:
                 return $this->getDsTelefone();
                 break;
             default:
@@ -970,21 +777,12 @@ abstract class BaseColaborador extends BaseObject implements Persistent
         $result = array(
             $keys[0] => $this->getCoColaborador(),
             $keys[1] => $this->getDsEmail(),
-            $keys[2] => $this->getDsSenha(),
-            $keys[3] => $this->getCoEmpresa(),
-            $keys[4] => $this->getCoPerfil(),
-            $keys[5] => $this->getTpAdministrador(),
-            $keys[6] => $this->getDsTelefone(),
+            $keys[2] => $this->getTpAdministrador(),
+            $keys[3] => $this->getDsTelefone(),
         );
         if ($includeForeignObjects) {
             if (null !== $this->aPessoa) {
                 $result['Pessoa'] = $this->aPessoa->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-            if (null !== $this->aEmpresa) {
-                $result['Empresa'] = $this->aEmpresa->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-            if (null !== $this->aPerfil) {
-                $result['Perfil'] = $this->aPerfil->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
             if (null !== $this->collClienteColaboradors) {
                 $result['ClienteColaboradors'] = $this->collClienteColaboradors->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
@@ -1033,18 +831,9 @@ abstract class BaseColaborador extends BaseObject implements Persistent
                 $this->setDsEmail($value);
                 break;
             case 2:
-                $this->setDsSenha($value);
-                break;
-            case 3:
-                $this->setCoEmpresa($value);
-                break;
-            case 4:
-                $this->setCoPerfil($value);
-                break;
-            case 5:
                 $this->setTpAdministrador($value);
                 break;
-            case 6:
+            case 3:
                 $this->setDsTelefone($value);
                 break;
         } // switch()
@@ -1073,11 +862,8 @@ abstract class BaseColaborador extends BaseObject implements Persistent
 
         if (array_key_exists($keys[0], $arr)) $this->setCoColaborador($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setDsEmail($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setDsSenha($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setCoEmpresa($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setCoPerfil($arr[$keys[4]]);
-        if (array_key_exists($keys[5], $arr)) $this->setTpAdministrador($arr[$keys[5]]);
-        if (array_key_exists($keys[6], $arr)) $this->setDsTelefone($arr[$keys[6]]);
+        if (array_key_exists($keys[2], $arr)) $this->setTpAdministrador($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setDsTelefone($arr[$keys[3]]);
     }
 
     /**
@@ -1091,9 +877,6 @@ abstract class BaseColaborador extends BaseObject implements Persistent
 
         if ($this->isColumnModified(ColaboradorPeer::CO_COLABORADOR)) $criteria->add(ColaboradorPeer::CO_COLABORADOR, $this->co_colaborador);
         if ($this->isColumnModified(ColaboradorPeer::DS_EMAIL)) $criteria->add(ColaboradorPeer::DS_EMAIL, $this->ds_email);
-        if ($this->isColumnModified(ColaboradorPeer::DS_SENHA)) $criteria->add(ColaboradorPeer::DS_SENHA, $this->ds_senha);
-        if ($this->isColumnModified(ColaboradorPeer::CO_EMPRESA)) $criteria->add(ColaboradorPeer::CO_EMPRESA, $this->co_empresa);
-        if ($this->isColumnModified(ColaboradorPeer::CO_PERFIL)) $criteria->add(ColaboradorPeer::CO_PERFIL, $this->co_perfil);
         if ($this->isColumnModified(ColaboradorPeer::TP_ADMINISTRADOR)) $criteria->add(ColaboradorPeer::TP_ADMINISTRADOR, $this->tp_administrador);
         if ($this->isColumnModified(ColaboradorPeer::DS_TELEFONE)) $criteria->add(ColaboradorPeer::DS_TELEFONE, $this->ds_telefone);
 
@@ -1160,9 +943,6 @@ abstract class BaseColaborador extends BaseObject implements Persistent
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setDsEmail($this->getDsEmail());
-        $copyObj->setDsSenha($this->getDsSenha());
-        $copyObj->setCoEmpresa($this->getCoEmpresa());
-        $copyObj->setCoPerfil($this->getCoPerfil());
         $copyObj->setTpAdministrador($this->getTpAdministrador());
         $copyObj->setDsTelefone($this->getDsTelefone());
 
@@ -1284,110 +1064,6 @@ abstract class BaseColaborador extends BaseObject implements Persistent
         }
 
         return $this->aPessoa;
-    }
-
-    /**
-     * Declares an association between this object and a Empresa object.
-     *
-     * @param             Empresa $v
-     * @return Colaborador The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setEmpresa(Empresa $v = null)
-    {
-        if ($v === null) {
-            $this->setCoEmpresa(NULL);
-        } else {
-            $this->setCoEmpresa($v->getCoEmpresa());
-        }
-
-        $this->aEmpresa = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the Empresa object, it will not be re-added.
-        if ($v !== null) {
-            $v->addColaborador($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated Empresa object
-     *
-     * @param PropelPDO $con Optional Connection object.
-     * @param $doQuery Executes a query to get the object if required
-     * @return Empresa The associated Empresa object.
-     * @throws PropelException
-     */
-    public function getEmpresa(PropelPDO $con = null, $doQuery = true)
-    {
-        if ($this->aEmpresa === null && ($this->co_empresa !== null) && $doQuery) {
-            $this->aEmpresa = EmpresaQuery::create()->findPk($this->co_empresa, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aEmpresa->addColaboradors($this);
-             */
-        }
-
-        return $this->aEmpresa;
-    }
-
-    /**
-     * Declares an association between this object and a Perfil object.
-     *
-     * @param             Perfil $v
-     * @return Colaborador The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setPerfil(Perfil $v = null)
-    {
-        if ($v === null) {
-            $this->setCoPerfil(NULL);
-        } else {
-            $this->setCoPerfil($v->getCoPerfil());
-        }
-
-        $this->aPerfil = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the Perfil object, it will not be re-added.
-        if ($v !== null) {
-            $v->addColaborador($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated Perfil object
-     *
-     * @param PropelPDO $con Optional Connection object.
-     * @param $doQuery Executes a query to get the object if required
-     * @return Perfil The associated Perfil object.
-     * @throws PropelException
-     */
-    public function getPerfil(PropelPDO $con = null, $doQuery = true)
-    {
-        if ($this->aPerfil === null && ($this->co_perfil !== null) && $doQuery) {
-            $this->aPerfil = PerfilQuery::create()->findPk($this->co_perfil, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aPerfil->addColaboradors($this);
-             */
-        }
-
-        return $this->aPerfil;
     }
 
 
@@ -1902,9 +1578,6 @@ abstract class BaseColaborador extends BaseObject implements Persistent
     {
         $this->co_colaborador = null;
         $this->ds_email = null;
-        $this->ds_senha = null;
-        $this->co_empresa = null;
-        $this->co_perfil = null;
         $this->tp_administrador = null;
         $this->ds_telefone = null;
         $this->alreadyInSave = false;
@@ -1942,12 +1615,6 @@ abstract class BaseColaborador extends BaseObject implements Persistent
             if ($this->aPessoa instanceof Persistent) {
               $this->aPessoa->clearAllReferences($deep);
             }
-            if ($this->aEmpresa instanceof Persistent) {
-              $this->aEmpresa->clearAllReferences($deep);
-            }
-            if ($this->aPerfil instanceof Persistent) {
-              $this->aPerfil->clearAllReferences($deep);
-            }
 
             $this->alreadyInClearAllReferencesDeep = false;
         } // if ($deep)
@@ -1961,8 +1628,6 @@ abstract class BaseColaborador extends BaseObject implements Persistent
         }
         $this->collRepresentadaColaboradors = null;
         $this->aPessoa = null;
-        $this->aEmpresa = null;
-        $this->aPerfil = null;
     }
 
     /**

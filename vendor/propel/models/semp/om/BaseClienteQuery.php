@@ -13,6 +13,7 @@
  * @method ClienteQuery orderByDsRamoAtividade($order = Criteria::ASC) Order by the ds_ramo_atividade column
  * @method ClienteQuery orderByDtCadastro($order = Criteria::ASC) Order by the dt_cadastro column
  * @method ClienteQuery orderByDtFundacao($order = Criteria::ASC) Order by the dt_fundacao column
+ * @method ClienteQuery orderByCoTributacao($order = Criteria::ASC) Order by the co_tributacao column
  *
  * @method ClienteQuery groupByCoCliente() Group by the co_cliente column
  * @method ClienteQuery groupByDsRazaoSocial() Group by the ds_razao_social column
@@ -21,10 +22,15 @@
  * @method ClienteQuery groupByDsRamoAtividade() Group by the ds_ramo_atividade column
  * @method ClienteQuery groupByDtCadastro() Group by the dt_cadastro column
  * @method ClienteQuery groupByDtFundacao() Group by the dt_fundacao column
+ * @method ClienteQuery groupByCoTributacao() Group by the co_tributacao column
  *
  * @method ClienteQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method ClienteQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method ClienteQuery innerJoin($relation) Adds a INNER JOIN clause to the query
+ *
+ * @method ClienteQuery leftJoinClienteTributacao($relationAlias = null) Adds a LEFT JOIN clause to the query using the ClienteTributacao relation
+ * @method ClienteQuery rightJoinClienteTributacao($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ClienteTributacao relation
+ * @method ClienteQuery innerJoinClienteTributacao($relationAlias = null) Adds a INNER JOIN clause to the query using the ClienteTributacao relation
  *
  * @method ClienteQuery leftJoinPessoa($relationAlias = null) Adds a LEFT JOIN clause to the query using the Pessoa relation
  * @method ClienteQuery rightJoinPessoa($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Pessoa relation
@@ -43,6 +49,7 @@
  * @method Cliente findOneByDsRamoAtividade(string $ds_ramo_atividade) Return the first Cliente filtered by the ds_ramo_atividade column
  * @method Cliente findOneByDtCadastro(string $dt_cadastro) Return the first Cliente filtered by the dt_cadastro column
  * @method Cliente findOneByDtFundacao(string $dt_fundacao) Return the first Cliente filtered by the dt_fundacao column
+ * @method Cliente findOneByCoTributacao(int $co_tributacao) Return the first Cliente filtered by the co_tributacao column
  *
  * @method array findByCoCliente(int $co_cliente) Return Cliente objects filtered by the co_cliente column
  * @method array findByDsRazaoSocial(string $ds_razao_social) Return Cliente objects filtered by the ds_razao_social column
@@ -51,6 +58,7 @@
  * @method array findByDsRamoAtividade(string $ds_ramo_atividade) Return Cliente objects filtered by the ds_ramo_atividade column
  * @method array findByDtCadastro(string $dt_cadastro) Return Cliente objects filtered by the dt_cadastro column
  * @method array findByDtFundacao(string $dt_fundacao) Return Cliente objects filtered by the dt_fundacao column
+ * @method array findByCoTributacao(int $co_tributacao) Return Cliente objects filtered by the co_tributacao column
  *
  * @package    propel.generator.semp.om
  */
@@ -154,7 +162,7 @@ abstract class BaseClienteQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT co_cliente, ds_razao_social, ds_inscricao_estadual, st_suframa, ds_ramo_atividade, dt_cadastro, dt_fundacao FROM cliente.cliente WHERE co_cliente = :p0';
+        $sql = 'SELECT co_cliente, ds_razao_social, ds_inscricao_estadual, st_suframa, ds_ramo_atividade, dt_cadastro, dt_fundacao, co_tributacao FROM cliente.cliente WHERE co_cliente = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -485,6 +493,126 @@ abstract class BaseClienteQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(ClientePeer::DT_FUNDACAO, $dtFundacao, $comparison);
+    }
+
+    /**
+     * Filter the query on the co_tributacao column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCoTributacao(1234); // WHERE co_tributacao = 1234
+     * $query->filterByCoTributacao(array(12, 34)); // WHERE co_tributacao IN (12, 34)
+     * $query->filterByCoTributacao(array('min' => 12)); // WHERE co_tributacao >= 12
+     * $query->filterByCoTributacao(array('max' => 12)); // WHERE co_tributacao <= 12
+     * </code>
+     *
+     * @see       filterByClienteTributacao()
+     *
+     * @param     mixed $coTributacao The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ClienteQuery The current query, for fluid interface
+     */
+    public function filterByCoTributacao($coTributacao = null, $comparison = null)
+    {
+        if (is_array($coTributacao)) {
+            $useMinMax = false;
+            if (isset($coTributacao['min'])) {
+                $this->addUsingAlias(ClientePeer::CO_TRIBUTACAO, $coTributacao['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($coTributacao['max'])) {
+                $this->addUsingAlias(ClientePeer::CO_TRIBUTACAO, $coTributacao['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(ClientePeer::CO_TRIBUTACAO, $coTributacao, $comparison);
+    }
+
+    /**
+     * Filter the query by a related ClienteTributacao object
+     *
+     * @param   ClienteTributacao|PropelObjectCollection $clienteTributacao The related object(s) to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 ClienteQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByClienteTributacao($clienteTributacao, $comparison = null)
+    {
+        if ($clienteTributacao instanceof ClienteTributacao) {
+            return $this
+                ->addUsingAlias(ClientePeer::CO_TRIBUTACAO, $clienteTributacao->getCoTributacao(), $comparison);
+        } elseif ($clienteTributacao instanceof PropelObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(ClientePeer::CO_TRIBUTACAO, $clienteTributacao->toKeyValue('PrimaryKey', 'CoTributacao'), $comparison);
+        } else {
+            throw new PropelException('filterByClienteTributacao() only accepts arguments of type ClienteTributacao or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the ClienteTributacao relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return ClienteQuery The current query, for fluid interface
+     */
+    public function joinClienteTributacao($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('ClienteTributacao');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'ClienteTributacao');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the ClienteTributacao relation ClienteTributacao object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   ClienteTributacaoQuery A secondary query class using the current class as primary query
+     */
+    public function useClienteTributacaoQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinClienteTributacao($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'ClienteTributacao', 'ClienteTributacaoQuery');
     }
 
     /**

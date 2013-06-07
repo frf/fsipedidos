@@ -1,66 +1,50 @@
 <?php
- 
+
+// module/Admin/conﬁg/module.config.php:
 return array(
-    # definir controllers
-    'controllers' => array(
+    'controllers' => array( //add module controllers
         'invokables' => array(
-            'HomeController'     => 'Representada\Controller\HomeController',
-            'RepresentadasController' => 'Representada\Controller\RepresentadasController',
+            'Representada\Controller\Representada' => 'Representada\Controller\RepresentadasController',
+            'Representada\Controller\Produto' => 'Representada\Controller\ProdutosController'                  
         ),
     ),
-    
-    # definir rotas
+ // The following section is new and should be added to your file
     'router' => array(
         'routes' => array(
-            'home' => array(
-                'type'      => 'Literal',
-                'options'   => array(
-                    'route'    => '/',
-                    'defaults' => array(
-                        'controller' => 'HomeController',
-                        'action'     => 'index',
-                    ),
-                ),
-            ),
             'representadas' => array(
-                'type'      => 'segment',
-                'options'   => array(
+                'type'    => 'segment',
+                'options' => array(
                     'route'    => '/representadas[/:action][/:id]',
                     'constraints' => array(
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id'     => '[0-9]+',
                     ),
                     'defaults' => array(
-                        'controller' => 'RepresentadasController',
+                        'controller' => 'Representada\Controller\Representada',
                         'action'     => 'index',
                     ),
                 ),
             ),
+            'produtos' => array(
+                'type'    => 'segment',
+                'options' => array(
+                    'route'    => '/produtos[/:action]/representada[/:idrep]/produto[/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'idrep'     => '[0-9]+',
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Representada\Controller\Produto',
+                        'action'     => 'novo',
+                    ),
+                ),
+            )
         ),
     ),
-    
-    # definir gerenciador de servicos
-    'service_manager' => array(
-        'factories' => array(
-            'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
-        ),
-    ),
-    
-    # definir layouts, erros, exceptions, doctype base
-    'view_manager' => array(
-        'display_not_found_reason'  => true,
-        'display_exceptions'        => true,
-        'doctype'                   => 'HTML5',
-        'not_found_template'        => 'error/404',
-        'exception_template'        => 'error/index',
-        'template_map'              => array(
-            'layout/layout'         => __DIR__ . '/../view/layout/layout.phtml',
-            'cliente/home/index'    => __DIR__ . '/../view/cliente/home/index.phtml',
-            'error/404'             => __DIR__ . '/../view/error/404.phtml',
-            'error/index'           => __DIR__ . '/../view/error/index.phtml',
-        ),
+    'view_manager' => array( //the module can have a specific layout
         'template_path_stack' => array(
-            __DIR__ . '/../view',
+            'application' => __DIR__ . '/../view',
         ),
     ),
 );

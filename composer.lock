@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "e0300b2c2b263978f1af460485d1f9a3",
+    "hash": "b735c016cc704d162bd4a909e32aa62f",
     "packages": [
         {
             "name": "phing/phing",
@@ -116,6 +116,67 @@
                 "persistence"
             ],
             "time": "2013-03-31 17:20:51"
+        },
+        {
+            "name": "webino/webino-image-thumb",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webino/WebinoImageThumb",
+                "reference": "1.0.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/webino/WebinoImageThumb/zipball/1.0.0",
+                "reference": "1.0.0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3",
+                "zendframework/zendframework": "2.*"
+            },
+            "suggest": {
+                "webino/WebinoDraw": "XHTML Layout Renderer for Zend Framework.",
+                "webino/ZF2NetteDebug": "User friendly Exception and Error handler ported from Nette Framework."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "WebinoImageThumb": "src/"
+                },
+                "classmap": [
+                    "Module.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "New BSD License"
+            ],
+            "authors": [
+                {
+                    "name": "Peter Bačinský",
+                    "email": "peter@bacinsky.sk",
+                    "homepage": "http://www.bacinsky.sk/",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Ian Selby",
+                    "email": "ian@gxdlabs.com",
+                    "homepage": "http://www.gen-x-design.com/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Image Thumbnailer for Zend Framework.",
+            "homepage": "https://github.com/webino/WebinoImageThumb",
+            "keywords": [
+                "framework",
+                "image",
+                "thumb",
+                "webino",
+                "zend",
+                "zf2"
+            ],
+            "time": "2012-11-03 02:25:11"
         },
         {
             "name": "zendframework/zendframework",

@@ -12,8 +12,9 @@ namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Application\Controller\ActionController;
 
-class IndexController extends AbstractActionController {
+class IndexController extends ActionController {
 
     public function indexAction() {
 
@@ -24,7 +25,20 @@ class IndexController extends AbstractActionController {
         #$objectManager->persist($user);
         #$objectManager->flush();
 
-        #die(var_dump($user->getId())); // yes, I'm lazy
+        #die(var_dump($this->getEvent()->getName())); // yes, I'm lazy
+
+        return new ViewModel();
+    }
+    public function testAction() {
+
+       
+        #$user = new \Application\Entity\User();
+        #$user->setFullName('Marco Pivetta');
+
+        #$objectManager->persist($user);
+        #$objectManager->flush();
+
+        #die(var_dump($this->getEvent()->getName())); // yes, I'm lazy
 
         return new ViewModel();
     }

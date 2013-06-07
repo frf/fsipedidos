@@ -189,9 +189,13 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
 }
 
 .container-fluid .row-fluid:first-child {
-	margin-top: 20px;
+	margin-top: 0px;
 }
-/* Breadcrumb */
+/*
+.container-fluid .row-fluid:first-child {
+	margin-top: 20px;
+}*/
+ /* Breadcrumb */
 #breadcrumb {
 	background-color: #fff;
 	border-bottom: 1px solid #e3ebed;

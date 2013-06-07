@@ -3,12 +3,58 @@
 // namespace de localizacao clientesController.php
 namespace Representada\Controller;
  
-use Zend\Mvc\Controller\AbstractActionController;
 use Propel;
+use Application\Controller\ActionController;
  
-class RepresentadasController extends AbstractActionController
+class RepresentadasController extends ActionController
 {
- 
+        /**
+           * Função para fazer upload de arquivos
+           * @author Rafael Wendel Pinheiro
+           * @param File $arquivo Arquivo a ser salvo no servidor
+           * @param String $pasta Local onde o arquivo será salvo
+           * @param Array $tipos Extensões permitidas para o arquivo
+           * @param String $nome Nome do arquivo. Null para manter o nome original
+           * @return array
+       */
+       public function uploadFile($arquivo, $pasta, $tipos, $nome = null){
+           if(isset($arquivo)){
+               $infos = explode(".", $arquivo["name"]);
+
+               if(!$nome){
+                   for($i = 0; $i < count($infos) - 1; $i++){
+                       $nomeOriginal = $nomeOriginal . $infos[$i] . ".";
+                   }
+               }
+               else{
+                   $nomeOriginal = $nome . ".";
+               }
+
+               $tipoArquivo = $infos[count($infos) - 1];
+
+               $tipoPermitido = false;
+               foreach($tipos as $tipo){
+                   if(strtolower($tipoArquivo) == strtolower($tipo)){
+                       $tipoPermitido = true;
+                   }
+               }
+               if(!$tipoPermitido){
+                   $retorno["erro"] = "Tipo não permitido";
+               }
+               else{
+                   if(move_uploaded_file($arquivo['tmp_name'], $pasta . $nomeOriginal . $tipoArquivo)){
+                       $retorno["caminho"] = $pasta . $nomeOriginal . $tipoArquivo;
+                   }
+                   else{
+                       $retorno["erro"] = "Erro ao fazer upload";
+                   }
+               }
+           }
+           else{
+               $retorno["erro"] = "Arquivo nao setado";
+           }
+           return $retorno;
+       }
     // GET /clientes
     public function indexAction()
     {
@@ -17,6 +63,45 @@ class RepresentadasController extends AbstractActionController
        
         return array('message' => $this->getFlashMessenger(),
                     'aRepresentada'=>$representada);
+    }
+    // GET /clientes
+    public function uploadFotoAction()
+    {
+        $request = $this->getRequest();
+         
+        if ($request->isPost()) {
+            $data = $request->getPost();
+            $File = $this->params()->fromFiles('arquivo');
+            
+            // upload arquivo
+                $size = new \Zend\Validator\File\Size(array(
+                    'max' => 20000000
+                ));
+                $adapter = new \Zend\File\Transfer\Adapter\Http();
+                $adapter->setValidators(array($size), $File['name']);
+                
+                if (!$adapter->isValid()) {
+                    $dataError = $adapter->getMessages();
+                    $error = array();
+                    foreach ($dataError as $key => $row) {
+                        $error[] = $row;
+                    }
+                    $data['msg'] = $error[0];
+                } else {
+                    $diretorio = $request->getServer('DOCUMENT_ROOT', false) . "/produto";
+                    
+                    $adapter->setDestination($diretorio);
+                
+                    if ($adapter->receive($File['name'])) {
+                    }
+                }
+        }
+        
+        
+        $response = $this->getResponse();
+        $response->setStatusCode(200);
+        $response->setContent(json_encode($data));
+        return $response;
     }
 
     // GET /clientes/novo
@@ -49,20 +134,20 @@ class RepresentadasController extends AbstractActionController
                     echo $e->getMessage();
                     
                     $this->flashMessenger()->addSuccessMessage( $e->getMessage());
-                    $this->logger()->err( $e->getMessage());
+                    #$this->logger()->err( $e->getMessage());
                     
                      return $this->redirect()->toRoute('representadas');
                 }
                 // adicionar mensagem de sucesso
                 $this->flashMessenger()->addSuccessMessage("Representada adicionada com sucesso");
-                $this->logger()->info('Representada adicionada com sucesso');
+                #$this->logger()->info('Representada adicionada com sucesso');
 
                 // redirecionar para action index no controller clientes
                 return $this->redirect()->toRoute('representadas');
             } else {
                 // adicionar mensagem de erro
                 $this->flashMessenger()->addErrorMessage("Erro ao adicionar representada");
-                $this->logger()->err('Erro ao adicionar representada');
+                #$this->logger()->err('Erro ao adicionar representada');
 
                 // redirecionar para action novo no controllers clientes
                 return $this->redirect()->toRoute('representadas', array('action' => 'novo'));
@@ -91,9 +176,14 @@ class RepresentadasController extends AbstractActionController
 
         // formulário com dados preenchidos
         $representada = \RepresentadaQuery::create()->filterByCoRepresentada($id)->findOne();
-
+        $produtos = \ProdutoRepresentadaQuery::create()
+                    ->filterByCoRepresentada($id)
+                    ->find();
         // dados eviados para detalhes.phtml
-        return array('id' => $id, 'form' => $representada, 'message' => $this->getFlashMessenger());
+        return array('id' => $id, 
+                    'form' => $representada, 
+                    'produtos' => $produtos,
+                    'message' => $this->getFlashMessenger());
     }
  
     // GET /clientes/editar/id
@@ -146,7 +236,7 @@ class RepresentadasController extends AbstractActionController
                     echo $e->getMessage();
                     
                     $this->flashMessenger()->addSuccessMessage( $e->getMessage());
-                    $this->logger()->err( $e->getMessage());
+                    #$this->logger()->err( $e->getMessage());
                     
                      return $this->redirect()->toRoute('representadas');
                 }
@@ -204,7 +294,7 @@ class RepresentadasController extends AbstractActionController
                     
                 }  catch (Exception $e){  
                     
-                    $this->logger()->err($e->getMessage());
+                    #$this->logger()->err($e->getMessage());
                     
                     $pdo->rollBack();
                 }

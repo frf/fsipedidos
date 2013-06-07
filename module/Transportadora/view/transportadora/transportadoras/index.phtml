@@ -1,0 +1,62 @@
+<div id="content-header">
+    <div id="breadcrumb"> 
+        <a href="/" title="Principal" class="tip-bottom"><i class="icon-home"></i> Principal</a>
+        <a href="/transportadoras/index" title="Transportadoras" class="tip-bottom current"><i class="icon-road"></i> Transportadoras</a>
+    </div>
+  </div>
+<div class="container-fluid">
+    <br>
+    <?php echo $this->message($this->message); ?>
+    <a class="btn btn-success" href="<?php echo $this->url('transportadoras', array('action' => 'novo'))?>">Nova Transportadora</a>
+    
+    <div class="row-fluid">
+        
+      <div class="span12">
+           
+        <div class="widget-box">
+           
+          <div class="widget-title">
+             <span class="icon"><i class="icon-th"></i></span> 
+            <h5>Lista de Transportadoras</h5>
+          </div>
+            
+          <div class="widget-content nopadding">
+              
+              
+            <table class="table table-bordered data-table">
+              <thead>
+                <tr>
+                   <th>#</th>
+                    <th>Nome</th>
+                    <th>Site</th>
+                    <th>Ação</th>  
+                </tr>
+              </thead>
+              <tbody>
+                  <?php 
+                  $i=0;
+                  foreach($this->aTransportadora as $oTransportadora){ 
+                      if($i%2){
+                          $grade = "gradeX";
+                      }else{
+                          $grade = "gradeC";
+                      }
+                      ?>
+                    <tr class="<?php echo $grade; ?>">
+                        <td><?php echo $oTransportadora->getCoTransportadora();; ?></td>
+                        <td><?php echo $oTransportadora->getNoTransportadora(); ?></td>
+                         <td><?php echo $oTransportadora->getNoSite(); ?></td>
+                        <td>
+                            <a class="btn btn-mini btn-info" href="<?php echo $this->url('transportadoras', array("action" => "detalhes", "id" => $oTransportadora->getCoTransportadora(),)); ?>">Visualizar</a>
+                            <a class="btn btn-mini btn-warning" href="<?php echo $this->url('transportadoras', array("action" => "editar", "id" => $oTransportadora->getCoTransportadora(),)); ?>">Editar</a>
+                            <a class="btn btn-mini btn-danger" href="<?php echo $this->url('transportadoras', array("action" => "deletar", "id" => $oTransportadora->getCoTransportadora(),)); ?>">Apagar</a>
+                        </td>
+                    </tr>
+                <?php } ?>                
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>

@@ -41,7 +41,7 @@ class EmpresaTableMap extends TableMap
         // columns
         $this->addPrimaryKey('co_empresa', 'CoEmpresa', 'INTEGER', true, null, null);
         $this->addColumn('no_empresa', 'NoEmpresa', 'VARCHAR', false, 200, null);
-        $this->addColumn('no_dominio', 'NoDominio', 'VARCHAR', false, null, null);
+        $this->addColumn('no_dominio', 'NoDominio', 'VARCHAR', false, 200, null);
         // validators
     } // initialize()
 
@@ -50,7 +50,7 @@ class EmpresaTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Colaborador', 'Colaborador', RelationMap::ONE_TO_MANY, array('co_empresa' => 'co_empresa', ), null, null, 'Colaboradors');
+        $this->addRelation('Pessoa', 'Pessoa', RelationMap::ONE_TO_MANY, array('co_empresa' => 'co_empresa', ), 'RESTRICT', 'CASCADE', 'Pessoas');
     } // buildRelations()
 
 } // EmpresaTableMap

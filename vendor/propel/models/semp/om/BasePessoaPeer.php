@@ -24,13 +24,13 @@ abstract class BasePessoaPeer
     const TM_CLASS = 'PessoaTableMap';
 
     /** The total number of columns. */
-    const NUM_COLUMNS = 4;
+    const NUM_COLUMNS = 5;
 
     /** The number of lazy-loaded columns. */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 4;
+    const NUM_HYDRATE_COLUMNS = 5;
 
     /** the column name for the co_pessoa field */
     const CO_PESSOA = 'pessoa.co_pessoa';
@@ -43,6 +43,9 @@ abstract class BasePessoaPeer
 
     /** the column name for the nu_cnpj field */
     const NU_CNPJ = 'pessoa.nu_cnpj';
+
+    /** the column name for the co_empresa field */
+    const CO_EMPRESA = 'pessoa.co_empresa';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -63,12 +66,12 @@ abstract class BasePessoaPeer
      * e.g. PessoaPeer::$fieldNames[PessoaPeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('CoPessoa', 'NoPessoa', 'NuCpf', 'NuCnpj', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('coPessoa', 'noPessoa', 'nuCpf', 'nuCnpj', ),
-        BasePeer::TYPE_COLNAME => array (PessoaPeer::CO_PESSOA, PessoaPeer::NO_PESSOA, PessoaPeer::NU_CPF, PessoaPeer::NU_CNPJ, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('CO_PESSOA', 'NO_PESSOA', 'NU_CPF', 'NU_CNPJ', ),
-        BasePeer::TYPE_FIELDNAME => array ('co_pessoa', 'no_pessoa', 'nu_cpf', 'nu_cnpj', ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, )
+        BasePeer::TYPE_PHPNAME => array ('CoPessoa', 'NoPessoa', 'NuCpf', 'NuCnpj', 'CoEmpresa', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('coPessoa', 'noPessoa', 'nuCpf', 'nuCnpj', 'coEmpresa', ),
+        BasePeer::TYPE_COLNAME => array (PessoaPeer::CO_PESSOA, PessoaPeer::NO_PESSOA, PessoaPeer::NU_CPF, PessoaPeer::NU_CNPJ, PessoaPeer::CO_EMPRESA, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('CO_PESSOA', 'NO_PESSOA', 'NU_CPF', 'NU_CNPJ', 'CO_EMPRESA', ),
+        BasePeer::TYPE_FIELDNAME => array ('co_pessoa', 'no_pessoa', 'nu_cpf', 'nu_cnpj', 'co_empresa', ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, )
     );
 
     /**
@@ -78,12 +81,12 @@ abstract class BasePessoaPeer
      * e.g. PessoaPeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('CoPessoa' => 0, 'NoPessoa' => 1, 'NuCpf' => 2, 'NuCnpj' => 3, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('coPessoa' => 0, 'noPessoa' => 1, 'nuCpf' => 2, 'nuCnpj' => 3, ),
-        BasePeer::TYPE_COLNAME => array (PessoaPeer::CO_PESSOA => 0, PessoaPeer::NO_PESSOA => 1, PessoaPeer::NU_CPF => 2, PessoaPeer::NU_CNPJ => 3, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('CO_PESSOA' => 0, 'NO_PESSOA' => 1, 'NU_CPF' => 2, 'NU_CNPJ' => 3, ),
-        BasePeer::TYPE_FIELDNAME => array ('co_pessoa' => 0, 'no_pessoa' => 1, 'nu_cpf' => 2, 'nu_cnpj' => 3, ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, )
+        BasePeer::TYPE_PHPNAME => array ('CoPessoa' => 0, 'NoPessoa' => 1, 'NuCpf' => 2, 'NuCnpj' => 3, 'CoEmpresa' => 4, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('coPessoa' => 0, 'noPessoa' => 1, 'nuCpf' => 2, 'nuCnpj' => 3, 'coEmpresa' => 4, ),
+        BasePeer::TYPE_COLNAME => array (PessoaPeer::CO_PESSOA => 0, PessoaPeer::NO_PESSOA => 1, PessoaPeer::NU_CPF => 2, PessoaPeer::NU_CNPJ => 3, PessoaPeer::CO_EMPRESA => 4, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('CO_PESSOA' => 0, 'NO_PESSOA' => 1, 'NU_CPF' => 2, 'NU_CNPJ' => 3, 'CO_EMPRESA' => 4, ),
+        BasePeer::TYPE_FIELDNAME => array ('co_pessoa' => 0, 'no_pessoa' => 1, 'nu_cpf' => 2, 'nu_cnpj' => 3, 'co_empresa' => 4, ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, )
     );
 
     /**
@@ -161,11 +164,13 @@ abstract class BasePessoaPeer
             $criteria->addSelectColumn(PessoaPeer::NO_PESSOA);
             $criteria->addSelectColumn(PessoaPeer::NU_CPF);
             $criteria->addSelectColumn(PessoaPeer::NU_CNPJ);
+            $criteria->addSelectColumn(PessoaPeer::CO_EMPRESA);
         } else {
             $criteria->addSelectColumn($alias . '.co_pessoa');
             $criteria->addSelectColumn($alias . '.no_pessoa');
             $criteria->addSelectColumn($alias . '.nu_cpf');
             $criteria->addSelectColumn($alias . '.nu_cnpj');
+            $criteria->addSelectColumn($alias . '.co_empresa');
         }
     }
 
@@ -372,6 +377,15 @@ abstract class BasePessoaPeer
      */
     public static function clearRelatedInstancePool()
     {
+        // Invalidate objects in EmailPeer instance pool,
+        // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
+        EmailPeer::clearInstancePool();
+        // Invalidate objects in EnderecoPeer instance pool,
+        // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
+        EnderecoPeer::clearInstancePool();
+        // Invalidate objects in TelefonePeer instance pool,
+        // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
+        TelefonePeer::clearInstancePool();
     }
 
     /**
@@ -466,6 +480,244 @@ abstract class BasePessoaPeer
         }
 
         return array($obj, $col);
+    }
+
+
+    /**
+     * Returns the number of rows matching criteria, joining the related Empresa table
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return int Number of matching rows.
+     */
+    public static function doCountJoinEmpresa(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        // we're going to modify criteria, so copy it first
+        $criteria = clone $criteria;
+
+        // We need to set the primary table name, since in the case that there are no WHERE columns
+        // it will be impossible for the BasePeer::createSelectSql() method to determine which
+        // tables go into the FROM clause.
+        $criteria->setPrimaryTableName(PessoaPeer::TABLE_NAME);
+
+        if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+            $criteria->setDistinct();
+        }
+
+        if (!$criteria->hasSelectClause()) {
+            PessoaPeer::addSelectColumns($criteria);
+        }
+
+        $criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+
+        // Set the correct dbName
+        $criteria->setDbName(PessoaPeer::DATABASE_NAME);
+
+        if ($con === null) {
+            $con = Propel::getConnection(PessoaPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+        }
+
+        $criteria->addJoin(PessoaPeer::CO_EMPRESA, EmpresaPeer::CO_EMPRESA, $join_behavior);
+
+        $stmt = BasePeer::doCount($criteria, $con);
+
+        if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $count = (int) $row[0];
+        } else {
+            $count = 0; // no rows returned; we infer that means 0 matches.
+        }
+        $stmt->closeCursor();
+
+        return $count;
+    }
+
+
+    /**
+     * Selects a collection of Pessoa objects pre-filled with their Empresa objects.
+     * @param      Criteria  $criteria
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return array           Array of Pessoa objects.
+     * @throws PropelException Any exceptions caught during processing will be
+     *		 rethrown wrapped into a PropelException.
+     */
+    public static function doSelectJoinEmpresa(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $criteria = clone $criteria;
+
+        // Set the correct dbName if it has not been overridden
+        if ($criteria->getDbName() == Propel::getDefaultDB()) {
+            $criteria->setDbName(PessoaPeer::DATABASE_NAME);
+        }
+
+        PessoaPeer::addSelectColumns($criteria);
+        $startcol = PessoaPeer::NUM_HYDRATE_COLUMNS;
+        EmpresaPeer::addSelectColumns($criteria);
+
+        $criteria->addJoin(PessoaPeer::CO_EMPRESA, EmpresaPeer::CO_EMPRESA, $join_behavior);
+
+        $stmt = BasePeer::doSelect($criteria, $con);
+        $results = array();
+
+        while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $key1 = PessoaPeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = PessoaPeer::getInstanceFromPool($key1))) {
+                // We no longer rehydrate the object, since this can cause data loss.
+                // See http://www.propelorm.org/ticket/509
+                // $obj1->hydrate($row, 0, true); // rehydrate
+            } else {
+
+                $cls = PessoaPeer::getOMClass();
+
+                $obj1 = new $cls();
+                $obj1->hydrate($row);
+                PessoaPeer::addInstanceToPool($obj1, $key1);
+            } // if $obj1 already loaded
+
+            $key2 = EmpresaPeer::getPrimaryKeyHashFromRow($row, $startcol);
+            if ($key2 !== null) {
+                $obj2 = EmpresaPeer::getInstanceFromPool($key2);
+                if (!$obj2) {
+
+                    $cls = EmpresaPeer::getOMClass();
+
+                    $obj2 = new $cls();
+                    $obj2->hydrate($row, $startcol);
+                    EmpresaPeer::addInstanceToPool($obj2, $key2);
+                } // if obj2 already loaded
+
+                // Add the $obj1 (Pessoa) to $obj2 (Empresa)
+                $obj2->addPessoa($obj1);
+
+            } // if joined row was not null
+
+            $results[] = $obj1;
+        }
+        $stmt->closeCursor();
+
+        return $results;
+    }
+
+
+    /**
+     * Returns the number of rows matching criteria, joining all related tables
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return int Number of matching rows.
+     */
+    public static function doCountJoinAll(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        // we're going to modify criteria, so copy it first
+        $criteria = clone $criteria;
+
+        // We need to set the primary table name, since in the case that there are no WHERE columns
+        // it will be impossible for the BasePeer::createSelectSql() method to determine which
+        // tables go into the FROM clause.
+        $criteria->setPrimaryTableName(PessoaPeer::TABLE_NAME);
+
+        if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+            $criteria->setDistinct();
+        }
+
+        if (!$criteria->hasSelectClause()) {
+            PessoaPeer::addSelectColumns($criteria);
+        }
+
+        $criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+
+        // Set the correct dbName
+        $criteria->setDbName(PessoaPeer::DATABASE_NAME);
+
+        if ($con === null) {
+            $con = Propel::getConnection(PessoaPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+        }
+
+        $criteria->addJoin(PessoaPeer::CO_EMPRESA, EmpresaPeer::CO_EMPRESA, $join_behavior);
+
+        $stmt = BasePeer::doCount($criteria, $con);
+
+        if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $count = (int) $row[0];
+        } else {
+            $count = 0; // no rows returned; we infer that means 0 matches.
+        }
+        $stmt->closeCursor();
+
+        return $count;
+    }
+
+    /**
+     * Selects a collection of Pessoa objects pre-filled with all related objects.
+     *
+     * @param      Criteria  $criteria
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return array           Array of Pessoa objects.
+     * @throws PropelException Any exceptions caught during processing will be
+     *		 rethrown wrapped into a PropelException.
+     */
+    public static function doSelectJoinAll(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $criteria = clone $criteria;
+
+        // Set the correct dbName if it has not been overridden
+        if ($criteria->getDbName() == Propel::getDefaultDB()) {
+            $criteria->setDbName(PessoaPeer::DATABASE_NAME);
+        }
+
+        PessoaPeer::addSelectColumns($criteria);
+        $startcol2 = PessoaPeer::NUM_HYDRATE_COLUMNS;
+
+        EmpresaPeer::addSelectColumns($criteria);
+        $startcol3 = $startcol2 + EmpresaPeer::NUM_HYDRATE_COLUMNS;
+
+        $criteria->addJoin(PessoaPeer::CO_EMPRESA, EmpresaPeer::CO_EMPRESA, $join_behavior);
+
+        $stmt = BasePeer::doSelect($criteria, $con);
+        $results = array();
+
+        while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $key1 = PessoaPeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = PessoaPeer::getInstanceFromPool($key1))) {
+                // We no longer rehydrate the object, since this can cause data loss.
+                // See http://www.propelorm.org/ticket/509
+                // $obj1->hydrate($row, 0, true); // rehydrate
+            } else {
+                $cls = PessoaPeer::getOMClass();
+
+                $obj1 = new $cls();
+                $obj1->hydrate($row);
+                PessoaPeer::addInstanceToPool($obj1, $key1);
+            } // if obj1 already loaded
+
+            // Add objects for joined Empresa rows
+
+            $key2 = EmpresaPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+            if ($key2 !== null) {
+                $obj2 = EmpresaPeer::getInstanceFromPool($key2);
+                if (!$obj2) {
+
+                    $cls = EmpresaPeer::getOMClass();
+
+                    $obj2 = new $cls();
+                    $obj2->hydrate($row, $startcol2);
+                    EmpresaPeer::addInstanceToPool($obj2, $key2);
+                } // if obj2 loaded
+
+                // Add the $obj1 (Pessoa) to the collection in $obj2 (Empresa)
+                $obj2->addPessoa($obj1);
+            } // if joined row not null
+
+            $results[] = $obj1;
+        }
+        $stmt->closeCursor();
+
+        return $results;
     }
 
     /**

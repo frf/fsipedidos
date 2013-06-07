@@ -73,6 +73,17 @@ abstract class BaseCliente extends BaseObject implements Persistent
     protected $dt_fundacao;
 
     /**
+     * The value for the co_tributacao field.
+     * @var        int
+     */
+    protected $co_tributacao;
+
+    /**
+     * @var        ClienteTributacao
+     */
+    protected $aClienteTributacao;
+
+    /**
      * @var        Pessoa
      */
     protected $aPessoa;
@@ -250,6 +261,16 @@ abstract class BaseCliente extends BaseObject implements Persistent
     }
 
     /**
+     * Get the [co_tributacao] column value.
+     *
+     * @return int
+     */
+    public function getCoTributacao()
+    {
+        return $this->co_tributacao;
+    }
+
+    /**
      * Set the value of [co_cliente] column.
      *
      * @param int $v new value
@@ -413,6 +434,31 @@ abstract class BaseCliente extends BaseObject implements Persistent
     } // setDtFundacao()
 
     /**
+     * Set the value of [co_tributacao] column.
+     *
+     * @param int $v new value
+     * @return Cliente The current object (for fluent API support)
+     */
+    public function setCoTributacao($v)
+    {
+        if ($v !== null && is_numeric($v)) {
+            $v = (int) $v;
+        }
+
+        if ($this->co_tributacao !== $v) {
+            $this->co_tributacao = $v;
+            $this->modifiedColumns[] = ClientePeer::CO_TRIBUTACAO;
+        }
+
+        if ($this->aClienteTributacao !== null && $this->aClienteTributacao->getCoTributacao() !== $v) {
+            $this->aClienteTributacao = null;
+        }
+
+
+        return $this;
+    } // setCoTributacao()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -451,6 +497,7 @@ abstract class BaseCliente extends BaseObject implements Persistent
             $this->ds_ramo_atividade = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
             $this->dt_cadastro = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
             $this->dt_fundacao = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
+            $this->co_tributacao = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -459,7 +506,7 @@ abstract class BaseCliente extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
             $this->postHydrate($row, $startcol, $rehydrate);
-            return $startcol + 7; // 7 = ClientePeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 8; // 8 = ClientePeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Cliente object", $e);
@@ -484,6 +531,9 @@ abstract class BaseCliente extends BaseObject implements Persistent
 
         if ($this->aPessoa !== null && $this->co_cliente !== $this->aPessoa->getCoPessoa()) {
             $this->aPessoa = null;
+        }
+        if ($this->aClienteTributacao !== null && $this->co_tributacao !== $this->aClienteTributacao->getCoTributacao()) {
+            $this->aClienteTributacao = null;
         }
     } // ensureConsistency
 
@@ -524,6 +574,7 @@ abstract class BaseCliente extends BaseObject implements Persistent
 
         if ($deep) {  // also de-associate any related objects?
 
+            $this->aClienteTributacao = null;
             $this->aPessoa = null;
             $this->collClienteColaboradors = null;
 
@@ -645,6 +696,13 @@ abstract class BaseCliente extends BaseObject implements Persistent
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
+            if ($this->aClienteTributacao !== null) {
+                if ($this->aClienteTributacao->isModified() || $this->aClienteTributacao->isNew()) {
+                    $affectedRows += $this->aClienteTributacao->save($con);
+                }
+                $this->setClienteTributacao($this->aClienteTributacao);
+            }
+
             if ($this->aPessoa !== null) {
                 if ($this->aPessoa->isModified() || $this->aPessoa->isNew()) {
                     $affectedRows += $this->aPessoa->save($con);
@@ -723,6 +781,9 @@ abstract class BaseCliente extends BaseObject implements Persistent
         if ($this->isColumnModified(ClientePeer::DT_FUNDACAO)) {
             $modifiedColumns[':p' . $index++]  = 'dt_fundacao';
         }
+        if ($this->isColumnModified(ClientePeer::CO_TRIBUTACAO)) {
+            $modifiedColumns[':p' . $index++]  = 'co_tributacao';
+        }
 
         $sql = sprintf(
             'INSERT INTO cliente.cliente (%s) VALUES (%s)',
@@ -754,6 +815,9 @@ abstract class BaseCliente extends BaseObject implements Persistent
                         break;
                     case 'dt_fundacao':
                         $stmt->bindValue($identifier, $this->dt_fundacao, PDO::PARAM_STR);
+                        break;
+                    case 'co_tributacao':
+                        $stmt->bindValue($identifier, $this->co_tributacao, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -847,6 +911,12 @@ abstract class BaseCliente extends BaseObject implements Persistent
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
+            if ($this->aClienteTributacao !== null) {
+                if (!$this->aClienteTributacao->validate($columns)) {
+                    $failureMap = array_merge($failureMap, $this->aClienteTributacao->getValidationFailures());
+                }
+            }
+
             if ($this->aPessoa !== null) {
                 if (!$this->aPessoa->validate($columns)) {
                     $failureMap = array_merge($failureMap, $this->aPessoa->getValidationFailures());
@@ -923,6 +993,9 @@ abstract class BaseCliente extends BaseObject implements Persistent
             case 6:
                 return $this->getDtFundacao();
                 break;
+            case 7:
+                return $this->getCoTributacao();
+                break;
             default:
                 return null;
                 break;
@@ -959,8 +1032,12 @@ abstract class BaseCliente extends BaseObject implements Persistent
             $keys[4] => $this->getDsRamoAtividade(),
             $keys[5] => $this->getDtCadastro(),
             $keys[6] => $this->getDtFundacao(),
+            $keys[7] => $this->getCoTributacao(),
         );
         if ($includeForeignObjects) {
+            if (null !== $this->aClienteTributacao) {
+                $result['ClienteTributacao'] = $this->aClienteTributacao->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
             if (null !== $this->aPessoa) {
                 $result['Pessoa'] = $this->aPessoa->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
@@ -1022,6 +1099,9 @@ abstract class BaseCliente extends BaseObject implements Persistent
             case 6:
                 $this->setDtFundacao($value);
                 break;
+            case 7:
+                $this->setCoTributacao($value);
+                break;
         } // switch()
     }
 
@@ -1053,6 +1133,7 @@ abstract class BaseCliente extends BaseObject implements Persistent
         if (array_key_exists($keys[4], $arr)) $this->setDsRamoAtividade($arr[$keys[4]]);
         if (array_key_exists($keys[5], $arr)) $this->setDtCadastro($arr[$keys[5]]);
         if (array_key_exists($keys[6], $arr)) $this->setDtFundacao($arr[$keys[6]]);
+        if (array_key_exists($keys[7], $arr)) $this->setCoTributacao($arr[$keys[7]]);
     }
 
     /**
@@ -1071,6 +1152,7 @@ abstract class BaseCliente extends BaseObject implements Persistent
         if ($this->isColumnModified(ClientePeer::DS_RAMO_ATIVIDADE)) $criteria->add(ClientePeer::DS_RAMO_ATIVIDADE, $this->ds_ramo_atividade);
         if ($this->isColumnModified(ClientePeer::DT_CADASTRO)) $criteria->add(ClientePeer::DT_CADASTRO, $this->dt_cadastro);
         if ($this->isColumnModified(ClientePeer::DT_FUNDACAO)) $criteria->add(ClientePeer::DT_FUNDACAO, $this->dt_fundacao);
+        if ($this->isColumnModified(ClientePeer::CO_TRIBUTACAO)) $criteria->add(ClientePeer::CO_TRIBUTACAO, $this->co_tributacao);
 
         return $criteria;
     }
@@ -1140,6 +1222,7 @@ abstract class BaseCliente extends BaseObject implements Persistent
         $copyObj->setDsRamoAtividade($this->getDsRamoAtividade());
         $copyObj->setDtCadastro($this->getDtCadastro());
         $copyObj->setDtFundacao($this->getDtFundacao());
+        $copyObj->setCoTributacao($this->getCoTributacao());
 
         if ($deepCopy && !$this->startCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1207,6 +1290,58 @@ abstract class BaseCliente extends BaseObject implements Persistent
         }
 
         return self::$peer;
+    }
+
+    /**
+     * Declares an association between this object and a ClienteTributacao object.
+     *
+     * @param             ClienteTributacao $v
+     * @return Cliente The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setClienteTributacao(ClienteTributacao $v = null)
+    {
+        if ($v === null) {
+            $this->setCoTributacao(NULL);
+        } else {
+            $this->setCoTributacao($v->getCoTributacao());
+        }
+
+        $this->aClienteTributacao = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ClienteTributacao object, it will not be re-added.
+        if ($v !== null) {
+            $v->addCliente($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ClienteTributacao object
+     *
+     * @param PropelPDO $con Optional Connection object.
+     * @param $doQuery Executes a query to get the object if required
+     * @return ClienteTributacao The associated ClienteTributacao object.
+     * @throws PropelException
+     */
+    public function getClienteTributacao(PropelPDO $con = null, $doQuery = true)
+    {
+        if ($this->aClienteTributacao === null && ($this->co_tributacao !== null) && $doQuery) {
+            $this->aClienteTributacao = ClienteTributacaoQuery::create()->findPk($this->co_tributacao, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aClienteTributacao->addClientes($this);
+             */
+        }
+
+        return $this->aClienteTributacao;
     }
 
     /**
@@ -1526,6 +1661,7 @@ abstract class BaseCliente extends BaseObject implements Persistent
         $this->ds_ramo_atividade = null;
         $this->dt_cadastro = null;
         $this->dt_fundacao = null;
+        $this->co_tributacao = null;
         $this->alreadyInSave = false;
         $this->alreadyInValidation = false;
         $this->alreadyInClearAllReferencesDeep = false;
@@ -1554,6 +1690,9 @@ abstract class BaseCliente extends BaseObject implements Persistent
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->aClienteTributacao instanceof Persistent) {
+              $this->aClienteTributacao->clearAllReferences($deep);
+            }
             if ($this->aPessoa instanceof Persistent) {
               $this->aPessoa->clearAllReferences($deep);
             }
@@ -1565,6 +1704,7 @@ abstract class BaseCliente extends BaseObject implements Persistent
             $this->collClienteColaboradors->clearIterator();
         }
         $this->collClienteColaboradors = null;
+        $this->aClienteTributacao = null;
         $this->aPessoa = null;
     }
 

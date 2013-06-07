@@ -18,9 +18,9 @@
  * @method EmpresaQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method EmpresaQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method EmpresaQuery leftJoinColaborador($relationAlias = null) Adds a LEFT JOIN clause to the query using the Colaborador relation
- * @method EmpresaQuery rightJoinColaborador($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Colaborador relation
- * @method EmpresaQuery innerJoinColaborador($relationAlias = null) Adds a INNER JOIN clause to the query using the Colaborador relation
+ * @method EmpresaQuery leftJoinPessoa($relationAlias = null) Adds a LEFT JOIN clause to the query using the Pessoa relation
+ * @method EmpresaQuery rightJoinPessoa($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Pessoa relation
+ * @method EmpresaQuery innerJoinPessoa($relationAlias = null) Adds a INNER JOIN clause to the query using the Pessoa relation
  *
  * @method Empresa findOne(PropelPDO $con = null) Return the first Empresa matching the query
  * @method Empresa findOneOrCreate(PropelPDO $con = null) Return the first Empresa matching the query, or a new Empresa object populated from the query conditions when no match is found
@@ -324,41 +324,41 @@ abstract class BaseEmpresaQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related Colaborador object
+     * Filter the query by a related Pessoa object
      *
-     * @param   Colaborador|PropelObjectCollection $colaborador  the related object to use as filter
+     * @param   Pessoa|PropelObjectCollection $pessoa  the related object to use as filter
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return                 EmpresaQuery The current query, for fluid interface
      * @throws PropelException - if the provided filter is invalid.
      */
-    public function filterByColaborador($colaborador, $comparison = null)
+    public function filterByPessoa($pessoa, $comparison = null)
     {
-        if ($colaborador instanceof Colaborador) {
+        if ($pessoa instanceof Pessoa) {
             return $this
-                ->addUsingAlias(EmpresaPeer::CO_EMPRESA, $colaborador->getCoEmpresa(), $comparison);
-        } elseif ($colaborador instanceof PropelObjectCollection) {
+                ->addUsingAlias(EmpresaPeer::CO_EMPRESA, $pessoa->getCoEmpresa(), $comparison);
+        } elseif ($pessoa instanceof PropelObjectCollection) {
             return $this
-                ->useColaboradorQuery()
-                ->filterByPrimaryKeys($colaborador->getPrimaryKeys())
+                ->usePessoaQuery()
+                ->filterByPrimaryKeys($pessoa->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByColaborador() only accepts arguments of type Colaborador or PropelCollection');
+            throw new PropelException('filterByPessoa() only accepts arguments of type Pessoa or PropelCollection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Colaborador relation
+     * Adds a JOIN clause to the query using the Pessoa relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return EmpresaQuery The current query, for fluid interface
      */
-    public function joinColaborador($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinPessoa($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Colaborador');
+        $relationMap = $tableMap->getRelation('Pessoa');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -373,14 +373,14 @@ abstract class BaseEmpresaQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Colaborador');
+            $this->addJoinObject($join, 'Pessoa');
         }
 
         return $this;
     }
 
     /**
-     * Use the Colaborador relation Colaborador object
+     * Use the Pessoa relation Pessoa object
      *
      * @see       useQuery()
      *
@@ -388,13 +388,13 @@ abstract class BaseEmpresaQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return   ColaboradorQuery A secondary query class using the current class as primary query
+     * @return   PessoaQuery A secondary query class using the current class as primary query
      */
-    public function useColaboradorQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function usePessoaQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
-            ->joinColaborador($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Colaborador', 'ColaboradorQuery');
+            ->joinPessoa($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Pessoa', 'PessoaQuery');
     }
 
     /**

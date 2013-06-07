@@ -1,27 +1,77 @@
 
 $(document).ready(function(){
 	
-	$('input[type=checkbox],input[type=radio],input[type=file]').uniform();
+	$('input[type=radio],input[type=file]').uniform();
 	
 	$('select').select2();
-	
-	// Form Validation
-    $("#basic_validate").validate({
+      
+      $("#basic_validate_produto").validate({
+               
 		rules:{
-			required:{
+			no_produto:{
+				required:true
+			}
+		},
+                groups: {
+                   documento: "cpf cnpj"
+                },
+		errorClass: "help-inline",
+		errorElement: "span",
+		highlight:function(element, errorClass, validClass) {
+			$(element).parents('.control-group').addClass('error');
+		},
+		unhighlight: function(element, errorClass, validClass) {
+			$(element).parents('.control-group').removeClass('error');
+			$(element).parents('.control-group').addClass('success');
+		}
+	});
+	// Form Validation
+        $("#basic_validate_cliente").validate({
+               
+		rules:{
+			no_cliente:{
 				required:true
 			},
-			email:{
-				required:true,
-				email: true
+			pessoa_tipo:{
+				required:true
 			},
 			date:{
 				required:true,
 				date: true
 			},
-			url:{
-				required:true,
-				url: true
+			cpf:{
+				required:true
+			},
+			cnpj:{
+				required:true
+			}
+		},
+                groups: {
+                   documento: "cpf cnpj"
+                },
+		errorClass: "help-inline",
+		errorElement: "span",
+		highlight:function(element, errorClass, validClass) {
+			$(element).parents('.control-group').addClass('error');
+		},
+		unhighlight: function(element, errorClass, validClass) {
+			$(element).parents('.control-group').removeClass('error');
+			$(element).parents('.control-group').addClass('success');
+		}
+	});
+        $("#basic_validate_representada").validate({
+		rules:{
+			r_social:{
+				required:true
+			},
+			no_representada:{
+				required:true
+			},
+			cnpj:{
+				required:true
+			},
+			nu_comissao:{
+				required:true
 			}
 		},
 		errorClass: "help-inline",
@@ -63,16 +113,23 @@ $(document).ready(function(){
 	
 	$("#password_validate").validate({
 		rules:{
-			pwd:{
+			DsSenha:{
 				required: true,
 				minlength:6,
 				maxlength:20
 			},
-			pwd2:{
+			DsSenha2:{
 				required:true,
 				minlength:6,
 				maxlength:20,
-				equalTo:"#pwd"
+				equalTo:"#DsSenha"
+			},
+			DsEmail:{
+				required:true,
+                                email:true
+			},
+			NoColaborador:{
+				required:true
 			}
 		},
 		errorClass: "help-inline",

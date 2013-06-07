@@ -39,15 +39,12 @@ class UsuarioTableMap extends TableMap
         $this->setUseIdGenerator(true);
         $this->setPrimaryKeyMethodInfo('usuario_co_usuario_seq');
         // columns
-        $this->addPrimaryKey('co_usuario', 'CoUsuario', 'INTEGER', true, null, null);
-        $this->addColumn('nu_cpf', 'NuCpf', 'VARCHAR', false, 11, null);
         $this->addColumn('ds_password', 'DsPassword', 'VARCHAR', false, 200, null);
-        $this->addColumn('no_usuario', 'NoUsuario', 'VARCHAR', false, 255, null);
-        $this->addColumn('ds_login', 'DsLogin', 'VARCHAR', false, 39, null);
         $this->addColumn('dt_ultimo_login', 'DtUltimoLogin', 'TIMESTAMP', false, null, null);
-        $this->addColumn('ds_email', 'DsEmail', 'VARCHAR', false, 120, null);
+        $this->addColumn('ds_login', 'DsLogin', 'VARCHAR', false, 120, null);
         $this->addForeignKey('co_perfil', 'CoPerfil', 'INTEGER', 'perfil', 'co_perfil', false, null, null);
-        $this->addColumn('nu_celular', 'NuCelular', 'VARCHAR', false, 15, null);
+        $this->addForeignKey('co_pessoa', 'CoPessoa', 'INTEGER', 'pessoa', 'co_pessoa', true, null, null);
+        $this->addPrimaryKey('co_usuario', 'CoUsuario', 'INTEGER', true, null, null);
         // validators
     } // initialize()
 
@@ -57,8 +54,7 @@ class UsuarioTableMap extends TableMap
     public function buildRelations()
     {
         $this->addRelation('Perfil', 'Perfil', RelationMap::MANY_TO_ONE, array('co_perfil' => 'co_perfil', ), 'RESTRICT', 'CASCADE');
-        $this->addRelation('PermissaoRelatedByCoUsuarioAlteracao', 'Permissao', RelationMap::ONE_TO_MANY, array('co_usuario' => 'co_usuario_alteracao', ), 'RESTRICT', 'CASCADE', 'PermissaosRelatedByCoUsuarioAlteracao');
-        $this->addRelation('PermissaoRelatedByCoUsuarioCadastro', 'Permissao', RelationMap::ONE_TO_MANY, array('co_usuario' => 'co_usuario_cadastro', ), 'RESTRICT', 'CASCADE', 'PermissaosRelatedByCoUsuarioCadastro');
+        $this->addRelation('Pessoa', 'Pessoa', RelationMap::MANY_TO_ONE, array('co_pessoa' => 'co_pessoa', ), 'RESTRICT', 'CASCADE');
     } // buildRelations()
 
 } // UsuarioTableMap

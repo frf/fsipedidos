@@ -46,10 +46,10 @@ class ClientePeer extends BaseClientePeer
                     $oCliente->setDsInscricaoEstadual($i_estadual);
                     $oCliente->setDsRazaoSocial($r_social);
                     $oCliente->setDtFundacao($dt_criacao);
-                    $oCliente->setDsRamoAtividade($ramo_atividade);
+                    $oCliente->setDsRamoAtividade($ramo_atividade);                    
                 }
                 if($pessoa_tipo == "F"){
-                    $oPessoa->setNuCpf($v);
+                    $oPessoa->setNuCpf($cpf);
                     $oCliente->setDsRamoAtividade($ramo_atividade);
                 }
                 
@@ -62,17 +62,20 @@ class ClientePeer extends BaseClientePeer
                 $oCliente = $oPessoa->getCliente();          
                  
                 if($pessoa_tipo == "J"){
-                    $oPessoa->setNuCnpj($cnpj);
+                    $oPessoa->setNuCnpj($cnpj);                    
+                    $oPessoa->setNuCpf(NULL);
                     $oCliente->setDsInscricaoEstadual($i_estadual);
                     $oCliente->setDsRazaoSocial($r_social);
                     $oCliente->setDtFundacao($dt_criacao);
                     $oCliente->setDsRamoAtividade($ramo_atividade);
                 }
                 if($pessoa_tipo == "F"){
-                    $oPessoa->setNuCpf($v);
+                    $oPessoa->setNuCpf($cpf);
+                    $oPessoa->setNuCnpj(NULL);   
                     $oCliente->setDsRamoAtividade($ramo_atividade);
                 }
                 
+                $oPessoa->setCoEmpresa(CO_EMPRESA);
                 $oPessoa->setCliente($oCliente);
                 $oPessoa->save();
             }

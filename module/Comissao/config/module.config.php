@@ -4,7 +4,6 @@ return array(
     # definir controllers
     'controllers' => array(
         'invokables' => array(
-            'HomeController'    => 'Comissao\Controller\HomeController',
             'ComissoesController' => 'Comissao\Controller\ComissoesController',
         ),
     ),
@@ -12,16 +11,6 @@ return array(
     # definir rotas
     'router' => array(
         'routes' => array(
-            'home' => array(
-                'type'      => 'Literal',
-                'options'   => array(
-                    'route'    => '/',
-                    'defaults' => array(
-                        'controller' => 'HomeController',
-                        'action'     => 'index',
-                    ),
-                ),
-            ),
             'comissoes' => array(
                 'type'      => 'segment',
                 'options'   => array(
@@ -55,7 +44,7 @@ return array(
         'exception_template'        => 'error/index',
         'template_map'              => array(
             'layout/layout'         => __DIR__ . '/../view/layout/layout.phtml',
-            'comissoes/home/index'    => __DIR__ . '/../view/comissoes/home/index.phtml',
+            'comissoes/home/index'    => __DIR__ . '/../view/comissoes/comissao/index.phtml',
             'error/404'             => __DIR__ . '/../view/error/404.phtml',
             'error/index'           => __DIR__ . '/../view/error/index.phtml',
         ),

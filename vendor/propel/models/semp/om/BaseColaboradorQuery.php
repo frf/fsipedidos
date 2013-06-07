@@ -8,17 +8,11 @@
  *
  * @method ColaboradorQuery orderByCoColaborador($order = Criteria::ASC) Order by the co_colaborador column
  * @method ColaboradorQuery orderByDsEmail($order = Criteria::ASC) Order by the ds_email column
- * @method ColaboradorQuery orderByDsSenha($order = Criteria::ASC) Order by the ds_senha column
- * @method ColaboradorQuery orderByCoEmpresa($order = Criteria::ASC) Order by the co_empresa column
- * @method ColaboradorQuery orderByCoPerfil($order = Criteria::ASC) Order by the co_perfil column
  * @method ColaboradorQuery orderByTpAdministrador($order = Criteria::ASC) Order by the tp_administrador column
  * @method ColaboradorQuery orderByDsTelefone($order = Criteria::ASC) Order by the ds_telefone column
  *
  * @method ColaboradorQuery groupByCoColaborador() Group by the co_colaborador column
  * @method ColaboradorQuery groupByDsEmail() Group by the ds_email column
- * @method ColaboradorQuery groupByDsSenha() Group by the ds_senha column
- * @method ColaboradorQuery groupByCoEmpresa() Group by the co_empresa column
- * @method ColaboradorQuery groupByCoPerfil() Group by the co_perfil column
  * @method ColaboradorQuery groupByTpAdministrador() Group by the tp_administrador column
  * @method ColaboradorQuery groupByDsTelefone() Group by the ds_telefone column
  *
@@ -29,14 +23,6 @@
  * @method ColaboradorQuery leftJoinPessoa($relationAlias = null) Adds a LEFT JOIN clause to the query using the Pessoa relation
  * @method ColaboradorQuery rightJoinPessoa($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Pessoa relation
  * @method ColaboradorQuery innerJoinPessoa($relationAlias = null) Adds a INNER JOIN clause to the query using the Pessoa relation
- *
- * @method ColaboradorQuery leftJoinEmpresa($relationAlias = null) Adds a LEFT JOIN clause to the query using the Empresa relation
- * @method ColaboradorQuery rightJoinEmpresa($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Empresa relation
- * @method ColaboradorQuery innerJoinEmpresa($relationAlias = null) Adds a INNER JOIN clause to the query using the Empresa relation
- *
- * @method ColaboradorQuery leftJoinPerfil($relationAlias = null) Adds a LEFT JOIN clause to the query using the Perfil relation
- * @method ColaboradorQuery rightJoinPerfil($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Perfil relation
- * @method ColaboradorQuery innerJoinPerfil($relationAlias = null) Adds a INNER JOIN clause to the query using the Perfil relation
  *
  * @method ColaboradorQuery leftJoinClienteColaborador($relationAlias = null) Adds a LEFT JOIN clause to the query using the ClienteColaborador relation
  * @method ColaboradorQuery rightJoinClienteColaborador($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ClienteColaborador relation
@@ -50,17 +36,11 @@
  * @method Colaborador findOneOrCreate(PropelPDO $con = null) Return the first Colaborador matching the query, or a new Colaborador object populated from the query conditions when no match is found
  *
  * @method Colaborador findOneByDsEmail(string $ds_email) Return the first Colaborador filtered by the ds_email column
- * @method Colaborador findOneByDsSenha(string $ds_senha) Return the first Colaborador filtered by the ds_senha column
- * @method Colaborador findOneByCoEmpresa(int $co_empresa) Return the first Colaborador filtered by the co_empresa column
- * @method Colaborador findOneByCoPerfil(int $co_perfil) Return the first Colaborador filtered by the co_perfil column
  * @method Colaborador findOneByTpAdministrador(boolean $tp_administrador) Return the first Colaborador filtered by the tp_administrador column
  * @method Colaborador findOneByDsTelefone(string $ds_telefone) Return the first Colaborador filtered by the ds_telefone column
  *
  * @method array findByCoColaborador(int $co_colaborador) Return Colaborador objects filtered by the co_colaborador column
  * @method array findByDsEmail(string $ds_email) Return Colaborador objects filtered by the ds_email column
- * @method array findByDsSenha(string $ds_senha) Return Colaborador objects filtered by the ds_senha column
- * @method array findByCoEmpresa(int $co_empresa) Return Colaborador objects filtered by the co_empresa column
- * @method array findByCoPerfil(int $co_perfil) Return Colaborador objects filtered by the co_perfil column
  * @method array findByTpAdministrador(boolean $tp_administrador) Return Colaborador objects filtered by the tp_administrador column
  * @method array findByDsTelefone(string $ds_telefone) Return Colaborador objects filtered by the ds_telefone column
  *
@@ -166,7 +146,7 @@ abstract class BaseColaboradorQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT co_colaborador, ds_email, ds_senha, co_empresa, co_perfil, tp_administrador, ds_telefone FROM colaboradores.colaborador WHERE co_colaborador = :p0';
+        $sql = 'SELECT co_colaborador, ds_email, tp_administrador, ds_telefone FROM colaboradores.colaborador WHERE co_colaborador = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -329,123 +309,6 @@ abstract class BaseColaboradorQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the ds_senha column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByDsSenha('fooValue');   // WHERE ds_senha = 'fooValue'
-     * $query->filterByDsSenha('%fooValue%'); // WHERE ds_senha LIKE '%fooValue%'
-     * </code>
-     *
-     * @param     string $dsSenha The value to use as filter.
-     *              Accepts wildcards (* and % trigger a LIKE)
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ColaboradorQuery The current query, for fluid interface
-     */
-    public function filterByDsSenha($dsSenha = null, $comparison = null)
-    {
-        if (null === $comparison) {
-            if (is_array($dsSenha)) {
-                $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $dsSenha)) {
-                $dsSenha = str_replace('*', '%', $dsSenha);
-                $comparison = Criteria::LIKE;
-            }
-        }
-
-        return $this->addUsingAlias(ColaboradorPeer::DS_SENHA, $dsSenha, $comparison);
-    }
-
-    /**
-     * Filter the query on the co_empresa column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByCoEmpresa(1234); // WHERE co_empresa = 1234
-     * $query->filterByCoEmpresa(array(12, 34)); // WHERE co_empresa IN (12, 34)
-     * $query->filterByCoEmpresa(array('min' => 12)); // WHERE co_empresa >= 12
-     * $query->filterByCoEmpresa(array('max' => 12)); // WHERE co_empresa <= 12
-     * </code>
-     *
-     * @see       filterByEmpresa()
-     *
-     * @param     mixed $coEmpresa The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ColaboradorQuery The current query, for fluid interface
-     */
-    public function filterByCoEmpresa($coEmpresa = null, $comparison = null)
-    {
-        if (is_array($coEmpresa)) {
-            $useMinMax = false;
-            if (isset($coEmpresa['min'])) {
-                $this->addUsingAlias(ColaboradorPeer::CO_EMPRESA, $coEmpresa['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($coEmpresa['max'])) {
-                $this->addUsingAlias(ColaboradorPeer::CO_EMPRESA, $coEmpresa['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(ColaboradorPeer::CO_EMPRESA, $coEmpresa, $comparison);
-    }
-
-    /**
-     * Filter the query on the co_perfil column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByCoPerfil(1234); // WHERE co_perfil = 1234
-     * $query->filterByCoPerfil(array(12, 34)); // WHERE co_perfil IN (12, 34)
-     * $query->filterByCoPerfil(array('min' => 12)); // WHERE co_perfil >= 12
-     * $query->filterByCoPerfil(array('max' => 12)); // WHERE co_perfil <= 12
-     * </code>
-     *
-     * @see       filterByPerfil()
-     *
-     * @param     mixed $coPerfil The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ColaboradorQuery The current query, for fluid interface
-     */
-    public function filterByCoPerfil($coPerfil = null, $comparison = null)
-    {
-        if (is_array($coPerfil)) {
-            $useMinMax = false;
-            if (isset($coPerfil['min'])) {
-                $this->addUsingAlias(ColaboradorPeer::CO_PERFIL, $coPerfil['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($coPerfil['max'])) {
-                $this->addUsingAlias(ColaboradorPeer::CO_PERFIL, $coPerfil['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(ColaboradorPeer::CO_PERFIL, $coPerfil, $comparison);
-    }
-
-    /**
      * Filter the query on the tp_administrador column
      *
      * Example usage:
@@ -575,158 +438,6 @@ abstract class BaseColaboradorQuery extends ModelCriteria
         return $this
             ->joinPessoa($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Pessoa', 'PessoaQuery');
-    }
-
-    /**
-     * Filter the query by a related Empresa object
-     *
-     * @param   Empresa|PropelObjectCollection $empresa The related object(s) to use as filter
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return                 ColaboradorQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
-     */
-    public function filterByEmpresa($empresa, $comparison = null)
-    {
-        if ($empresa instanceof Empresa) {
-            return $this
-                ->addUsingAlias(ColaboradorPeer::CO_EMPRESA, $empresa->getCoEmpresa(), $comparison);
-        } elseif ($empresa instanceof PropelObjectCollection) {
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-
-            return $this
-                ->addUsingAlias(ColaboradorPeer::CO_EMPRESA, $empresa->toKeyValue('PrimaryKey', 'CoEmpresa'), $comparison);
-        } else {
-            throw new PropelException('filterByEmpresa() only accepts arguments of type Empresa or PropelCollection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the Empresa relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return ColaboradorQuery The current query, for fluid interface
-     */
-    public function joinEmpresa($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Empresa');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'Empresa');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the Empresa relation Empresa object
-     *
-     * @see       useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return   EmpresaQuery A secondary query class using the current class as primary query
-     */
-    public function useEmpresaQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        return $this
-            ->joinEmpresa($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Empresa', 'EmpresaQuery');
-    }
-
-    /**
-     * Filter the query by a related Perfil object
-     *
-     * @param   Perfil|PropelObjectCollection $perfil The related object(s) to use as filter
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return                 ColaboradorQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
-     */
-    public function filterByPerfil($perfil, $comparison = null)
-    {
-        if ($perfil instanceof Perfil) {
-            return $this
-                ->addUsingAlias(ColaboradorPeer::CO_PERFIL, $perfil->getCoPerfil(), $comparison);
-        } elseif ($perfil instanceof PropelObjectCollection) {
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-
-            return $this
-                ->addUsingAlias(ColaboradorPeer::CO_PERFIL, $perfil->toKeyValue('PrimaryKey', 'CoPerfil'), $comparison);
-        } else {
-            throw new PropelException('filterByPerfil() only accepts arguments of type Perfil or PropelCollection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the Perfil relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return ColaboradorQuery The current query, for fluid interface
-     */
-    public function joinPerfil($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Perfil');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'Perfil');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the Perfil relation Perfil object
-     *
-     * @see       useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return   PerfilQuery A secondary query class using the current class as primary query
-     */
-    public function usePerfilQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        return $this
-            ->joinPerfil($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Perfil', 'PerfilQuery');
     }
 
     /**

@@ -48,10 +48,10 @@ abstract class BaseEmpresa extends BaseObject implements Persistent
     protected $no_dominio;
 
     /**
-     * @var        PropelObjectCollection|Colaborador[] Collection to store aggregation of Colaborador objects.
+     * @var        PropelObjectCollection|Pessoa[] Collection to store aggregation of Pessoa objects.
      */
-    protected $collColaboradors;
-    protected $collColaboradorsPartial;
+    protected $collPessoas;
+    protected $collPessoasPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -77,7 +77,7 @@ abstract class BaseEmpresa extends BaseObject implements Persistent
      * An array of objects scheduled for deletion.
      * @var		PropelObjectCollection
      */
-    protected $colaboradorsScheduledForDeletion = null;
+    protected $pessoasScheduledForDeletion = null;
 
     /**
      * Get the [co_empresa] column value.
@@ -277,7 +277,7 @@ abstract class BaseEmpresa extends BaseObject implements Persistent
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->collColaboradors = null;
+            $this->collPessoas = null;
 
         } // if (deep)
     }
@@ -403,17 +403,18 @@ abstract class BaseEmpresa extends BaseObject implements Persistent
                 $this->resetModified();
             }
 
-            if ($this->colaboradorsScheduledForDeletion !== null) {
-                if (!$this->colaboradorsScheduledForDeletion->isEmpty()) {
-                    ColaboradorQuery::create()
-                        ->filterByPrimaryKeys($this->colaboradorsScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->colaboradorsScheduledForDeletion = null;
+            if ($this->pessoasScheduledForDeletion !== null) {
+                if (!$this->pessoasScheduledForDeletion->isEmpty()) {
+                    foreach ($this->pessoasScheduledForDeletion as $pessoa) {
+                        // need to save related object because we set the relation to null
+                        $pessoa->save($con);
+                    }
+                    $this->pessoasScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collColaboradors !== null) {
-                foreach ($this->collColaboradors as $referrerFK) {
+            if ($this->collPessoas !== null) {
+                foreach ($this->collPessoas as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -577,8 +578,8 @@ abstract class BaseEmpresa extends BaseObject implements Persistent
             }
 
 
-                if ($this->collColaboradors !== null) {
-                    foreach ($this->collColaboradors as $referrerFK) {
+                if ($this->collPessoas !== null) {
+                    foreach ($this->collPessoas as $referrerFK) {
                         if (!$referrerFK->validate($columns)) {
                             $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
                         }
@@ -663,8 +664,8 @@ abstract class BaseEmpresa extends BaseObject implements Persistent
             $keys[2] => $this->getNoDominio(),
         );
         if ($includeForeignObjects) {
-            if (null !== $this->collColaboradors) {
-                $result['Colaboradors'] = $this->collColaboradors->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            if (null !== $this->collPessoas) {
+                $result['Pessoas'] = $this->collPessoas->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -823,9 +824,9 @@ abstract class BaseEmpresa extends BaseObject implements Persistent
             // store object hash to prevent cycle
             $this->startCopy = true;
 
-            foreach ($this->getColaboradors() as $relObj) {
+            foreach ($this->getPessoas() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addColaborador($relObj->copy($deepCopy));
+                    $copyObj->addPessoa($relObj->copy($deepCopy));
                 }
             }
 
@@ -890,42 +891,42 @@ abstract class BaseEmpresa extends BaseObject implements Persistent
      */
     public function initRelation($relationName)
     {
-        if ('Colaborador' == $relationName) {
-            $this->initColaboradors();
+        if ('Pessoa' == $relationName) {
+            $this->initPessoas();
         }
     }
 
     /**
-     * Clears out the collColaboradors collection
+     * Clears out the collPessoas collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return Empresa The current object (for fluent API support)
-     * @see        addColaboradors()
+     * @see        addPessoas()
      */
-    public function clearColaboradors()
+    public function clearPessoas()
     {
-        $this->collColaboradors = null; // important to set this to null since that means it is uninitialized
-        $this->collColaboradorsPartial = null;
+        $this->collPessoas = null; // important to set this to null since that means it is uninitialized
+        $this->collPessoasPartial = null;
 
         return $this;
     }
 
     /**
-     * reset is the collColaboradors collection loaded partially
+     * reset is the collPessoas collection loaded partially
      *
      * @return void
      */
-    public function resetPartialColaboradors($v = true)
+    public function resetPartialPessoas($v = true)
     {
-        $this->collColaboradorsPartial = $v;
+        $this->collPessoasPartial = $v;
     }
 
     /**
-     * Initializes the collColaboradors collection.
+     * Initializes the collPessoas collection.
      *
-     * By default this just sets the collColaboradors collection to an empty array (like clearcollColaboradors());
+     * By default this just sets the collPessoas collection to an empty array (like clearcollPessoas());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -934,17 +935,17 @@ abstract class BaseEmpresa extends BaseObject implements Persistent
      *
      * @return void
      */
-    public function initColaboradors($overrideExisting = true)
+    public function initPessoas($overrideExisting = true)
     {
-        if (null !== $this->collColaboradors && !$overrideExisting) {
+        if (null !== $this->collPessoas && !$overrideExisting) {
             return;
         }
-        $this->collColaboradors = new PropelObjectCollection();
-        $this->collColaboradors->setModel('Colaborador');
+        $this->collPessoas = new PropelObjectCollection();
+        $this->collPessoas->setModel('Pessoa');
     }
 
     /**
-     * Gets an array of Colaborador objects which contain a foreign key that references this object.
+     * Gets an array of Pessoa objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
@@ -954,105 +955,105 @@ abstract class BaseEmpresa extends BaseObject implements Persistent
      *
      * @param Criteria $criteria optional Criteria object to narrow the query
      * @param PropelPDO $con optional connection object
-     * @return PropelObjectCollection|Colaborador[] List of Colaborador objects
+     * @return PropelObjectCollection|Pessoa[] List of Pessoa objects
      * @throws PropelException
      */
-    public function getColaboradors($criteria = null, PropelPDO $con = null)
+    public function getPessoas($criteria = null, PropelPDO $con = null)
     {
-        $partial = $this->collColaboradorsPartial && !$this->isNew();
-        if (null === $this->collColaboradors || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collColaboradors) {
+        $partial = $this->collPessoasPartial && !$this->isNew();
+        if (null === $this->collPessoas || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collPessoas) {
                 // return empty collection
-                $this->initColaboradors();
+                $this->initPessoas();
             } else {
-                $collColaboradors = ColaboradorQuery::create(null, $criteria)
+                $collPessoas = PessoaQuery::create(null, $criteria)
                     ->filterByEmpresa($this)
                     ->find($con);
                 if (null !== $criteria) {
-                    if (false !== $this->collColaboradorsPartial && count($collColaboradors)) {
-                      $this->initColaboradors(false);
+                    if (false !== $this->collPessoasPartial && count($collPessoas)) {
+                      $this->initPessoas(false);
 
-                      foreach($collColaboradors as $obj) {
-                        if (false == $this->collColaboradors->contains($obj)) {
-                          $this->collColaboradors->append($obj);
+                      foreach($collPessoas as $obj) {
+                        if (false == $this->collPessoas->contains($obj)) {
+                          $this->collPessoas->append($obj);
                         }
                       }
 
-                      $this->collColaboradorsPartial = true;
+                      $this->collPessoasPartial = true;
                     }
 
-                    $collColaboradors->getInternalIterator()->rewind();
-                    return $collColaboradors;
+                    $collPessoas->getInternalIterator()->rewind();
+                    return $collPessoas;
                 }
 
-                if($partial && $this->collColaboradors) {
-                    foreach($this->collColaboradors as $obj) {
+                if($partial && $this->collPessoas) {
+                    foreach($this->collPessoas as $obj) {
                         if($obj->isNew()) {
-                            $collColaboradors[] = $obj;
+                            $collPessoas[] = $obj;
                         }
                     }
                 }
 
-                $this->collColaboradors = $collColaboradors;
-                $this->collColaboradorsPartial = false;
+                $this->collPessoas = $collPessoas;
+                $this->collPessoasPartial = false;
             }
         }
 
-        return $this->collColaboradors;
+        return $this->collPessoas;
     }
 
     /**
-     * Sets a collection of Colaborador objects related by a one-to-many relationship
+     * Sets a collection of Pessoa objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param PropelCollection $colaboradors A Propel collection.
+     * @param PropelCollection $pessoas A Propel collection.
      * @param PropelPDO $con Optional connection object
      * @return Empresa The current object (for fluent API support)
      */
-    public function setColaboradors(PropelCollection $colaboradors, PropelPDO $con = null)
+    public function setPessoas(PropelCollection $pessoas, PropelPDO $con = null)
     {
-        $colaboradorsToDelete = $this->getColaboradors(new Criteria(), $con)->diff($colaboradors);
+        $pessoasToDelete = $this->getPessoas(new Criteria(), $con)->diff($pessoas);
 
-        $this->colaboradorsScheduledForDeletion = unserialize(serialize($colaboradorsToDelete));
+        $this->pessoasScheduledForDeletion = unserialize(serialize($pessoasToDelete));
 
-        foreach ($colaboradorsToDelete as $colaboradorRemoved) {
-            $colaboradorRemoved->setEmpresa(null);
+        foreach ($pessoasToDelete as $pessoaRemoved) {
+            $pessoaRemoved->setEmpresa(null);
         }
 
-        $this->collColaboradors = null;
-        foreach ($colaboradors as $colaborador) {
-            $this->addColaborador($colaborador);
+        $this->collPessoas = null;
+        foreach ($pessoas as $pessoa) {
+            $this->addPessoa($pessoa);
         }
 
-        $this->collColaboradors = $colaboradors;
-        $this->collColaboradorsPartial = false;
+        $this->collPessoas = $pessoas;
+        $this->collPessoasPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related Colaborador objects.
+     * Returns the number of related Pessoa objects.
      *
      * @param Criteria $criteria
      * @param boolean $distinct
      * @param PropelPDO $con
-     * @return int             Count of related Colaborador objects.
+     * @return int             Count of related Pessoa objects.
      * @throws PropelException
      */
-    public function countColaboradors(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    public function countPessoas(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
     {
-        $partial = $this->collColaboradorsPartial && !$this->isNew();
-        if (null === $this->collColaboradors || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collColaboradors) {
+        $partial = $this->collPessoasPartial && !$this->isNew();
+        if (null === $this->collPessoas || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collPessoas) {
                 return 0;
             }
 
             if($partial && !$criteria) {
-                return count($this->getColaboradors());
+                return count($this->getPessoas());
             }
-            $query = ColaboradorQuery::create(null, $criteria);
+            $query = PessoaQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
@@ -1062,105 +1063,55 @@ abstract class BaseEmpresa extends BaseObject implements Persistent
                 ->count($con);
         }
 
-        return count($this->collColaboradors);
+        return count($this->collPessoas);
     }
 
     /**
-     * Method called to associate a Colaborador object to this object
-     * through the Colaborador foreign key attribute.
+     * Method called to associate a Pessoa object to this object
+     * through the Pessoa foreign key attribute.
      *
-     * @param    Colaborador $l Colaborador
+     * @param    Pessoa $l Pessoa
      * @return Empresa The current object (for fluent API support)
      */
-    public function addColaborador(Colaborador $l)
+    public function addPessoa(Pessoa $l)
     {
-        if ($this->collColaboradors === null) {
-            $this->initColaboradors();
-            $this->collColaboradorsPartial = true;
+        if ($this->collPessoas === null) {
+            $this->initPessoas();
+            $this->collPessoasPartial = true;
         }
-        if (!in_array($l, $this->collColaboradors->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->doAddColaborador($l);
+        if (!in_array($l, $this->collPessoas->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddPessoa($l);
         }
 
         return $this;
     }
 
     /**
-     * @param	Colaborador $colaborador The colaborador object to add.
+     * @param	Pessoa $pessoa The pessoa object to add.
      */
-    protected function doAddColaborador($colaborador)
+    protected function doAddPessoa($pessoa)
     {
-        $this->collColaboradors[]= $colaborador;
-        $colaborador->setEmpresa($this);
+        $this->collPessoas[]= $pessoa;
+        $pessoa->setEmpresa($this);
     }
 
     /**
-     * @param	Colaborador $colaborador The colaborador object to remove.
+     * @param	Pessoa $pessoa The pessoa object to remove.
      * @return Empresa The current object (for fluent API support)
      */
-    public function removeColaborador($colaborador)
+    public function removePessoa($pessoa)
     {
-        if ($this->getColaboradors()->contains($colaborador)) {
-            $this->collColaboradors->remove($this->collColaboradors->search($colaborador));
-            if (null === $this->colaboradorsScheduledForDeletion) {
-                $this->colaboradorsScheduledForDeletion = clone $this->collColaboradors;
-                $this->colaboradorsScheduledForDeletion->clear();
+        if ($this->getPessoas()->contains($pessoa)) {
+            $this->collPessoas->remove($this->collPessoas->search($pessoa));
+            if (null === $this->pessoasScheduledForDeletion) {
+                $this->pessoasScheduledForDeletion = clone $this->collPessoas;
+                $this->pessoasScheduledForDeletion->clear();
             }
-            $this->colaboradorsScheduledForDeletion[]= clone $colaborador;
-            $colaborador->setEmpresa(null);
+            $this->pessoasScheduledForDeletion[]= $pessoa;
+            $pessoa->setEmpresa(null);
         }
 
         return $this;
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Empresa is new, it will return
-     * an empty collection; or if this Empresa has previously
-     * been saved, it will retrieve related Colaboradors from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Empresa.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|Colaborador[] List of Colaborador objects
-     */
-    public function getColaboradorsJoinPessoa($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = ColaboradorQuery::create(null, $criteria);
-        $query->joinWith('Pessoa', $join_behavior);
-
-        return $this->getColaboradors($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Empresa is new, it will return
-     * an empty collection; or if this Empresa has previously
-     * been saved, it will retrieve related Colaboradors from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Empresa.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|Colaborador[] List of Colaborador objects
-     */
-    public function getColaboradorsJoinPerfil($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = ColaboradorQuery::create(null, $criteria);
-        $query->joinWith('Perfil', $join_behavior);
-
-        return $this->getColaboradors($query, $con);
     }
 
     /**
@@ -1193,8 +1144,8 @@ abstract class BaseEmpresa extends BaseObject implements Persistent
     {
         if ($deep && !$this->alreadyInClearAllReferencesDeep) {
             $this->alreadyInClearAllReferencesDeep = true;
-            if ($this->collColaboradors) {
-                foreach ($this->collColaboradors as $o) {
+            if ($this->collPessoas) {
+                foreach ($this->collPessoas as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
@@ -1202,10 +1153,10 @@ abstract class BaseEmpresa extends BaseObject implements Persistent
             $this->alreadyInClearAllReferencesDeep = false;
         } // if ($deep)
 
-        if ($this->collColaboradors instanceof PropelCollection) {
-            $this->collColaboradors->clearIterator();
+        if ($this->collPessoas instanceof PropelCollection) {
+            $this->collPessoas->clearIterator();
         }
-        $this->collColaboradors = null;
+        $this->collPessoas = null;
     }
 
     /**

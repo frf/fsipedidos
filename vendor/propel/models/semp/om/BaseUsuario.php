@@ -30,34 +30,10 @@ abstract class BaseUsuario extends BaseObject implements Persistent
     protected $startCopy = false;
 
     /**
-     * The value for the co_usuario field.
-     * @var        int
-     */
-    protected $co_usuario;
-
-    /**
-     * The value for the nu_cpf field.
-     * @var        string
-     */
-    protected $nu_cpf;
-
-    /**
      * The value for the ds_password field.
      * @var        string
      */
     protected $ds_password;
-
-    /**
-     * The value for the no_usuario field.
-     * @var        string
-     */
-    protected $no_usuario;
-
-    /**
-     * The value for the ds_login field.
-     * @var        string
-     */
-    protected $ds_login;
 
     /**
      * The value for the dt_ultimo_login field.
@@ -66,10 +42,10 @@ abstract class BaseUsuario extends BaseObject implements Persistent
     protected $dt_ultimo_login;
 
     /**
-     * The value for the ds_email field.
+     * The value for the ds_login field.
      * @var        string
      */
-    protected $ds_email;
+    protected $ds_login;
 
     /**
      * The value for the co_perfil field.
@@ -78,10 +54,16 @@ abstract class BaseUsuario extends BaseObject implements Persistent
     protected $co_perfil;
 
     /**
-     * The value for the nu_celular field.
-     * @var        string
+     * The value for the co_pessoa field.
+     * @var        int
      */
-    protected $nu_celular;
+    protected $co_pessoa;
+
+    /**
+     * The value for the co_usuario field.
+     * @var        int
+     */
+    protected $co_usuario;
 
     /**
      * @var        Perfil
@@ -89,16 +71,9 @@ abstract class BaseUsuario extends BaseObject implements Persistent
     protected $aPerfil;
 
     /**
-     * @var        PropelObjectCollection|Permissao[] Collection to store aggregation of Permissao objects.
+     * @var        Pessoa
      */
-    protected $collPermissaosRelatedByCoUsuarioAlteracao;
-    protected $collPermissaosRelatedByCoUsuarioAlteracaoPartial;
-
-    /**
-     * @var        PropelObjectCollection|Permissao[] Collection to store aggregation of Permissao objects.
-     */
-    protected $collPermissaosRelatedByCoUsuarioCadastro;
-    protected $collPermissaosRelatedByCoUsuarioCadastroPartial;
+    protected $aPessoa;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -121,38 +96,6 @@ abstract class BaseUsuario extends BaseObject implements Persistent
     protected $alreadyInClearAllReferencesDeep = false;
 
     /**
-     * An array of objects scheduled for deletion.
-     * @var		PropelObjectCollection
-     */
-    protected $permissaosRelatedByCoUsuarioAlteracaoScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var		PropelObjectCollection
-     */
-    protected $permissaosRelatedByCoUsuarioCadastroScheduledForDeletion = null;
-
-    /**
-     * Get the [co_usuario] column value.
-     *
-     * @return int
-     */
-    public function getCoUsuario()
-    {
-        return $this->co_usuario;
-    }
-
-    /**
-     * Get the [nu_cpf] column value.
-     *
-     * @return string
-     */
-    public function getNuCpf()
-    {
-        return $this->nu_cpf;
-    }
-
-    /**
      * Get the [ds_password] column value.
      *
      * @return string
@@ -160,26 +103,6 @@ abstract class BaseUsuario extends BaseObject implements Persistent
     public function getDsPassword()
     {
         return $this->ds_password;
-    }
-
-    /**
-     * Get the [no_usuario] column value.
-     *
-     * @return string
-     */
-    public function getNoUsuario()
-    {
-        return $this->no_usuario;
-    }
-
-    /**
-     * Get the [ds_login] column value.
-     *
-     * @return string
-     */
-    public function getDsLogin()
-    {
-        return $this->ds_login;
     }
 
     /**
@@ -218,13 +141,13 @@ abstract class BaseUsuario extends BaseObject implements Persistent
     }
 
     /**
-     * Get the [ds_email] column value.
+     * Get the [ds_login] column value.
      *
      * @return string
      */
-    public function getDsEmail()
+    public function getDsLogin()
     {
-        return $this->ds_email;
+        return $this->ds_login;
     }
 
     /**
@@ -238,56 +161,24 @@ abstract class BaseUsuario extends BaseObject implements Persistent
     }
 
     /**
-     * Get the [nu_celular] column value.
+     * Get the [co_pessoa] column value.
      *
-     * @return string
+     * @return int
      */
-    public function getNuCelular()
+    public function getCoPessoa()
     {
-        return $this->nu_celular;
+        return $this->co_pessoa;
     }
 
     /**
-     * Set the value of [co_usuario] column.
+     * Get the [co_usuario] column value.
      *
-     * @param int $v new value
-     * @return Usuario The current object (for fluent API support)
+     * @return int
      */
-    public function setCoUsuario($v)
+    public function getCoUsuario()
     {
-        if ($v !== null && is_numeric($v)) {
-            $v = (int) $v;
-        }
-
-        if ($this->co_usuario !== $v) {
-            $this->co_usuario = $v;
-            $this->modifiedColumns[] = UsuarioPeer::CO_USUARIO;
-        }
-
-
-        return $this;
-    } // setCoUsuario()
-
-    /**
-     * Set the value of [nu_cpf] column.
-     *
-     * @param string $v new value
-     * @return Usuario The current object (for fluent API support)
-     */
-    public function setNuCpf($v)
-    {
-        if ($v !== null && is_numeric($v)) {
-            $v = (string) $v;
-        }
-
-        if ($this->nu_cpf !== $v) {
-            $this->nu_cpf = $v;
-            $this->modifiedColumns[] = UsuarioPeer::NU_CPF;
-        }
-
-
-        return $this;
-    } // setNuCpf()
+        return $this->co_usuario;
+    }
 
     /**
      * Set the value of [ds_password] column.
@@ -309,48 +200,6 @@ abstract class BaseUsuario extends BaseObject implements Persistent
 
         return $this;
     } // setDsPassword()
-
-    /**
-     * Set the value of [no_usuario] column.
-     *
-     * @param string $v new value
-     * @return Usuario The current object (for fluent API support)
-     */
-    public function setNoUsuario($v)
-    {
-        if ($v !== null && is_numeric($v)) {
-            $v = (string) $v;
-        }
-
-        if ($this->no_usuario !== $v) {
-            $this->no_usuario = $v;
-            $this->modifiedColumns[] = UsuarioPeer::NO_USUARIO;
-        }
-
-
-        return $this;
-    } // setNoUsuario()
-
-    /**
-     * Set the value of [ds_login] column.
-     *
-     * @param string $v new value
-     * @return Usuario The current object (for fluent API support)
-     */
-    public function setDsLogin($v)
-    {
-        if ($v !== null && is_numeric($v)) {
-            $v = (string) $v;
-        }
-
-        if ($this->ds_login !== $v) {
-            $this->ds_login = $v;
-            $this->modifiedColumns[] = UsuarioPeer::DS_LOGIN;
-        }
-
-
-        return $this;
-    } // setDsLogin()
 
     /**
      * Sets the value of [dt_ultimo_login] column to a normalized version of the date/time value specified.
@@ -376,25 +225,25 @@ abstract class BaseUsuario extends BaseObject implements Persistent
     } // setDtUltimoLogin()
 
     /**
-     * Set the value of [ds_email] column.
+     * Set the value of [ds_login] column.
      *
      * @param string $v new value
      * @return Usuario The current object (for fluent API support)
      */
-    public function setDsEmail($v)
+    public function setDsLogin($v)
     {
         if ($v !== null && is_numeric($v)) {
             $v = (string) $v;
         }
 
-        if ($this->ds_email !== $v) {
-            $this->ds_email = $v;
-            $this->modifiedColumns[] = UsuarioPeer::DS_EMAIL;
+        if ($this->ds_login !== $v) {
+            $this->ds_login = $v;
+            $this->modifiedColumns[] = UsuarioPeer::DS_LOGIN;
         }
 
 
         return $this;
-    } // setDsEmail()
+    } // setDsLogin()
 
     /**
      * Set the value of [co_perfil] column.
@@ -422,25 +271,50 @@ abstract class BaseUsuario extends BaseObject implements Persistent
     } // setCoPerfil()
 
     /**
-     * Set the value of [nu_celular] column.
+     * Set the value of [co_pessoa] column.
      *
-     * @param string $v new value
+     * @param int $v new value
      * @return Usuario The current object (for fluent API support)
      */
-    public function setNuCelular($v)
+    public function setCoPessoa($v)
     {
         if ($v !== null && is_numeric($v)) {
-            $v = (string) $v;
+            $v = (int) $v;
         }
 
-        if ($this->nu_celular !== $v) {
-            $this->nu_celular = $v;
-            $this->modifiedColumns[] = UsuarioPeer::NU_CELULAR;
+        if ($this->co_pessoa !== $v) {
+            $this->co_pessoa = $v;
+            $this->modifiedColumns[] = UsuarioPeer::CO_PESSOA;
+        }
+
+        if ($this->aPessoa !== null && $this->aPessoa->getCoPessoa() !== $v) {
+            $this->aPessoa = null;
         }
 
 
         return $this;
-    } // setNuCelular()
+    } // setCoPessoa()
+
+    /**
+     * Set the value of [co_usuario] column.
+     *
+     * @param int $v new value
+     * @return Usuario The current object (for fluent API support)
+     */
+    public function setCoUsuario($v)
+    {
+        if ($v !== null && is_numeric($v)) {
+            $v = (int) $v;
+        }
+
+        if ($this->co_usuario !== $v) {
+            $this->co_usuario = $v;
+            $this->modifiedColumns[] = UsuarioPeer::CO_USUARIO;
+        }
+
+
+        return $this;
+    } // setCoUsuario()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -474,15 +348,12 @@ abstract class BaseUsuario extends BaseObject implements Persistent
     {
         try {
 
-            $this->co_usuario = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
-            $this->nu_cpf = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
-            $this->ds_password = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
-            $this->no_usuario = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
-            $this->ds_login = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
-            $this->dt_ultimo_login = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
-            $this->ds_email = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
-            $this->co_perfil = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
-            $this->nu_celular = ($row[$startcol + 8] !== null) ? (string) $row[$startcol + 8] : null;
+            $this->ds_password = ($row[$startcol + 0] !== null) ? (string) $row[$startcol + 0] : null;
+            $this->dt_ultimo_login = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
+            $this->ds_login = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
+            $this->co_perfil = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
+            $this->co_pessoa = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
+            $this->co_usuario = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -491,7 +362,7 @@ abstract class BaseUsuario extends BaseObject implements Persistent
                 $this->ensureConsistency();
             }
             $this->postHydrate($row, $startcol, $rehydrate);
-            return $startcol + 9; // 9 = UsuarioPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 6; // 6 = UsuarioPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Usuario object", $e);
@@ -516,6 +387,9 @@ abstract class BaseUsuario extends BaseObject implements Persistent
 
         if ($this->aPerfil !== null && $this->co_perfil !== $this->aPerfil->getCoPerfil()) {
             $this->aPerfil = null;
+        }
+        if ($this->aPessoa !== null && $this->co_pessoa !== $this->aPessoa->getCoPessoa()) {
+            $this->aPessoa = null;
         }
     } // ensureConsistency
 
@@ -557,10 +431,7 @@ abstract class BaseUsuario extends BaseObject implements Persistent
         if ($deep) {  // also de-associate any related objects?
 
             $this->aPerfil = null;
-            $this->collPermissaosRelatedByCoUsuarioAlteracao = null;
-
-            $this->collPermissaosRelatedByCoUsuarioCadastro = null;
-
+            $this->aPessoa = null;
         } // if (deep)
     }
 
@@ -686,6 +557,13 @@ abstract class BaseUsuario extends BaseObject implements Persistent
                 $this->setPerfil($this->aPerfil);
             }
 
+            if ($this->aPessoa !== null) {
+                if ($this->aPessoa->isModified() || $this->aPessoa->isNew()) {
+                    $affectedRows += $this->aPessoa->save($con);
+                }
+                $this->setPessoa($this->aPessoa);
+            }
+
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -695,42 +573,6 @@ abstract class BaseUsuario extends BaseObject implements Persistent
                 }
                 $affectedRows += 1;
                 $this->resetModified();
-            }
-
-            if ($this->permissaosRelatedByCoUsuarioAlteracaoScheduledForDeletion !== null) {
-                if (!$this->permissaosRelatedByCoUsuarioAlteracaoScheduledForDeletion->isEmpty()) {
-                    foreach ($this->permissaosRelatedByCoUsuarioAlteracaoScheduledForDeletion as $permissaoRelatedByCoUsuarioAlteracao) {
-                        // need to save related object because we set the relation to null
-                        $permissaoRelatedByCoUsuarioAlteracao->save($con);
-                    }
-                    $this->permissaosRelatedByCoUsuarioAlteracaoScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collPermissaosRelatedByCoUsuarioAlteracao !== null) {
-                foreach ($this->collPermissaosRelatedByCoUsuarioAlteracao as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
-            if ($this->permissaosRelatedByCoUsuarioCadastroScheduledForDeletion !== null) {
-                if (!$this->permissaosRelatedByCoUsuarioCadastroScheduledForDeletion->isEmpty()) {
-                    foreach ($this->permissaosRelatedByCoUsuarioCadastroScheduledForDeletion as $permissaoRelatedByCoUsuarioCadastro) {
-                        // need to save related object because we set the relation to null
-                        $permissaoRelatedByCoUsuarioCadastro->save($con);
-                    }
-                    $this->permissaosRelatedByCoUsuarioCadastroScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collPermissaosRelatedByCoUsuarioCadastro !== null) {
-                foreach ($this->collPermissaosRelatedByCoUsuarioCadastro as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
             }
 
             $this->alreadyInSave = false;
@@ -769,32 +611,23 @@ abstract class BaseUsuario extends BaseObject implements Persistent
 
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(UsuarioPeer::CO_USUARIO)) {
-            $modifiedColumns[':p' . $index++]  = 'co_usuario';
-        }
-        if ($this->isColumnModified(UsuarioPeer::NU_CPF)) {
-            $modifiedColumns[':p' . $index++]  = 'nu_cpf';
-        }
         if ($this->isColumnModified(UsuarioPeer::DS_PASSWORD)) {
             $modifiedColumns[':p' . $index++]  = 'ds_password';
-        }
-        if ($this->isColumnModified(UsuarioPeer::NO_USUARIO)) {
-            $modifiedColumns[':p' . $index++]  = 'no_usuario';
-        }
-        if ($this->isColumnModified(UsuarioPeer::DS_LOGIN)) {
-            $modifiedColumns[':p' . $index++]  = 'ds_login';
         }
         if ($this->isColumnModified(UsuarioPeer::DT_ULTIMO_LOGIN)) {
             $modifiedColumns[':p' . $index++]  = 'dt_ultimo_login';
         }
-        if ($this->isColumnModified(UsuarioPeer::DS_EMAIL)) {
-            $modifiedColumns[':p' . $index++]  = 'ds_email';
+        if ($this->isColumnModified(UsuarioPeer::DS_LOGIN)) {
+            $modifiedColumns[':p' . $index++]  = 'ds_login';
         }
         if ($this->isColumnModified(UsuarioPeer::CO_PERFIL)) {
             $modifiedColumns[':p' . $index++]  = 'co_perfil';
         }
-        if ($this->isColumnModified(UsuarioPeer::NU_CELULAR)) {
-            $modifiedColumns[':p' . $index++]  = 'nu_celular';
+        if ($this->isColumnModified(UsuarioPeer::CO_PESSOA)) {
+            $modifiedColumns[':p' . $index++]  = 'co_pessoa';
+        }
+        if ($this->isColumnModified(UsuarioPeer::CO_USUARIO)) {
+            $modifiedColumns[':p' . $index++]  = 'co_usuario';
         }
 
         $sql = sprintf(
@@ -807,32 +640,23 @@ abstract class BaseUsuario extends BaseObject implements Persistent
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case 'co_usuario':
-                        $stmt->bindValue($identifier, $this->co_usuario, PDO::PARAM_INT);
-                        break;
-                    case 'nu_cpf':
-                        $stmt->bindValue($identifier, $this->nu_cpf, PDO::PARAM_STR);
-                        break;
                     case 'ds_password':
                         $stmt->bindValue($identifier, $this->ds_password, PDO::PARAM_STR);
-                        break;
-                    case 'no_usuario':
-                        $stmt->bindValue($identifier, $this->no_usuario, PDO::PARAM_STR);
-                        break;
-                    case 'ds_login':
-                        $stmt->bindValue($identifier, $this->ds_login, PDO::PARAM_STR);
                         break;
                     case 'dt_ultimo_login':
                         $stmt->bindValue($identifier, $this->dt_ultimo_login, PDO::PARAM_STR);
                         break;
-                    case 'ds_email':
-                        $stmt->bindValue($identifier, $this->ds_email, PDO::PARAM_STR);
+                    case 'ds_login':
+                        $stmt->bindValue($identifier, $this->ds_login, PDO::PARAM_STR);
                         break;
                     case 'co_perfil':
                         $stmt->bindValue($identifier, $this->co_perfil, PDO::PARAM_INT);
                         break;
-                    case 'nu_celular':
-                        $stmt->bindValue($identifier, $this->nu_celular, PDO::PARAM_STR);
+                    case 'co_pessoa':
+                        $stmt->bindValue($identifier, $this->co_pessoa, PDO::PARAM_INT);
+                        break;
+                    case 'co_usuario':
+                        $stmt->bindValue($identifier, $this->co_usuario, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -932,27 +756,17 @@ abstract class BaseUsuario extends BaseObject implements Persistent
                 }
             }
 
+            if ($this->aPessoa !== null) {
+                if (!$this->aPessoa->validate($columns)) {
+                    $failureMap = array_merge($failureMap, $this->aPessoa->getValidationFailures());
+                }
+            }
+
 
             if (($retval = UsuarioPeer::doValidate($this, $columns)) !== true) {
                 $failureMap = array_merge($failureMap, $retval);
             }
 
-
-                if ($this->collPermissaosRelatedByCoUsuarioAlteracao !== null) {
-                    foreach ($this->collPermissaosRelatedByCoUsuarioAlteracao as $referrerFK) {
-                        if (!$referrerFK->validate($columns)) {
-                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-                        }
-                    }
-                }
-
-                if ($this->collPermissaosRelatedByCoUsuarioCadastro !== null) {
-                    foreach ($this->collPermissaosRelatedByCoUsuarioCadastro as $referrerFK) {
-                        if (!$referrerFK->validate($columns)) {
-                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-                        }
-                    }
-                }
 
 
             $this->alreadyInValidation = false;
@@ -990,31 +804,22 @@ abstract class BaseUsuario extends BaseObject implements Persistent
     {
         switch ($pos) {
             case 0:
-                return $this->getCoUsuario();
-                break;
-            case 1:
-                return $this->getNuCpf();
-                break;
-            case 2:
                 return $this->getDsPassword();
                 break;
-            case 3:
-                return $this->getNoUsuario();
-                break;
-            case 4:
-                return $this->getDsLogin();
-                break;
-            case 5:
+            case 1:
                 return $this->getDtUltimoLogin();
                 break;
-            case 6:
-                return $this->getDsEmail();
+            case 2:
+                return $this->getDsLogin();
                 break;
-            case 7:
+            case 3:
                 return $this->getCoPerfil();
                 break;
-            case 8:
-                return $this->getNuCelular();
+            case 4:
+                return $this->getCoPessoa();
+                break;
+            case 5:
+                return $this->getCoUsuario();
                 break;
             default:
                 return null;
@@ -1045,25 +850,19 @@ abstract class BaseUsuario extends BaseObject implements Persistent
         $alreadyDumpedObjects['Usuario'][$this->getPrimaryKey()] = true;
         $keys = UsuarioPeer::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getCoUsuario(),
-            $keys[1] => $this->getNuCpf(),
-            $keys[2] => $this->getDsPassword(),
-            $keys[3] => $this->getNoUsuario(),
-            $keys[4] => $this->getDsLogin(),
-            $keys[5] => $this->getDtUltimoLogin(),
-            $keys[6] => $this->getDsEmail(),
-            $keys[7] => $this->getCoPerfil(),
-            $keys[8] => $this->getNuCelular(),
+            $keys[0] => $this->getDsPassword(),
+            $keys[1] => $this->getDtUltimoLogin(),
+            $keys[2] => $this->getDsLogin(),
+            $keys[3] => $this->getCoPerfil(),
+            $keys[4] => $this->getCoPessoa(),
+            $keys[5] => $this->getCoUsuario(),
         );
         if ($includeForeignObjects) {
             if (null !== $this->aPerfil) {
                 $result['Perfil'] = $this->aPerfil->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
-            if (null !== $this->collPermissaosRelatedByCoUsuarioAlteracao) {
-                $result['PermissaosRelatedByCoUsuarioAlteracao'] = $this->collPermissaosRelatedByCoUsuarioAlteracao->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-            if (null !== $this->collPermissaosRelatedByCoUsuarioCadastro) {
-                $result['PermissaosRelatedByCoUsuarioCadastro'] = $this->collPermissaosRelatedByCoUsuarioCadastro->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            if (null !== $this->aPessoa) {
+                $result['Pessoa'] = $this->aPessoa->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
         }
 
@@ -1100,31 +899,22 @@ abstract class BaseUsuario extends BaseObject implements Persistent
     {
         switch ($pos) {
             case 0:
-                $this->setCoUsuario($value);
-                break;
-            case 1:
-                $this->setNuCpf($value);
-                break;
-            case 2:
                 $this->setDsPassword($value);
                 break;
-            case 3:
-                $this->setNoUsuario($value);
-                break;
-            case 4:
-                $this->setDsLogin($value);
-                break;
-            case 5:
+            case 1:
                 $this->setDtUltimoLogin($value);
                 break;
-            case 6:
-                $this->setDsEmail($value);
+            case 2:
+                $this->setDsLogin($value);
                 break;
-            case 7:
+            case 3:
                 $this->setCoPerfil($value);
                 break;
-            case 8:
-                $this->setNuCelular($value);
+            case 4:
+                $this->setCoPessoa($value);
+                break;
+            case 5:
+                $this->setCoUsuario($value);
                 break;
         } // switch()
     }
@@ -1150,15 +940,12 @@ abstract class BaseUsuario extends BaseObject implements Persistent
     {
         $keys = UsuarioPeer::getFieldNames($keyType);
 
-        if (array_key_exists($keys[0], $arr)) $this->setCoUsuario($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setNuCpf($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setDsPassword($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setNoUsuario($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setDsLogin($arr[$keys[4]]);
-        if (array_key_exists($keys[5], $arr)) $this->setDtUltimoLogin($arr[$keys[5]]);
-        if (array_key_exists($keys[6], $arr)) $this->setDsEmail($arr[$keys[6]]);
-        if (array_key_exists($keys[7], $arr)) $this->setCoPerfil($arr[$keys[7]]);
-        if (array_key_exists($keys[8], $arr)) $this->setNuCelular($arr[$keys[8]]);
+        if (array_key_exists($keys[0], $arr)) $this->setDsPassword($arr[$keys[0]]);
+        if (array_key_exists($keys[1], $arr)) $this->setDtUltimoLogin($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setDsLogin($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setCoPerfil($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setCoPessoa($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setCoUsuario($arr[$keys[5]]);
     }
 
     /**
@@ -1170,15 +957,12 @@ abstract class BaseUsuario extends BaseObject implements Persistent
     {
         $criteria = new Criteria(UsuarioPeer::DATABASE_NAME);
 
-        if ($this->isColumnModified(UsuarioPeer::CO_USUARIO)) $criteria->add(UsuarioPeer::CO_USUARIO, $this->co_usuario);
-        if ($this->isColumnModified(UsuarioPeer::NU_CPF)) $criteria->add(UsuarioPeer::NU_CPF, $this->nu_cpf);
         if ($this->isColumnModified(UsuarioPeer::DS_PASSWORD)) $criteria->add(UsuarioPeer::DS_PASSWORD, $this->ds_password);
-        if ($this->isColumnModified(UsuarioPeer::NO_USUARIO)) $criteria->add(UsuarioPeer::NO_USUARIO, $this->no_usuario);
-        if ($this->isColumnModified(UsuarioPeer::DS_LOGIN)) $criteria->add(UsuarioPeer::DS_LOGIN, $this->ds_login);
         if ($this->isColumnModified(UsuarioPeer::DT_ULTIMO_LOGIN)) $criteria->add(UsuarioPeer::DT_ULTIMO_LOGIN, $this->dt_ultimo_login);
-        if ($this->isColumnModified(UsuarioPeer::DS_EMAIL)) $criteria->add(UsuarioPeer::DS_EMAIL, $this->ds_email);
+        if ($this->isColumnModified(UsuarioPeer::DS_LOGIN)) $criteria->add(UsuarioPeer::DS_LOGIN, $this->ds_login);
         if ($this->isColumnModified(UsuarioPeer::CO_PERFIL)) $criteria->add(UsuarioPeer::CO_PERFIL, $this->co_perfil);
-        if ($this->isColumnModified(UsuarioPeer::NU_CELULAR)) $criteria->add(UsuarioPeer::NU_CELULAR, $this->nu_celular);
+        if ($this->isColumnModified(UsuarioPeer::CO_PESSOA)) $criteria->add(UsuarioPeer::CO_PESSOA, $this->co_pessoa);
+        if ($this->isColumnModified(UsuarioPeer::CO_USUARIO)) $criteria->add(UsuarioPeer::CO_USUARIO, $this->co_usuario);
 
         return $criteria;
     }
@@ -1242,14 +1026,11 @@ abstract class BaseUsuario extends BaseObject implements Persistent
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setNuCpf($this->getNuCpf());
         $copyObj->setDsPassword($this->getDsPassword());
-        $copyObj->setNoUsuario($this->getNoUsuario());
-        $copyObj->setDsLogin($this->getDsLogin());
         $copyObj->setDtUltimoLogin($this->getDtUltimoLogin());
-        $copyObj->setDsEmail($this->getDsEmail());
+        $copyObj->setDsLogin($this->getDsLogin());
         $copyObj->setCoPerfil($this->getCoPerfil());
-        $copyObj->setNuCelular($this->getNuCelular());
+        $copyObj->setCoPessoa($this->getCoPessoa());
 
         if ($deepCopy && !$this->startCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1257,18 +1038,6 @@ abstract class BaseUsuario extends BaseObject implements Persistent
             $copyObj->setNew(false);
             // store object hash to prevent cycle
             $this->startCopy = true;
-
-            foreach ($this->getPermissaosRelatedByCoUsuarioAlteracao() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addPermissaoRelatedByCoUsuarioAlteracao($relObj->copy($deepCopy));
-                }
-            }
-
-            foreach ($this->getPermissaosRelatedByCoUsuarioCadastro() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addPermissaoRelatedByCoUsuarioCadastro($relObj->copy($deepCopy));
-                }
-            }
 
             //unflag object copy
             $this->startCopy = false;
@@ -1372,559 +1141,56 @@ abstract class BaseUsuario extends BaseObject implements Persistent
         return $this->aPerfil;
     }
 
-
     /**
-     * Initializes a collection based on the name of a relation.
-     * Avoids crafting an 'init[$relationName]s' method name
-     * that wouldn't work when StandardEnglishPluralizer is used.
+     * Declares an association between this object and a Pessoa object.
      *
-     * @param string $relationName The name of the relation to initialize
-     * @return void
-     */
-    public function initRelation($relationName)
-    {
-        if ('PermissaoRelatedByCoUsuarioAlteracao' == $relationName) {
-            $this->initPermissaosRelatedByCoUsuarioAlteracao();
-        }
-        if ('PermissaoRelatedByCoUsuarioCadastro' == $relationName) {
-            $this->initPermissaosRelatedByCoUsuarioCadastro();
-        }
-    }
-
-    /**
-     * Clears out the collPermissaosRelatedByCoUsuarioAlteracao collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
+     * @param             Pessoa $v
      * @return Usuario The current object (for fluent API support)
-     * @see        addPermissaosRelatedByCoUsuarioAlteracao()
-     */
-    public function clearPermissaosRelatedByCoUsuarioAlteracao()
-    {
-        $this->collPermissaosRelatedByCoUsuarioAlteracao = null; // important to set this to null since that means it is uninitialized
-        $this->collPermissaosRelatedByCoUsuarioAlteracaoPartial = null;
-
-        return $this;
-    }
-
-    /**
-     * reset is the collPermissaosRelatedByCoUsuarioAlteracao collection loaded partially
-     *
-     * @return void
-     */
-    public function resetPartialPermissaosRelatedByCoUsuarioAlteracao($v = true)
-    {
-        $this->collPermissaosRelatedByCoUsuarioAlteracaoPartial = $v;
-    }
-
-    /**
-     * Initializes the collPermissaosRelatedByCoUsuarioAlteracao collection.
-     *
-     * By default this just sets the collPermissaosRelatedByCoUsuarioAlteracao collection to an empty array (like clearcollPermissaosRelatedByCoUsuarioAlteracao());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initPermissaosRelatedByCoUsuarioAlteracao($overrideExisting = true)
-    {
-        if (null !== $this->collPermissaosRelatedByCoUsuarioAlteracao && !$overrideExisting) {
-            return;
-        }
-        $this->collPermissaosRelatedByCoUsuarioAlteracao = new PropelObjectCollection();
-        $this->collPermissaosRelatedByCoUsuarioAlteracao->setModel('Permissao');
-    }
-
-    /**
-     * Gets an array of Permissao objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this Usuario is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @return PropelObjectCollection|Permissao[] List of Permissao objects
      * @throws PropelException
      */
-    public function getPermissaosRelatedByCoUsuarioAlteracao($criteria = null, PropelPDO $con = null)
+    public function setPessoa(Pessoa $v = null)
     {
-        $partial = $this->collPermissaosRelatedByCoUsuarioAlteracaoPartial && !$this->isNew();
-        if (null === $this->collPermissaosRelatedByCoUsuarioAlteracao || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collPermissaosRelatedByCoUsuarioAlteracao) {
-                // return empty collection
-                $this->initPermissaosRelatedByCoUsuarioAlteracao();
-            } else {
-                $collPermissaosRelatedByCoUsuarioAlteracao = PermissaoQuery::create(null, $criteria)
-                    ->filterByUsuarioRelatedByCoUsuarioAlteracao($this)
-                    ->find($con);
-                if (null !== $criteria) {
-                    if (false !== $this->collPermissaosRelatedByCoUsuarioAlteracaoPartial && count($collPermissaosRelatedByCoUsuarioAlteracao)) {
-                      $this->initPermissaosRelatedByCoUsuarioAlteracao(false);
-
-                      foreach($collPermissaosRelatedByCoUsuarioAlteracao as $obj) {
-                        if (false == $this->collPermissaosRelatedByCoUsuarioAlteracao->contains($obj)) {
-                          $this->collPermissaosRelatedByCoUsuarioAlteracao->append($obj);
-                        }
-                      }
-
-                      $this->collPermissaosRelatedByCoUsuarioAlteracaoPartial = true;
-                    }
-
-                    $collPermissaosRelatedByCoUsuarioAlteracao->getInternalIterator()->rewind();
-                    return $collPermissaosRelatedByCoUsuarioAlteracao;
-                }
-
-                if($partial && $this->collPermissaosRelatedByCoUsuarioAlteracao) {
-                    foreach($this->collPermissaosRelatedByCoUsuarioAlteracao as $obj) {
-                        if($obj->isNew()) {
-                            $collPermissaosRelatedByCoUsuarioAlteracao[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collPermissaosRelatedByCoUsuarioAlteracao = $collPermissaosRelatedByCoUsuarioAlteracao;
-                $this->collPermissaosRelatedByCoUsuarioAlteracaoPartial = false;
-            }
+        if ($v === null) {
+            $this->setCoPessoa(NULL);
+        } else {
+            $this->setCoPessoa($v->getCoPessoa());
         }
 
-        return $this->collPermissaosRelatedByCoUsuarioAlteracao;
-    }
+        $this->aPessoa = $v;
 
-    /**
-     * Sets a collection of PermissaoRelatedByCoUsuarioAlteracao objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param PropelCollection $permissaosRelatedByCoUsuarioAlteracao A Propel collection.
-     * @param PropelPDO $con Optional connection object
-     * @return Usuario The current object (for fluent API support)
-     */
-    public function setPermissaosRelatedByCoUsuarioAlteracao(PropelCollection $permissaosRelatedByCoUsuarioAlteracao, PropelPDO $con = null)
-    {
-        $permissaosRelatedByCoUsuarioAlteracaoToDelete = $this->getPermissaosRelatedByCoUsuarioAlteracao(new Criteria(), $con)->diff($permissaosRelatedByCoUsuarioAlteracao);
-
-        $this->permissaosRelatedByCoUsuarioAlteracaoScheduledForDeletion = unserialize(serialize($permissaosRelatedByCoUsuarioAlteracaoToDelete));
-
-        foreach ($permissaosRelatedByCoUsuarioAlteracaoToDelete as $permissaoRelatedByCoUsuarioAlteracaoRemoved) {
-            $permissaoRelatedByCoUsuarioAlteracaoRemoved->setUsuarioRelatedByCoUsuarioAlteracao(null);
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the Pessoa object, it will not be re-added.
+        if ($v !== null) {
+            $v->addUsuario($this);
         }
 
-        $this->collPermissaosRelatedByCoUsuarioAlteracao = null;
-        foreach ($permissaosRelatedByCoUsuarioAlteracao as $permissaoRelatedByCoUsuarioAlteracao) {
-            $this->addPermissaoRelatedByCoUsuarioAlteracao($permissaoRelatedByCoUsuarioAlteracao);
-        }
-
-        $this->collPermissaosRelatedByCoUsuarioAlteracao = $permissaosRelatedByCoUsuarioAlteracao;
-        $this->collPermissaosRelatedByCoUsuarioAlteracaoPartial = false;
 
         return $this;
     }
 
+
     /**
-     * Returns the number of related Permissao objects.
+     * Get the associated Pessoa object
      *
-     * @param Criteria $criteria
-     * @param boolean $distinct
-     * @param PropelPDO $con
-     * @return int             Count of related Permissao objects.
+     * @param PropelPDO $con Optional Connection object.
+     * @param $doQuery Executes a query to get the object if required
+     * @return Pessoa The associated Pessoa object.
      * @throws PropelException
      */
-    public function countPermissaosRelatedByCoUsuarioAlteracao(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    public function getPessoa(PropelPDO $con = null, $doQuery = true)
     {
-        $partial = $this->collPermissaosRelatedByCoUsuarioAlteracaoPartial && !$this->isNew();
-        if (null === $this->collPermissaosRelatedByCoUsuarioAlteracao || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collPermissaosRelatedByCoUsuarioAlteracao) {
-                return 0;
-            }
-
-            if($partial && !$criteria) {
-                return count($this->getPermissaosRelatedByCoUsuarioAlteracao());
-            }
-            $query = PermissaoQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUsuarioRelatedByCoUsuarioAlteracao($this)
-                ->count($con);
+        if ($this->aPessoa === null && ($this->co_pessoa !== null) && $doQuery) {
+            $this->aPessoa = PessoaQuery::create()->findPk($this->co_pessoa, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aPessoa->addUsuarios($this);
+             */
         }
 
-        return count($this->collPermissaosRelatedByCoUsuarioAlteracao);
-    }
-
-    /**
-     * Method called to associate a Permissao object to this object
-     * through the Permissao foreign key attribute.
-     *
-     * @param    Permissao $l Permissao
-     * @return Usuario The current object (for fluent API support)
-     */
-    public function addPermissaoRelatedByCoUsuarioAlteracao(Permissao $l)
-    {
-        if ($this->collPermissaosRelatedByCoUsuarioAlteracao === null) {
-            $this->initPermissaosRelatedByCoUsuarioAlteracao();
-            $this->collPermissaosRelatedByCoUsuarioAlteracaoPartial = true;
-        }
-        if (!in_array($l, $this->collPermissaosRelatedByCoUsuarioAlteracao->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->doAddPermissaoRelatedByCoUsuarioAlteracao($l);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param	PermissaoRelatedByCoUsuarioAlteracao $permissaoRelatedByCoUsuarioAlteracao The permissaoRelatedByCoUsuarioAlteracao object to add.
-     */
-    protected function doAddPermissaoRelatedByCoUsuarioAlteracao($permissaoRelatedByCoUsuarioAlteracao)
-    {
-        $this->collPermissaosRelatedByCoUsuarioAlteracao[]= $permissaoRelatedByCoUsuarioAlteracao;
-        $permissaoRelatedByCoUsuarioAlteracao->setUsuarioRelatedByCoUsuarioAlteracao($this);
-    }
-
-    /**
-     * @param	PermissaoRelatedByCoUsuarioAlteracao $permissaoRelatedByCoUsuarioAlteracao The permissaoRelatedByCoUsuarioAlteracao object to remove.
-     * @return Usuario The current object (for fluent API support)
-     */
-    public function removePermissaoRelatedByCoUsuarioAlteracao($permissaoRelatedByCoUsuarioAlteracao)
-    {
-        if ($this->getPermissaosRelatedByCoUsuarioAlteracao()->contains($permissaoRelatedByCoUsuarioAlteracao)) {
-            $this->collPermissaosRelatedByCoUsuarioAlteracao->remove($this->collPermissaosRelatedByCoUsuarioAlteracao->search($permissaoRelatedByCoUsuarioAlteracao));
-            if (null === $this->permissaosRelatedByCoUsuarioAlteracaoScheduledForDeletion) {
-                $this->permissaosRelatedByCoUsuarioAlteracaoScheduledForDeletion = clone $this->collPermissaosRelatedByCoUsuarioAlteracao;
-                $this->permissaosRelatedByCoUsuarioAlteracaoScheduledForDeletion->clear();
-            }
-            $this->permissaosRelatedByCoUsuarioAlteracaoScheduledForDeletion[]= $permissaoRelatedByCoUsuarioAlteracao;
-            $permissaoRelatedByCoUsuarioAlteracao->setUsuarioRelatedByCoUsuarioAlteracao(null);
-        }
-
-        return $this;
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Usuario is new, it will return
-     * an empty collection; or if this Usuario has previously
-     * been saved, it will retrieve related PermissaosRelatedByCoUsuarioAlteracao from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Usuario.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|Permissao[] List of Permissao objects
-     */
-    public function getPermissaosRelatedByCoUsuarioAlteracaoJoinPerfil($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = PermissaoQuery::create(null, $criteria);
-        $query->joinWith('Perfil', $join_behavior);
-
-        return $this->getPermissaosRelatedByCoUsuarioAlteracao($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Usuario is new, it will return
-     * an empty collection; or if this Usuario has previously
-     * been saved, it will retrieve related PermissaosRelatedByCoUsuarioAlteracao from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Usuario.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|Permissao[] List of Permissao objects
-     */
-    public function getPermissaosRelatedByCoUsuarioAlteracaoJoinRecurso($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = PermissaoQuery::create(null, $criteria);
-        $query->joinWith('Recurso', $join_behavior);
-
-        return $this->getPermissaosRelatedByCoUsuarioAlteracao($query, $con);
-    }
-
-    /**
-     * Clears out the collPermissaosRelatedByCoUsuarioCadastro collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return Usuario The current object (for fluent API support)
-     * @see        addPermissaosRelatedByCoUsuarioCadastro()
-     */
-    public function clearPermissaosRelatedByCoUsuarioCadastro()
-    {
-        $this->collPermissaosRelatedByCoUsuarioCadastro = null; // important to set this to null since that means it is uninitialized
-        $this->collPermissaosRelatedByCoUsuarioCadastroPartial = null;
-
-        return $this;
-    }
-
-    /**
-     * reset is the collPermissaosRelatedByCoUsuarioCadastro collection loaded partially
-     *
-     * @return void
-     */
-    public function resetPartialPermissaosRelatedByCoUsuarioCadastro($v = true)
-    {
-        $this->collPermissaosRelatedByCoUsuarioCadastroPartial = $v;
-    }
-
-    /**
-     * Initializes the collPermissaosRelatedByCoUsuarioCadastro collection.
-     *
-     * By default this just sets the collPermissaosRelatedByCoUsuarioCadastro collection to an empty array (like clearcollPermissaosRelatedByCoUsuarioCadastro());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initPermissaosRelatedByCoUsuarioCadastro($overrideExisting = true)
-    {
-        if (null !== $this->collPermissaosRelatedByCoUsuarioCadastro && !$overrideExisting) {
-            return;
-        }
-        $this->collPermissaosRelatedByCoUsuarioCadastro = new PropelObjectCollection();
-        $this->collPermissaosRelatedByCoUsuarioCadastro->setModel('Permissao');
-    }
-
-    /**
-     * Gets an array of Permissao objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this Usuario is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @return PropelObjectCollection|Permissao[] List of Permissao objects
-     * @throws PropelException
-     */
-    public function getPermissaosRelatedByCoUsuarioCadastro($criteria = null, PropelPDO $con = null)
-    {
-        $partial = $this->collPermissaosRelatedByCoUsuarioCadastroPartial && !$this->isNew();
-        if (null === $this->collPermissaosRelatedByCoUsuarioCadastro || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collPermissaosRelatedByCoUsuarioCadastro) {
-                // return empty collection
-                $this->initPermissaosRelatedByCoUsuarioCadastro();
-            } else {
-                $collPermissaosRelatedByCoUsuarioCadastro = PermissaoQuery::create(null, $criteria)
-                    ->filterByUsuarioRelatedByCoUsuarioCadastro($this)
-                    ->find($con);
-                if (null !== $criteria) {
-                    if (false !== $this->collPermissaosRelatedByCoUsuarioCadastroPartial && count($collPermissaosRelatedByCoUsuarioCadastro)) {
-                      $this->initPermissaosRelatedByCoUsuarioCadastro(false);
-
-                      foreach($collPermissaosRelatedByCoUsuarioCadastro as $obj) {
-                        if (false == $this->collPermissaosRelatedByCoUsuarioCadastro->contains($obj)) {
-                          $this->collPermissaosRelatedByCoUsuarioCadastro->append($obj);
-                        }
-                      }
-
-                      $this->collPermissaosRelatedByCoUsuarioCadastroPartial = true;
-                    }
-
-                    $collPermissaosRelatedByCoUsuarioCadastro->getInternalIterator()->rewind();
-                    return $collPermissaosRelatedByCoUsuarioCadastro;
-                }
-
-                if($partial && $this->collPermissaosRelatedByCoUsuarioCadastro) {
-                    foreach($this->collPermissaosRelatedByCoUsuarioCadastro as $obj) {
-                        if($obj->isNew()) {
-                            $collPermissaosRelatedByCoUsuarioCadastro[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collPermissaosRelatedByCoUsuarioCadastro = $collPermissaosRelatedByCoUsuarioCadastro;
-                $this->collPermissaosRelatedByCoUsuarioCadastroPartial = false;
-            }
-        }
-
-        return $this->collPermissaosRelatedByCoUsuarioCadastro;
-    }
-
-    /**
-     * Sets a collection of PermissaoRelatedByCoUsuarioCadastro objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param PropelCollection $permissaosRelatedByCoUsuarioCadastro A Propel collection.
-     * @param PropelPDO $con Optional connection object
-     * @return Usuario The current object (for fluent API support)
-     */
-    public function setPermissaosRelatedByCoUsuarioCadastro(PropelCollection $permissaosRelatedByCoUsuarioCadastro, PropelPDO $con = null)
-    {
-        $permissaosRelatedByCoUsuarioCadastroToDelete = $this->getPermissaosRelatedByCoUsuarioCadastro(new Criteria(), $con)->diff($permissaosRelatedByCoUsuarioCadastro);
-
-        $this->permissaosRelatedByCoUsuarioCadastroScheduledForDeletion = unserialize(serialize($permissaosRelatedByCoUsuarioCadastroToDelete));
-
-        foreach ($permissaosRelatedByCoUsuarioCadastroToDelete as $permissaoRelatedByCoUsuarioCadastroRemoved) {
-            $permissaoRelatedByCoUsuarioCadastroRemoved->setUsuarioRelatedByCoUsuarioCadastro(null);
-        }
-
-        $this->collPermissaosRelatedByCoUsuarioCadastro = null;
-        foreach ($permissaosRelatedByCoUsuarioCadastro as $permissaoRelatedByCoUsuarioCadastro) {
-            $this->addPermissaoRelatedByCoUsuarioCadastro($permissaoRelatedByCoUsuarioCadastro);
-        }
-
-        $this->collPermissaosRelatedByCoUsuarioCadastro = $permissaosRelatedByCoUsuarioCadastro;
-        $this->collPermissaosRelatedByCoUsuarioCadastroPartial = false;
-
-        return $this;
-    }
-
-    /**
-     * Returns the number of related Permissao objects.
-     *
-     * @param Criteria $criteria
-     * @param boolean $distinct
-     * @param PropelPDO $con
-     * @return int             Count of related Permissao objects.
-     * @throws PropelException
-     */
-    public function countPermissaosRelatedByCoUsuarioCadastro(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-    {
-        $partial = $this->collPermissaosRelatedByCoUsuarioCadastroPartial && !$this->isNew();
-        if (null === $this->collPermissaosRelatedByCoUsuarioCadastro || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collPermissaosRelatedByCoUsuarioCadastro) {
-                return 0;
-            }
-
-            if($partial && !$criteria) {
-                return count($this->getPermissaosRelatedByCoUsuarioCadastro());
-            }
-            $query = PermissaoQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByUsuarioRelatedByCoUsuarioCadastro($this)
-                ->count($con);
-        }
-
-        return count($this->collPermissaosRelatedByCoUsuarioCadastro);
-    }
-
-    /**
-     * Method called to associate a Permissao object to this object
-     * through the Permissao foreign key attribute.
-     *
-     * @param    Permissao $l Permissao
-     * @return Usuario The current object (for fluent API support)
-     */
-    public function addPermissaoRelatedByCoUsuarioCadastro(Permissao $l)
-    {
-        if ($this->collPermissaosRelatedByCoUsuarioCadastro === null) {
-            $this->initPermissaosRelatedByCoUsuarioCadastro();
-            $this->collPermissaosRelatedByCoUsuarioCadastroPartial = true;
-        }
-        if (!in_array($l, $this->collPermissaosRelatedByCoUsuarioCadastro->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->doAddPermissaoRelatedByCoUsuarioCadastro($l);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param	PermissaoRelatedByCoUsuarioCadastro $permissaoRelatedByCoUsuarioCadastro The permissaoRelatedByCoUsuarioCadastro object to add.
-     */
-    protected function doAddPermissaoRelatedByCoUsuarioCadastro($permissaoRelatedByCoUsuarioCadastro)
-    {
-        $this->collPermissaosRelatedByCoUsuarioCadastro[]= $permissaoRelatedByCoUsuarioCadastro;
-        $permissaoRelatedByCoUsuarioCadastro->setUsuarioRelatedByCoUsuarioCadastro($this);
-    }
-
-    /**
-     * @param	PermissaoRelatedByCoUsuarioCadastro $permissaoRelatedByCoUsuarioCadastro The permissaoRelatedByCoUsuarioCadastro object to remove.
-     * @return Usuario The current object (for fluent API support)
-     */
-    public function removePermissaoRelatedByCoUsuarioCadastro($permissaoRelatedByCoUsuarioCadastro)
-    {
-        if ($this->getPermissaosRelatedByCoUsuarioCadastro()->contains($permissaoRelatedByCoUsuarioCadastro)) {
-            $this->collPermissaosRelatedByCoUsuarioCadastro->remove($this->collPermissaosRelatedByCoUsuarioCadastro->search($permissaoRelatedByCoUsuarioCadastro));
-            if (null === $this->permissaosRelatedByCoUsuarioCadastroScheduledForDeletion) {
-                $this->permissaosRelatedByCoUsuarioCadastroScheduledForDeletion = clone $this->collPermissaosRelatedByCoUsuarioCadastro;
-                $this->permissaosRelatedByCoUsuarioCadastroScheduledForDeletion->clear();
-            }
-            $this->permissaosRelatedByCoUsuarioCadastroScheduledForDeletion[]= $permissaoRelatedByCoUsuarioCadastro;
-            $permissaoRelatedByCoUsuarioCadastro->setUsuarioRelatedByCoUsuarioCadastro(null);
-        }
-
-        return $this;
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Usuario is new, it will return
-     * an empty collection; or if this Usuario has previously
-     * been saved, it will retrieve related PermissaosRelatedByCoUsuarioCadastro from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Usuario.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|Permissao[] List of Permissao objects
-     */
-    public function getPermissaosRelatedByCoUsuarioCadastroJoinPerfil($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = PermissaoQuery::create(null, $criteria);
-        $query->joinWith('Perfil', $join_behavior);
-
-        return $this->getPermissaosRelatedByCoUsuarioCadastro($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Usuario is new, it will return
-     * an empty collection; or if this Usuario has previously
-     * been saved, it will retrieve related PermissaosRelatedByCoUsuarioCadastro from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Usuario.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|Permissao[] List of Permissao objects
-     */
-    public function getPermissaosRelatedByCoUsuarioCadastroJoinRecurso($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = PermissaoQuery::create(null, $criteria);
-        $query->joinWith('Recurso', $join_behavior);
-
-        return $this->getPermissaosRelatedByCoUsuarioCadastro($query, $con);
+        return $this->aPessoa;
     }
 
     /**
@@ -1932,15 +1198,12 @@ abstract class BaseUsuario extends BaseObject implements Persistent
      */
     public function clear()
     {
-        $this->co_usuario = null;
-        $this->nu_cpf = null;
         $this->ds_password = null;
-        $this->no_usuario = null;
-        $this->ds_login = null;
         $this->dt_ultimo_login = null;
-        $this->ds_email = null;
+        $this->ds_login = null;
         $this->co_perfil = null;
-        $this->nu_celular = null;
+        $this->co_pessoa = null;
+        $this->co_usuario = null;
         $this->alreadyInSave = false;
         $this->alreadyInValidation = false;
         $this->alreadyInClearAllReferencesDeep = false;
@@ -1963,32 +1226,18 @@ abstract class BaseUsuario extends BaseObject implements Persistent
     {
         if ($deep && !$this->alreadyInClearAllReferencesDeep) {
             $this->alreadyInClearAllReferencesDeep = true;
-            if ($this->collPermissaosRelatedByCoUsuarioAlteracao) {
-                foreach ($this->collPermissaosRelatedByCoUsuarioAlteracao as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-            if ($this->collPermissaosRelatedByCoUsuarioCadastro) {
-                foreach ($this->collPermissaosRelatedByCoUsuarioCadastro as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
             if ($this->aPerfil instanceof Persistent) {
               $this->aPerfil->clearAllReferences($deep);
+            }
+            if ($this->aPessoa instanceof Persistent) {
+              $this->aPessoa->clearAllReferences($deep);
             }
 
             $this->alreadyInClearAllReferencesDeep = false;
         } // if ($deep)
 
-        if ($this->collPermissaosRelatedByCoUsuarioAlteracao instanceof PropelCollection) {
-            $this->collPermissaosRelatedByCoUsuarioAlteracao->clearIterator();
-        }
-        $this->collPermissaosRelatedByCoUsuarioAlteracao = null;
-        if ($this->collPermissaosRelatedByCoUsuarioCadastro instanceof PropelCollection) {
-            $this->collPermissaosRelatedByCoUsuarioCadastro->clearIterator();
-        }
-        $this->collPermissaosRelatedByCoUsuarioCadastro = null;
         $this->aPerfil = null;
+        $this->aPessoa = null;
     }
 
     /**

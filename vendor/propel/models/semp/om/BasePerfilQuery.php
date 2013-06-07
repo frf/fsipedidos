@@ -20,10 +20,6 @@
  * @method PerfilQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method PerfilQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method PerfilQuery leftJoinColaborador($relationAlias = null) Adds a LEFT JOIN clause to the query using the Colaborador relation
- * @method PerfilQuery rightJoinColaborador($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Colaborador relation
- * @method PerfilQuery innerJoinColaborador($relationAlias = null) Adds a INNER JOIN clause to the query using the Colaborador relation
- *
  * @method PerfilQuery leftJoinPermissao($relationAlias = null) Adds a LEFT JOIN clause to the query using the Permissao relation
  * @method PerfilQuery rightJoinPermissao($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Permissao relation
  * @method PerfilQuery innerJoinPermissao($relationAlias = null) Adds a INNER JOIN clause to the query using the Permissao relation
@@ -360,80 +356,6 @@ abstract class BasePerfilQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(PerfilPeer::ST_PERFIL, $stPerfil, $comparison);
-    }
-
-    /**
-     * Filter the query by a related Colaborador object
-     *
-     * @param   Colaborador|PropelObjectCollection $colaborador  the related object to use as filter
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return                 PerfilQuery The current query, for fluid interface
-     * @throws PropelException - if the provided filter is invalid.
-     */
-    public function filterByColaborador($colaborador, $comparison = null)
-    {
-        if ($colaborador instanceof Colaborador) {
-            return $this
-                ->addUsingAlias(PerfilPeer::CO_PERFIL, $colaborador->getCoPerfil(), $comparison);
-        } elseif ($colaborador instanceof PropelObjectCollection) {
-            return $this
-                ->useColaboradorQuery()
-                ->filterByPrimaryKeys($colaborador->getPrimaryKeys())
-                ->endUse();
-        } else {
-            throw new PropelException('filterByColaborador() only accepts arguments of type Colaborador or PropelCollection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the Colaborador relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return PerfilQuery The current query, for fluid interface
-     */
-    public function joinColaborador($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Colaborador');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'Colaborador');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the Colaborador relation Colaborador object
-     *
-     * @see       useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return   ColaboradorQuery A secondary query class using the current class as primary query
-     */
-    public function useColaboradorQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        return $this
-            ->joinColaborador($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Colaborador', 'ColaboradorQuery');
     }
 
     /**

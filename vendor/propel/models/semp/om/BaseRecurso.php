@@ -1483,56 +1483,6 @@ abstract class BaseRecurso extends BaseObject implements Persistent
         return $this->getPermissaos($query, $con);
     }
 
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Recurso is new, it will return
-     * an empty collection; or if this Recurso has previously
-     * been saved, it will retrieve related Permissaos from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Recurso.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|Permissao[] List of Permissao objects
-     */
-    public function getPermissaosJoinUsuarioRelatedByCoUsuarioAlteracao($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = PermissaoQuery::create(null, $criteria);
-        $query->joinWith('UsuarioRelatedByCoUsuarioAlteracao', $join_behavior);
-
-        return $this->getPermissaos($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Recurso is new, it will return
-     * an empty collection; or if this Recurso has previously
-     * been saved, it will retrieve related Permissaos from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Recurso.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|Permissao[] List of Permissao objects
-     */
-    public function getPermissaosJoinUsuarioRelatedByCoUsuarioCadastro($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = PermissaoQuery::create(null, $criteria);
-        $query->joinWith('UsuarioRelatedByCoUsuarioCadastro', $join_behavior);
-
-        return $this->getPermissaos($query, $con);
-    }
-
     /**
      * Clears the current object and sets all attributes to their default values
      */

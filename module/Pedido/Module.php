@@ -13,9 +13,7 @@ class Module
             $sharedEvents->attach(__NAMESPACE__,'dispatch',function($e){
                 $controller = $e->getTarget();
                 $controller->layout('layout/representante');
-            });
-       
-            define("TITULO_SISTEMA","FSI Pedidos");
+            });          
     }
     
     # include de arquivo para outras configuracoes

@@ -55,12 +55,6 @@ abstract class BasePerfil extends BaseObject implements Persistent
     protected $st_perfil;
 
     /**
-     * @var        PropelObjectCollection|Colaborador[] Collection to store aggregation of Colaborador objects.
-     */
-    protected $collColaboradors;
-    protected $collColaboradorsPartial;
-
-    /**
      * @var        PropelObjectCollection|Permissao[] Collection to store aggregation of Permissao objects.
      */
     protected $collPermissaos;
@@ -91,12 +85,6 @@ abstract class BasePerfil extends BaseObject implements Persistent
      * @var        boolean
      */
     protected $alreadyInClearAllReferencesDeep = false;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var		PropelObjectCollection
-     */
-    protected $colaboradorsScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -373,8 +361,6 @@ abstract class BasePerfil extends BaseObject implements Persistent
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->collColaboradors = null;
-
             $this->collPermissaos = null;
 
             $this->collUsuarios = null;
@@ -501,23 +487,6 @@ abstract class BasePerfil extends BaseObject implements Persistent
                 }
                 $affectedRows += 1;
                 $this->resetModified();
-            }
-
-            if ($this->colaboradorsScheduledForDeletion !== null) {
-                if (!$this->colaboradorsScheduledForDeletion->isEmpty()) {
-                    ColaboradorQuery::create()
-                        ->filterByPrimaryKeys($this->colaboradorsScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->colaboradorsScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collColaboradors !== null) {
-                foreach ($this->collColaboradors as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
             }
 
             if ($this->permissaosScheduledForDeletion !== null) {
@@ -718,14 +687,6 @@ abstract class BasePerfil extends BaseObject implements Persistent
             }
 
 
-                if ($this->collColaboradors !== null) {
-                    foreach ($this->collColaboradors as $referrerFK) {
-                        if (!$referrerFK->validate($columns)) {
-                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
-                        }
-                    }
-                }
-
                 if ($this->collPermissaos !== null) {
                     foreach ($this->collPermissaos as $referrerFK) {
                         if (!$referrerFK->validate($columns)) {
@@ -824,9 +785,6 @@ abstract class BasePerfil extends BaseObject implements Persistent
             $keys[3] => $this->getStPerfil(),
         );
         if ($includeForeignObjects) {
-            if (null !== $this->collColaboradors) {
-                $result['Colaboradors'] = $this->collColaboradors->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
             if (null !== $this->collPermissaos) {
                 $result['Permissaos'] = $this->collPermissaos->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
@@ -996,12 +954,6 @@ abstract class BasePerfil extends BaseObject implements Persistent
             // store object hash to prevent cycle
             $this->startCopy = true;
 
-            foreach ($this->getColaboradors() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addColaborador($relObj->copy($deepCopy));
-                }
-            }
-
             foreach ($this->getPermissaos() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addPermissao($relObj->copy($deepCopy));
@@ -1075,283 +1027,12 @@ abstract class BasePerfil extends BaseObject implements Persistent
      */
     public function initRelation($relationName)
     {
-        if ('Colaborador' == $relationName) {
-            $this->initColaboradors();
-        }
         if ('Permissao' == $relationName) {
             $this->initPermissaos();
         }
         if ('Usuario' == $relationName) {
             $this->initUsuarios();
         }
-    }
-
-    /**
-     * Clears out the collColaboradors collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return Perfil The current object (for fluent API support)
-     * @see        addColaboradors()
-     */
-    public function clearColaboradors()
-    {
-        $this->collColaboradors = null; // important to set this to null since that means it is uninitialized
-        $this->collColaboradorsPartial = null;
-
-        return $this;
-    }
-
-    /**
-     * reset is the collColaboradors collection loaded partially
-     *
-     * @return void
-     */
-    public function resetPartialColaboradors($v = true)
-    {
-        $this->collColaboradorsPartial = $v;
-    }
-
-    /**
-     * Initializes the collColaboradors collection.
-     *
-     * By default this just sets the collColaboradors collection to an empty array (like clearcollColaboradors());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initColaboradors($overrideExisting = true)
-    {
-        if (null !== $this->collColaboradors && !$overrideExisting) {
-            return;
-        }
-        $this->collColaboradors = new PropelObjectCollection();
-        $this->collColaboradors->setModel('Colaborador');
-    }
-
-    /**
-     * Gets an array of Colaborador objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this Perfil is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @return PropelObjectCollection|Colaborador[] List of Colaborador objects
-     * @throws PropelException
-     */
-    public function getColaboradors($criteria = null, PropelPDO $con = null)
-    {
-        $partial = $this->collColaboradorsPartial && !$this->isNew();
-        if (null === $this->collColaboradors || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collColaboradors) {
-                // return empty collection
-                $this->initColaboradors();
-            } else {
-                $collColaboradors = ColaboradorQuery::create(null, $criteria)
-                    ->filterByPerfil($this)
-                    ->find($con);
-                if (null !== $criteria) {
-                    if (false !== $this->collColaboradorsPartial && count($collColaboradors)) {
-                      $this->initColaboradors(false);
-
-                      foreach($collColaboradors as $obj) {
-                        if (false == $this->collColaboradors->contains($obj)) {
-                          $this->collColaboradors->append($obj);
-                        }
-                      }
-
-                      $this->collColaboradorsPartial = true;
-                    }
-
-                    $collColaboradors->getInternalIterator()->rewind();
-                    return $collColaboradors;
-                }
-
-                if($partial && $this->collColaboradors) {
-                    foreach($this->collColaboradors as $obj) {
-                        if($obj->isNew()) {
-                            $collColaboradors[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collColaboradors = $collColaboradors;
-                $this->collColaboradorsPartial = false;
-            }
-        }
-
-        return $this->collColaboradors;
-    }
-
-    /**
-     * Sets a collection of Colaborador objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param PropelCollection $colaboradors A Propel collection.
-     * @param PropelPDO $con Optional connection object
-     * @return Perfil The current object (for fluent API support)
-     */
-    public function setColaboradors(PropelCollection $colaboradors, PropelPDO $con = null)
-    {
-        $colaboradorsToDelete = $this->getColaboradors(new Criteria(), $con)->diff($colaboradors);
-
-        $this->colaboradorsScheduledForDeletion = unserialize(serialize($colaboradorsToDelete));
-
-        foreach ($colaboradorsToDelete as $colaboradorRemoved) {
-            $colaboradorRemoved->setPerfil(null);
-        }
-
-        $this->collColaboradors = null;
-        foreach ($colaboradors as $colaborador) {
-            $this->addColaborador($colaborador);
-        }
-
-        $this->collColaboradors = $colaboradors;
-        $this->collColaboradorsPartial = false;
-
-        return $this;
-    }
-
-    /**
-     * Returns the number of related Colaborador objects.
-     *
-     * @param Criteria $criteria
-     * @param boolean $distinct
-     * @param PropelPDO $con
-     * @return int             Count of related Colaborador objects.
-     * @throws PropelException
-     */
-    public function countColaboradors(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
-    {
-        $partial = $this->collColaboradorsPartial && !$this->isNew();
-        if (null === $this->collColaboradors || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collColaboradors) {
-                return 0;
-            }
-
-            if($partial && !$criteria) {
-                return count($this->getColaboradors());
-            }
-            $query = ColaboradorQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByPerfil($this)
-                ->count($con);
-        }
-
-        return count($this->collColaboradors);
-    }
-
-    /**
-     * Method called to associate a Colaborador object to this object
-     * through the Colaborador foreign key attribute.
-     *
-     * @param    Colaborador $l Colaborador
-     * @return Perfil The current object (for fluent API support)
-     */
-    public function addColaborador(Colaborador $l)
-    {
-        if ($this->collColaboradors === null) {
-            $this->initColaboradors();
-            $this->collColaboradorsPartial = true;
-        }
-        if (!in_array($l, $this->collColaboradors->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->doAddColaborador($l);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param	Colaborador $colaborador The colaborador object to add.
-     */
-    protected function doAddColaborador($colaborador)
-    {
-        $this->collColaboradors[]= $colaborador;
-        $colaborador->setPerfil($this);
-    }
-
-    /**
-     * @param	Colaborador $colaborador The colaborador object to remove.
-     * @return Perfil The current object (for fluent API support)
-     */
-    public function removeColaborador($colaborador)
-    {
-        if ($this->getColaboradors()->contains($colaborador)) {
-            $this->collColaboradors->remove($this->collColaboradors->search($colaborador));
-            if (null === $this->colaboradorsScheduledForDeletion) {
-                $this->colaboradorsScheduledForDeletion = clone $this->collColaboradors;
-                $this->colaboradorsScheduledForDeletion->clear();
-            }
-            $this->colaboradorsScheduledForDeletion[]= clone $colaborador;
-            $colaborador->setPerfil(null);
-        }
-
-        return $this;
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Perfil is new, it will return
-     * an empty collection; or if this Perfil has previously
-     * been saved, it will retrieve related Colaboradors from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Perfil.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|Colaborador[] List of Colaborador objects
-     */
-    public function getColaboradorsJoinPessoa($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = ColaboradorQuery::create(null, $criteria);
-        $query->joinWith('Pessoa', $join_behavior);
-
-        return $this->getColaboradors($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Perfil is new, it will return
-     * an empty collection; or if this Perfil has previously
-     * been saved, it will retrieve related Colaboradors from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Perfil.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|Colaborador[] List of Colaborador objects
-     */
-    public function getColaboradorsJoinEmpresa($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = ColaboradorQuery::create(null, $criteria);
-        $query->joinWith('Empresa', $join_behavior);
-
-        return $this->getColaboradors($query, $con);
     }
 
     /**
@@ -1597,56 +1278,6 @@ abstract class BasePerfil extends BaseObject implements Persistent
         return $this->getPermissaos($query, $con);
     }
 
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Perfil is new, it will return
-     * an empty collection; or if this Perfil has previously
-     * been saved, it will retrieve related Permissaos from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Perfil.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|Permissao[] List of Permissao objects
-     */
-    public function getPermissaosJoinUsuarioRelatedByCoUsuarioAlteracao($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = PermissaoQuery::create(null, $criteria);
-        $query->joinWith('UsuarioRelatedByCoUsuarioAlteracao', $join_behavior);
-
-        return $this->getPermissaos($query, $con);
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Perfil is new, it will return
-     * an empty collection; or if this Perfil has previously
-     * been saved, it will retrieve related Permissaos from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Perfil.
-     *
-     * @param Criteria $criteria optional Criteria object to narrow the query
-     * @param PropelPDO $con optional connection object
-     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return PropelObjectCollection|Permissao[] List of Permissao objects
-     */
-    public function getPermissaosJoinUsuarioRelatedByCoUsuarioCadastro($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-    {
-        $query = PermissaoQuery::create(null, $criteria);
-        $query->joinWith('UsuarioRelatedByCoUsuarioCadastro', $join_behavior);
-
-        return $this->getPermissaos($query, $con);
-    }
-
     /**
      * Clears out the collUsuarios collection
      *
@@ -1865,6 +1496,31 @@ abstract class BasePerfil extends BaseObject implements Persistent
         return $this;
     }
 
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Perfil is new, it will return
+     * an empty collection; or if this Perfil has previously
+     * been saved, it will retrieve related Usuarios from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Perfil.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Usuario[] List of Usuario objects
+     */
+    public function getUsuariosJoinPessoa($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = UsuarioQuery::create(null, $criteria);
+        $query->joinWith('Pessoa', $join_behavior);
+
+        return $this->getUsuarios($query, $con);
+    }
+
     /**
      * Clears the current object and sets all attributes to their default values
      */
@@ -1897,11 +1553,6 @@ abstract class BasePerfil extends BaseObject implements Persistent
     {
         if ($deep && !$this->alreadyInClearAllReferencesDeep) {
             $this->alreadyInClearAllReferencesDeep = true;
-            if ($this->collColaboradors) {
-                foreach ($this->collColaboradors as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
             if ($this->collPermissaos) {
                 foreach ($this->collPermissaos as $o) {
                     $o->clearAllReferences($deep);
@@ -1916,10 +1567,6 @@ abstract class BasePerfil extends BaseObject implements Persistent
             $this->alreadyInClearAllReferencesDeep = false;
         } // if ($deep)
 
-        if ($this->collColaboradors instanceof PropelCollection) {
-            $this->collColaboradors->clearIterator();
-        }
-        $this->collColaboradors = null;
         if ($this->collPermissaos instanceof PropelCollection) {
             $this->collPermissaos->clearIterator();
         }

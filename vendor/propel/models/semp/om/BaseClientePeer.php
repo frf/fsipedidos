@@ -24,13 +24,13 @@ abstract class BaseClientePeer
     const TM_CLASS = 'ClienteTableMap';
 
     /** The total number of columns. */
-    const NUM_COLUMNS = 7;
+    const NUM_COLUMNS = 8;
 
     /** The number of lazy-loaded columns. */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 7;
+    const NUM_HYDRATE_COLUMNS = 8;
 
     /** the column name for the co_cliente field */
     const CO_CLIENTE = 'cliente.cliente.co_cliente';
@@ -53,6 +53,9 @@ abstract class BaseClientePeer
     /** the column name for the dt_fundacao field */
     const DT_FUNDACAO = 'cliente.cliente.dt_fundacao';
 
+    /** the column name for the co_tributacao field */
+    const CO_TRIBUTACAO = 'cliente.cliente.co_tributacao';
+
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
 
@@ -72,12 +75,12 @@ abstract class BaseClientePeer
      * e.g. ClientePeer::$fieldNames[ClientePeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('CoCliente', 'DsRazaoSocial', 'DsInscricaoEstadual', 'StSuframa', 'DsRamoAtividade', 'DtCadastro', 'DtFundacao', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('coCliente', 'dsRazaoSocial', 'dsInscricaoEstadual', 'stSuframa', 'dsRamoAtividade', 'dtCadastro', 'dtFundacao', ),
-        BasePeer::TYPE_COLNAME => array (ClientePeer::CO_CLIENTE, ClientePeer::DS_RAZAO_SOCIAL, ClientePeer::DS_INSCRICAO_ESTADUAL, ClientePeer::ST_SUFRAMA, ClientePeer::DS_RAMO_ATIVIDADE, ClientePeer::DT_CADASTRO, ClientePeer::DT_FUNDACAO, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('CO_CLIENTE', 'DS_RAZAO_SOCIAL', 'DS_INSCRICAO_ESTADUAL', 'ST_SUFRAMA', 'DS_RAMO_ATIVIDADE', 'DT_CADASTRO', 'DT_FUNDACAO', ),
-        BasePeer::TYPE_FIELDNAME => array ('co_cliente', 'ds_razao_social', 'ds_inscricao_estadual', 'st_suframa', 'ds_ramo_atividade', 'dt_cadastro', 'dt_fundacao', ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
+        BasePeer::TYPE_PHPNAME => array ('CoCliente', 'DsRazaoSocial', 'DsInscricaoEstadual', 'StSuframa', 'DsRamoAtividade', 'DtCadastro', 'DtFundacao', 'CoTributacao', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('coCliente', 'dsRazaoSocial', 'dsInscricaoEstadual', 'stSuframa', 'dsRamoAtividade', 'dtCadastro', 'dtFundacao', 'coTributacao', ),
+        BasePeer::TYPE_COLNAME => array (ClientePeer::CO_CLIENTE, ClientePeer::DS_RAZAO_SOCIAL, ClientePeer::DS_INSCRICAO_ESTADUAL, ClientePeer::ST_SUFRAMA, ClientePeer::DS_RAMO_ATIVIDADE, ClientePeer::DT_CADASTRO, ClientePeer::DT_FUNDACAO, ClientePeer::CO_TRIBUTACAO, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('CO_CLIENTE', 'DS_RAZAO_SOCIAL', 'DS_INSCRICAO_ESTADUAL', 'ST_SUFRAMA', 'DS_RAMO_ATIVIDADE', 'DT_CADASTRO', 'DT_FUNDACAO', 'CO_TRIBUTACAO', ),
+        BasePeer::TYPE_FIELDNAME => array ('co_cliente', 'ds_razao_social', 'ds_inscricao_estadual', 'st_suframa', 'ds_ramo_atividade', 'dt_cadastro', 'dt_fundacao', 'co_tributacao', ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -87,12 +90,12 @@ abstract class BaseClientePeer
      * e.g. ClientePeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('CoCliente' => 0, 'DsRazaoSocial' => 1, 'DsInscricaoEstadual' => 2, 'StSuframa' => 3, 'DsRamoAtividade' => 4, 'DtCadastro' => 5, 'DtFundacao' => 6, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('coCliente' => 0, 'dsRazaoSocial' => 1, 'dsInscricaoEstadual' => 2, 'stSuframa' => 3, 'dsRamoAtividade' => 4, 'dtCadastro' => 5, 'dtFundacao' => 6, ),
-        BasePeer::TYPE_COLNAME => array (ClientePeer::CO_CLIENTE => 0, ClientePeer::DS_RAZAO_SOCIAL => 1, ClientePeer::DS_INSCRICAO_ESTADUAL => 2, ClientePeer::ST_SUFRAMA => 3, ClientePeer::DS_RAMO_ATIVIDADE => 4, ClientePeer::DT_CADASTRO => 5, ClientePeer::DT_FUNDACAO => 6, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('CO_CLIENTE' => 0, 'DS_RAZAO_SOCIAL' => 1, 'DS_INSCRICAO_ESTADUAL' => 2, 'ST_SUFRAMA' => 3, 'DS_RAMO_ATIVIDADE' => 4, 'DT_CADASTRO' => 5, 'DT_FUNDACAO' => 6, ),
-        BasePeer::TYPE_FIELDNAME => array ('co_cliente' => 0, 'ds_razao_social' => 1, 'ds_inscricao_estadual' => 2, 'st_suframa' => 3, 'ds_ramo_atividade' => 4, 'dt_cadastro' => 5, 'dt_fundacao' => 6, ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
+        BasePeer::TYPE_PHPNAME => array ('CoCliente' => 0, 'DsRazaoSocial' => 1, 'DsInscricaoEstadual' => 2, 'StSuframa' => 3, 'DsRamoAtividade' => 4, 'DtCadastro' => 5, 'DtFundacao' => 6, 'CoTributacao' => 7, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('coCliente' => 0, 'dsRazaoSocial' => 1, 'dsInscricaoEstadual' => 2, 'stSuframa' => 3, 'dsRamoAtividade' => 4, 'dtCadastro' => 5, 'dtFundacao' => 6, 'coTributacao' => 7, ),
+        BasePeer::TYPE_COLNAME => array (ClientePeer::CO_CLIENTE => 0, ClientePeer::DS_RAZAO_SOCIAL => 1, ClientePeer::DS_INSCRICAO_ESTADUAL => 2, ClientePeer::ST_SUFRAMA => 3, ClientePeer::DS_RAMO_ATIVIDADE => 4, ClientePeer::DT_CADASTRO => 5, ClientePeer::DT_FUNDACAO => 6, ClientePeer::CO_TRIBUTACAO => 7, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('CO_CLIENTE' => 0, 'DS_RAZAO_SOCIAL' => 1, 'DS_INSCRICAO_ESTADUAL' => 2, 'ST_SUFRAMA' => 3, 'DS_RAMO_ATIVIDADE' => 4, 'DT_CADASTRO' => 5, 'DT_FUNDACAO' => 6, 'CO_TRIBUTACAO' => 7, ),
+        BasePeer::TYPE_FIELDNAME => array ('co_cliente' => 0, 'ds_razao_social' => 1, 'ds_inscricao_estadual' => 2, 'st_suframa' => 3, 'ds_ramo_atividade' => 4, 'dt_cadastro' => 5, 'dt_fundacao' => 6, 'co_tributacao' => 7, ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
     );
 
     /**
@@ -173,6 +176,7 @@ abstract class BaseClientePeer
             $criteria->addSelectColumn(ClientePeer::DS_RAMO_ATIVIDADE);
             $criteria->addSelectColumn(ClientePeer::DT_CADASTRO);
             $criteria->addSelectColumn(ClientePeer::DT_FUNDACAO);
+            $criteria->addSelectColumn(ClientePeer::CO_TRIBUTACAO);
         } else {
             $criteria->addSelectColumn($alias . '.co_cliente');
             $criteria->addSelectColumn($alias . '.ds_razao_social');
@@ -181,6 +185,7 @@ abstract class BaseClientePeer
             $criteria->addSelectColumn($alias . '.ds_ramo_atividade');
             $criteria->addSelectColumn($alias . '.dt_cadastro');
             $criteria->addSelectColumn($alias . '.dt_fundacao');
+            $criteria->addSelectColumn($alias . '.co_tributacao');
         }
     }
 
@@ -485,6 +490,57 @@ abstract class BaseClientePeer
 
 
     /**
+     * Returns the number of rows matching criteria, joining the related ClienteTributacao table
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return int Number of matching rows.
+     */
+    public static function doCountJoinClienteTributacao(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        // we're going to modify criteria, so copy it first
+        $criteria = clone $criteria;
+
+        // We need to set the primary table name, since in the case that there are no WHERE columns
+        // it will be impossible for the BasePeer::createSelectSql() method to determine which
+        // tables go into the FROM clause.
+        $criteria->setPrimaryTableName(ClientePeer::TABLE_NAME);
+
+        if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+            $criteria->setDistinct();
+        }
+
+        if (!$criteria->hasSelectClause()) {
+            ClientePeer::addSelectColumns($criteria);
+        }
+
+        $criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+
+        // Set the correct dbName
+        $criteria->setDbName(ClientePeer::DATABASE_NAME);
+
+        if ($con === null) {
+            $con = Propel::getConnection(ClientePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+        }
+
+        $criteria->addJoin(ClientePeer::CO_TRIBUTACAO, ClienteTributacaoPeer::CO_TRIBUTACAO, $join_behavior);
+
+        $stmt = BasePeer::doCount($criteria, $con);
+
+        if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $count = (int) $row[0];
+        } else {
+            $count = 0; // no rows returned; we infer that means 0 matches.
+        }
+        $stmt->closeCursor();
+
+        return $count;
+    }
+
+
+    /**
      * Returns the number of rows matching criteria, joining the related Pessoa table
      *
      * @param      Criteria $criteria
@@ -532,6 +588,73 @@ abstract class BaseClientePeer
         $stmt->closeCursor();
 
         return $count;
+    }
+
+
+    /**
+     * Selects a collection of Cliente objects pre-filled with their ClienteTributacao objects.
+     * @param      Criteria  $criteria
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return array           Array of Cliente objects.
+     * @throws PropelException Any exceptions caught during processing will be
+     *		 rethrown wrapped into a PropelException.
+     */
+    public static function doSelectJoinClienteTributacao(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $criteria = clone $criteria;
+
+        // Set the correct dbName if it has not been overridden
+        if ($criteria->getDbName() == Propel::getDefaultDB()) {
+            $criteria->setDbName(ClientePeer::DATABASE_NAME);
+        }
+
+        ClientePeer::addSelectColumns($criteria);
+        $startcol = ClientePeer::NUM_HYDRATE_COLUMNS;
+        ClienteTributacaoPeer::addSelectColumns($criteria);
+
+        $criteria->addJoin(ClientePeer::CO_TRIBUTACAO, ClienteTributacaoPeer::CO_TRIBUTACAO, $join_behavior);
+
+        $stmt = BasePeer::doSelect($criteria, $con);
+        $results = array();
+
+        while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $key1 = ClientePeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = ClientePeer::getInstanceFromPool($key1))) {
+                // We no longer rehydrate the object, since this can cause data loss.
+                // See http://www.propelorm.org/ticket/509
+                // $obj1->hydrate($row, 0, true); // rehydrate
+            } else {
+
+                $cls = ClientePeer::getOMClass();
+
+                $obj1 = new $cls();
+                $obj1->hydrate($row);
+                ClientePeer::addInstanceToPool($obj1, $key1);
+            } // if $obj1 already loaded
+
+            $key2 = ClienteTributacaoPeer::getPrimaryKeyHashFromRow($row, $startcol);
+            if ($key2 !== null) {
+                $obj2 = ClienteTributacaoPeer::getInstanceFromPool($key2);
+                if (!$obj2) {
+
+                    $cls = ClienteTributacaoPeer::getOMClass();
+
+                    $obj2 = new $cls();
+                    $obj2->hydrate($row, $startcol);
+                    ClienteTributacaoPeer::addInstanceToPool($obj2, $key2);
+                } // if obj2 already loaded
+
+                // Add the $obj1 (Cliente) to $obj2 (ClienteTributacao)
+                $obj2->addCliente($obj1);
+
+            } // if joined row was not null
+
+            $results[] = $obj1;
+        }
+        $stmt->closeCursor();
+
+        return $results;
     }
 
 
@@ -639,6 +762,8 @@ abstract class BaseClientePeer
             $con = Propel::getConnection(ClientePeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
+        $criteria->addJoin(ClientePeer::CO_TRIBUTACAO, ClienteTributacaoPeer::CO_TRIBUTACAO, $join_behavior);
+
         $criteria->addJoin(ClientePeer::CO_CLIENTE, PessoaPeer::CO_PESSOA, $join_behavior);
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -675,8 +800,13 @@ abstract class BaseClientePeer
         ClientePeer::addSelectColumns($criteria);
         $startcol2 = ClientePeer::NUM_HYDRATE_COLUMNS;
 
+        ClienteTributacaoPeer::addSelectColumns($criteria);
+        $startcol3 = $startcol2 + ClienteTributacaoPeer::NUM_HYDRATE_COLUMNS;
+
         PessoaPeer::addSelectColumns($criteria);
-        $startcol3 = $startcol2 + PessoaPeer::NUM_HYDRATE_COLUMNS;
+        $startcol4 = $startcol3 + PessoaPeer::NUM_HYDRATE_COLUMNS;
+
+        $criteria->addJoin(ClientePeer::CO_TRIBUTACAO, ClienteTributacaoPeer::CO_TRIBUTACAO, $join_behavior);
 
         $criteria->addJoin(ClientePeer::CO_CLIENTE, PessoaPeer::CO_PESSOA, $join_behavior);
 
@@ -697,23 +827,291 @@ abstract class BaseClientePeer
                 ClientePeer::addInstanceToPool($obj1, $key1);
             } // if obj1 already loaded
 
-            // Add objects for joined Pessoa rows
+            // Add objects for joined ClienteTributacao rows
 
-            $key2 = PessoaPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+            $key2 = ClienteTributacaoPeer::getPrimaryKeyHashFromRow($row, $startcol2);
             if ($key2 !== null) {
-                $obj2 = PessoaPeer::getInstanceFromPool($key2);
+                $obj2 = ClienteTributacaoPeer::getInstanceFromPool($key2);
                 if (!$obj2) {
 
+                    $cls = ClienteTributacaoPeer::getOMClass();
+
+                    $obj2 = new $cls();
+                    $obj2->hydrate($row, $startcol2);
+                    ClienteTributacaoPeer::addInstanceToPool($obj2, $key2);
+                } // if obj2 loaded
+
+                // Add the $obj1 (Cliente) to the collection in $obj2 (ClienteTributacao)
+                $obj2->addCliente($obj1);
+            } // if joined row not null
+
+            // Add objects for joined Pessoa rows
+
+            $key3 = PessoaPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+            if ($key3 !== null) {
+                $obj3 = PessoaPeer::getInstanceFromPool($key3);
+                if (!$obj3) {
+
                     $cls = PessoaPeer::getOMClass();
+
+                    $obj3 = new $cls();
+                    $obj3->hydrate($row, $startcol3);
+                    PessoaPeer::addInstanceToPool($obj3, $key3);
+                } // if obj3 loaded
+
+                // Add the $obj1 (Cliente) to the collection in $obj3 (Pessoa)
+                $obj1->setPessoa($obj3);
+            } // if joined row not null
+
+            $results[] = $obj1;
+        }
+        $stmt->closeCursor();
+
+        return $results;
+    }
+
+
+    /**
+     * Returns the number of rows matching criteria, joining the related ClienteTributacao table
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return int Number of matching rows.
+     */
+    public static function doCountJoinAllExceptClienteTributacao(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        // we're going to modify criteria, so copy it first
+        $criteria = clone $criteria;
+
+        // We need to set the primary table name, since in the case that there are no WHERE columns
+        // it will be impossible for the BasePeer::createSelectSql() method to determine which
+        // tables go into the FROM clause.
+        $criteria->setPrimaryTableName(ClientePeer::TABLE_NAME);
+
+        if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+            $criteria->setDistinct();
+        }
+
+        if (!$criteria->hasSelectClause()) {
+            ClientePeer::addSelectColumns($criteria);
+        }
+
+        $criteria->clearOrderByColumns(); // ORDER BY should not affect count
+
+        // Set the correct dbName
+        $criteria->setDbName(ClientePeer::DATABASE_NAME);
+
+        if ($con === null) {
+            $con = Propel::getConnection(ClientePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+        }
+
+        $criteria->addJoin(ClientePeer::CO_CLIENTE, PessoaPeer::CO_PESSOA, $join_behavior);
+
+        $stmt = BasePeer::doCount($criteria, $con);
+
+        if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $count = (int) $row[0];
+        } else {
+            $count = 0; // no rows returned; we infer that means 0 matches.
+        }
+        $stmt->closeCursor();
+
+        return $count;
+    }
+
+
+    /**
+     * Returns the number of rows matching criteria, joining the related Pessoa table
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return int Number of matching rows.
+     */
+    public static function doCountJoinAllExceptPessoa(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        // we're going to modify criteria, so copy it first
+        $criteria = clone $criteria;
+
+        // We need to set the primary table name, since in the case that there are no WHERE columns
+        // it will be impossible for the BasePeer::createSelectSql() method to determine which
+        // tables go into the FROM clause.
+        $criteria->setPrimaryTableName(ClientePeer::TABLE_NAME);
+
+        if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+            $criteria->setDistinct();
+        }
+
+        if (!$criteria->hasSelectClause()) {
+            ClientePeer::addSelectColumns($criteria);
+        }
+
+        $criteria->clearOrderByColumns(); // ORDER BY should not affect count
+
+        // Set the correct dbName
+        $criteria->setDbName(ClientePeer::DATABASE_NAME);
+
+        if ($con === null) {
+            $con = Propel::getConnection(ClientePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+        }
+
+        $criteria->addJoin(ClientePeer::CO_TRIBUTACAO, ClienteTributacaoPeer::CO_TRIBUTACAO, $join_behavior);
+
+        $stmt = BasePeer::doCount($criteria, $con);
+
+        if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $count = (int) $row[0];
+        } else {
+            $count = 0; // no rows returned; we infer that means 0 matches.
+        }
+        $stmt->closeCursor();
+
+        return $count;
+    }
+
+
+    /**
+     * Selects a collection of Cliente objects pre-filled with all related objects except ClienteTributacao.
+     *
+     * @param      Criteria  $criteria
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return array           Array of Cliente objects.
+     * @throws PropelException Any exceptions caught during processing will be
+     *		 rethrown wrapped into a PropelException.
+     */
+    public static function doSelectJoinAllExceptClienteTributacao(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $criteria = clone $criteria;
+
+        // Set the correct dbName if it has not been overridden
+        // $criteria->getDbName() will return the same object if not set to another value
+        // so == check is okay and faster
+        if ($criteria->getDbName() == Propel::getDefaultDB()) {
+            $criteria->setDbName(ClientePeer::DATABASE_NAME);
+        }
+
+        ClientePeer::addSelectColumns($criteria);
+        $startcol2 = ClientePeer::NUM_HYDRATE_COLUMNS;
+
+        PessoaPeer::addSelectColumns($criteria);
+        $startcol3 = $startcol2 + PessoaPeer::NUM_HYDRATE_COLUMNS;
+
+        $criteria->addJoin(ClientePeer::CO_CLIENTE, PessoaPeer::CO_PESSOA, $join_behavior);
+
+
+        $stmt = BasePeer::doSelect($criteria, $con);
+        $results = array();
+
+        while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $key1 = ClientePeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = ClientePeer::getInstanceFromPool($key1))) {
+                // We no longer rehydrate the object, since this can cause data loss.
+                // See http://www.propelorm.org/ticket/509
+                // $obj1->hydrate($row, 0, true); // rehydrate
+            } else {
+                $cls = ClientePeer::getOMClass();
+
+                $obj1 = new $cls();
+                $obj1->hydrate($row);
+                ClientePeer::addInstanceToPool($obj1, $key1);
+            } // if obj1 already loaded
+
+                // Add objects for joined Pessoa rows
+
+                $key2 = PessoaPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+                if ($key2 !== null) {
+                    $obj2 = PessoaPeer::getInstanceFromPool($key2);
+                    if (!$obj2) {
+
+                        $cls = PessoaPeer::getOMClass();
 
                     $obj2 = new $cls();
                     $obj2->hydrate($row, $startcol2);
                     PessoaPeer::addInstanceToPool($obj2, $key2);
-                } // if obj2 loaded
+                } // if $obj2 already loaded
 
                 // Add the $obj1 (Cliente) to the collection in $obj2 (Pessoa)
                 $obj1->setPessoa($obj2);
-            } // if joined row not null
+
+            } // if joined row is not null
+
+            $results[] = $obj1;
+        }
+        $stmt->closeCursor();
+
+        return $results;
+    }
+
+
+    /**
+     * Selects a collection of Cliente objects pre-filled with all related objects except Pessoa.
+     *
+     * @param      Criteria  $criteria
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return array           Array of Cliente objects.
+     * @throws PropelException Any exceptions caught during processing will be
+     *		 rethrown wrapped into a PropelException.
+     */
+    public static function doSelectJoinAllExceptPessoa(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $criteria = clone $criteria;
+
+        // Set the correct dbName if it has not been overridden
+        // $criteria->getDbName() will return the same object if not set to another value
+        // so == check is okay and faster
+        if ($criteria->getDbName() == Propel::getDefaultDB()) {
+            $criteria->setDbName(ClientePeer::DATABASE_NAME);
+        }
+
+        ClientePeer::addSelectColumns($criteria);
+        $startcol2 = ClientePeer::NUM_HYDRATE_COLUMNS;
+
+        ClienteTributacaoPeer::addSelectColumns($criteria);
+        $startcol3 = $startcol2 + ClienteTributacaoPeer::NUM_HYDRATE_COLUMNS;
+
+        $criteria->addJoin(ClientePeer::CO_TRIBUTACAO, ClienteTributacaoPeer::CO_TRIBUTACAO, $join_behavior);
+
+
+        $stmt = BasePeer::doSelect($criteria, $con);
+        $results = array();
+
+        while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $key1 = ClientePeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = ClientePeer::getInstanceFromPool($key1))) {
+                // We no longer rehydrate the object, since this can cause data loss.
+                // See http://www.propelorm.org/ticket/509
+                // $obj1->hydrate($row, 0, true); // rehydrate
+            } else {
+                $cls = ClientePeer::getOMClass();
+
+                $obj1 = new $cls();
+                $obj1->hydrate($row);
+                ClientePeer::addInstanceToPool($obj1, $key1);
+            } // if obj1 already loaded
+
+                // Add objects for joined ClienteTributacao rows
+
+                $key2 = ClienteTributacaoPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+                if ($key2 !== null) {
+                    $obj2 = ClienteTributacaoPeer::getInstanceFromPool($key2);
+                    if (!$obj2) {
+
+                        $cls = ClienteTributacaoPeer::getOMClass();
+
+                    $obj2 = new $cls();
+                    $obj2->hydrate($row, $startcol2);
+                    ClienteTributacaoPeer::addInstanceToPool($obj2, $key2);
+                } // if $obj2 already loaded
+
+                // Add the $obj1 (Cliente) to the collection in $obj2 (ClienteTributacao)
+                $obj2->addCliente($obj1);
+
+            } // if joined row is not null
 
             $results[] = $obj1;
         }

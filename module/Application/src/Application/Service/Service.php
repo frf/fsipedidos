@@ -1,81 +1,58 @@
 <?php
+
 namespace Application\Service;
 
-use Application\Service\Service;
-use Zend\Authentication\AuthenticationService;
-use Zend\Authentication\Adapter\DbTable as AuthAdapter;
-use Zend\Db\Sql\Select;
+use Zend\ServiceManager\ServiceManager;
+use Zend\ServiceManager\ServiceManagerAwareInterface;
+use Zend\ServiceManager\Exception\ServiceNotFoundException;
+use Application\Db\TableGateway;
 
-/**
- * Serviço responsável pela autenticação da aplicação
-  * 
- * @category Admin
- * @package Service
- * @author  Elton Minetto<eminetto@coderockr.com>
- */
-class Auth extends Service
-{
+abstract class Service implements ServiceManagerAwareInterface {
+
     /**
-     * Adapter usado para a autenticação
-     * @var Zend\Db\Adapter\Adapter
+     * @var ServiceManager
      */
-    private $dbAdapter;
+    protected $serviceManager;
 
-    /** 
-     * Construtor da classe
-     *
-     * @return void
+    /**
+     * @param ServiceManager $serviceManager
      */
-    public function __construct($dbAdapter = null)
-    {
-        $this->dbAdapter = $dbAdapter;
+    public function setServiceManager(ServiceManager $serviceManager) {
+        $this->serviceManager = $serviceManager;
+        //return $this;
     }
 
     /**
-     * Faz a autenticação dos usuários
-     * 
-     * @param array $params
-     * @return array
+     * Retrieve serviceManager instance
+     *
+     * @return ServiceLocatorInterface
      */
-    public function authenticate($params)
-    {
-        if (!isset($params['username']) || !isset($params['password'])) {
-            throw new \Exception("Parâmetros inválidos");
-        }
-        
-        $password = md5($params['password']);
-        $auth = new AuthenticationService();
-        $authAdapter = new AuthAdapter($this->dbAdapter);
-        $authAdapter
-            ->setTableName('users')
-            ->setIdentityColumn('username')
-            ->setCredentialColumn('password')
-            ->setIdentity($params['username'])
-            ->setCredential($password);
-        $result = $auth->authenticate($authAdapter);
-        
-        if (! $result->isValid()) {
-            throw new \Exception("Login ou senha inválidos");
-        }
-
-        //salva o user na sessão
-        $session = $this->getServiceManager()->get('Session');        
-        $session->offsetSet('user', $authAdapter->getResultRowObject());
-
-        return true;
+    public function getServiceManager() {
+        return $this->serviceManager;
     }
 
     /**
-     * Faz o logout do sistema
+     * Retrieve TableGateway
      *
-     * @return void
+     * @param string $table
+     * @return TableGateway
      */
-    public function logout() {
-        $auth = new AuthenticationService();
-        $session = $this->getServiceManager()->get('Session');
-        $session->offsetUnset('user');
-        $auth->clearIdentity();
-        return true;
+    protected function getTable($table) {
+        $sm = $this->getServiceManager();
+        $dbAdapter = $sm->get('DbAdapter');
+        $tableGateway = new TableGateway($dbAdapter, $table, new $table);
+        $tableGateway->initialize();
+
+        return $tableGateway;
+    }
+
+    /**
+     * Retrieve Service
+     *
+     * @return Service
+     */
+    protected function getService($service) {
+        return $this->getServiceManager()->get($service);
     }
 
 }

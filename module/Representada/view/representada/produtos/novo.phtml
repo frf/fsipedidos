@@ -1,0 +1,82 @@
+<script src="/js/maruti.form_validation.js"></script>
+<script src="/js/maruti.form_common.js"></script>
+<script src="/js/jquery.maskMoney.js" type="text/javascript"></script>
+
+<script>
+    $(document).ready(function(){
+        $('input[name="ds_valor"]').maskMoney({thousands:'.', decimal:',', symbolStay: true});
+    });
+</script>
+<style>
+    textarea {resize: none;height: 150px}
+</style>
+
+<div id="content-header">
+    <div id="breadcrumb"> 
+        <a href="/" title="Home" class="tip-bottom"><i class="icon-home"></i> Home</a>
+        <a href="<?php echo $this->url('representadas'); ?>" title="Lista de Representada" class="tip-bottom">
+            <i class="icon-thumbs-up"></i> Representada</a>
+        <a href="<?php echo $this->url('representadas', array('action' => 'detalhes', 'id' => $this->idrep)); ?>" title="Lista de Representada" class="tip-bottom">
+            <i class="icon-thumbs-up"></i>  <?php echo $this->representada->getDsRazaoSocial();?></a>
+        <a href="<?php echo $this->url('produtos', array('action' => 'novo', 'idrep' => $idrep)); ?>" title="Cadastro de Produto" class="tip-bottom current">Novo Produto</a>
+    </div>
+  </div>
+ <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="span6">
+            <div class="widget-box">
+              <div class="widget-title"> <span class="icon"> <i class="icon-align-justify"></i> </span>
+                <h5>Cadastro de Produto - Representada: <?php echo $this->representada->getDsRazaoSocial();?></h5>
+              </div>
+                <form method="POST" action="<?php echo $this->url('produtos', array('action' => 'adicionar')); ?>" class="form-horizontal"  name="basic_validate_produto" id="basic_validate_produto" novalidate="novalidate" enctype="multipart/form-data">
+                    <input type="hidden" name="idrep" value="<?php echo $idrep; ?>">
+                 <div class="widget-content nopadding">
+                    <div class="control-group">
+                    <label class="control-label">Nome:</label>
+                    <div class="controls">
+                      <input type="text" class="span11" name="no_produto" placeholder="Nome Produto"  id="required"  />
+                    </div>
+                  </div>
+                  <div class="control-group">
+                    <label class="control-label">Código:</label>
+                    <div class="controls">
+                        <input type="text" class="span11" placeholder="Código Produto" name="cod_produto" />
+                    </div>
+                  </div>
+                  <div class="control-group">
+                    <label class="control-label">Preço:</label>
+                    <div class="controls">
+                      R$ <input type="text"  class="span4" placeholder="1.000,00" name="ds_valor" />
+                    </div>
+                  </div>
+                 </div>
+                 <div class="widget-content nopadding">
+                    <div class="control-group">
+                    <label class="control-label">Unidade:</label>
+                    <div class="controls">
+                      <input type="text" class="span5" placeholder="Ex: Cx,Kg,Un"  name="ds_unidade" />
+                    </div>
+                  </div>
+                 </div>
+                 <div class="widget-content nopadding">
+                    <div class="control-group">
+                    <label class="control-label">Foto do Produto:</label>
+                    <div class="controls">
+                        <input type="file" class="span5"  name="no_foto" />
+                    </div>
+                  </div>
+                 </div>
+         
+                 <div class="widget-content nopadding">
+                    <div class="form-actions">
+                      <button type="submit" class="btn btn-success">Salvar</button>
+                      <a href="<?php echo $this->url('representadas', array('action' => 'detalhes', 'id' => $this->idrep)); ?>" class="btn">Voltar</a>
+                    </div>                         
+                  </div>
+               </form> 
+             
+            </div>
+          </div>        
+        </div>
+        <hr>     
+</div>    

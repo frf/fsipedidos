@@ -1,0 +1,75 @@
+<script>
+    $(document).ready(function(){
+        $("#cnpj").mask("99.999.999/9999-99"); 
+        $("#nu_comissao").mask("9?99"); 
+    });
+</script>
+<style>
+    textarea {resize: none;height: 150px}
+</style>
+
+<div id="content-header">
+    <div id="breadcrumb"> 
+        <a href="/" title="Home" class="tip-bottom"><i class="icon-home"></i> Home</a>
+        <a href="<?php echo $this->url('representadas', array('action' => 'detalhes', 'id' => $this->idrep)); ?>" title="Lista de Representada" class="tip-bottom">
+            <i class="icon-user"></i> Representada</a>
+        <a href="/representadas/novo" title="Cadastro de Produto" class="tip-bottom current">Novo Produto</a>
+    </div>
+  </div>
+ <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="span6">
+            <div class="widget-box">
+              <div class="widget-title"> <span class="icon"> <i class="icon-align-justify"></i> </span>
+                <h5>Cadastro de Produto</h5>
+              </div>
+                <form method="POST" action="<?php echo $this->url('produtos', array('action' => 'adicionar')); ?>" class="form-horizontal"  name="basic_validate_representada" id="basic_validate_representada" novalidate="novalidate">
+                 <div class="widget-content nopadding">
+                    <div class="control-group">
+                    <label class="control-label">Nome:</label>
+                    <div class="controls">
+                      <input type="text" class="span11" name="no_produto" placeholder="Nome Produto"  id="required"  />
+                    </div>
+                  </div>
+                  <div class="control-group">
+                    <label class="control-label">Código:</label>
+                    <div class="controls">
+                        <input type="text" class="span11" placeholder="Código Produto" name="cod_produto"  id="required"  />
+                    </div>
+                  </div>
+                  <div class="control-group">
+                    <label class="control-label">CNPJ</label>
+                    <div class="controls">
+                      <input type="text"  class="span11" placeholder="CNPJ" name="cnpj" id="required"  />
+                    </div>
+                  </div>
+                 </div>
+                 <div class="widget-content nopadding">
+                    <div class="control-group">
+                    <label class="control-label">Comissão:</label>
+                    <div class="controls">
+                      <input type="text" class="span3" placeholder="Comissão" id="required" name="nu_comissao" /> %
+                    </div>
+                  </div>
+                 </div>
+                 <div class="widget-content nopadding">
+                    <div class="control-group">
+                    <label class="control-label">Informações Adicionais:</label>
+                    <div class="controls">
+                        <textarea class="span11" name="ds_info_adicionais" /></textarea>
+                    </div>
+                  </div>
+                 </div>
+                 <div class="widget-content nopadding">
+                    <div class="form-actions">
+                      <button type="submit" class="btn btn-success">Salvar</button>
+                      <a href="<?php echo $this->url('representadas', array('action' => 'detalhes', 'id' => $this->idrep)); ?>" class="btn">Voltar</a>
+                    </div>                         
+                  </div>
+               </form> 
+             
+            </div>
+          </div>        
+        </div>
+        <hr>     
+</div>    

@@ -1,0 +1,91 @@
+<script src="/js/maruti.form_validation.js"></script>
+<script src="/js/maruti.form_common.js"></script>
+<script src="/js/jquery.maskMoney.js" type="text/javascript"></script>
+
+<script>
+    $(document).ready(function(){
+        $('input[name="ds_valor"]').maskMoney({thousands:'.', decimal:',', symbolStay: true});
+    });
+</script>
+<style>
+    textarea {resize: none;height: 150px}
+</style>
+
+<div id="content-header">
+    <div id="breadcrumb"> 
+        <a href="/" title="Home" class="tip-bottom"><i class="icon-home"></i> Home</a>
+        <a href="<?php echo $this->url('representadas'); ?>" title="Lista de Representada" class="tip-bottom">
+            <i class="icon-thumbs-up"></i> Representada</a>
+        <a href="<?php echo $this->url('representadas', array('action' => 'detalhes', 'id' => $this->idrep)); ?>" title="Lista de Representada" class="tip-bottom">
+            <i class="icon-thumbs-up"></i>  <?php echo $oRepresentada->getDsRazaoSocial();?></a>
+        <a href="<?php echo $this->url('produtos', array('action' => 'editar', 'idrep' => $idrep,'id' => $id)); ?>" title="Editando Produto" class="tip-bottom current">Editar</a>
+    </div>
+  </div>
+ <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="span6">
+            <div class="widget-box">
+              <div class="widget-title"> <span class="icon"> <i class="icon-align-justify"></i> </span>
+                <h5>Editar Produto - Representada: <?php echo $oRepresentada->getDsRazaoSocial();?></h5>
+              </div>
+                <form method="POST" action="<?php echo $this->url('produtos', array('action' => 'atualizar')); ?>" class="form-horizontal"  name="basic_validate_produto" id="basic_validate_produto" novalidate="novalidate">
+                    <input type="hidden" value="<?php echo $idrep; ?>" name="idrep" >
+                    <input type="hidden" value="<?php echo $oProduto->getCoProduto();?>" name="id" />
+                    
+                 <div class="widget-content nopadding">
+                    <div class="control-group">
+                    <label class="control-label">Nome:</label>
+                    <div class="controls">
+                        
+                        <input type="text" id="no_produto" value="<?php echo $oProduto->getNoProduto();?>" class="span11" name="no_produto" placeholder="Nome Produto"  id="required"  />
+                    </div>
+                  </div>
+                  <div class="control-group">
+                    <label class="control-label" id="cod_produto">Código:</label>
+                    <div class="controls">
+                        <input type="text" value="<?php echo $oProduto->getCodProduto();?>" class="span11" placeholder="Código Produto" name="cod_produto" />
+                    </div>
+                  </div>
+                  <div class="control-group">
+                    <label class="control-label" id="ncm_sh">NCM/SH:</label>
+                    <div class="controls">
+                        <input type="text" value="<?php echo $oProduto->getNcmSh();?>" class="span11" placeholder="Código Produto" name="ncm_sh" />
+                    </div>
+                  </div>
+                  <div class="control-group">
+                    <label class="control-label" id="ds_valor">Preço:</label>
+                    <div class="controls">
+                        <select name="tp_moeda" onchange="convertMoeda()" style="width: 80px">
+                            <option value="1" <?php if($oProduto->getTpMoeda() == 1){ ?>selected="selected"<?php } ?>>R$</option>
+                            <option value="2" <?php if($oProduto->getTpMoeda() == 2){ ?>selected="selected"<?php } ?>>US$</option>
+                        </select> 
+                        <input type="text" value="<?php echo $oProduto->getDsValor();?>" class="span4" placeholder="1.000,00" name="ds_valor" />
+                        <?php if($oProduto->getTpMoeda() == 2){ ?>
+                            R$ <?php echo $oProduto->getDsValorRealConvertido();?>
+                        <?php } ?>
+                    </div>
+                    
+                  </div>
+                 </div>
+                 <div class="widget-content nopadding">
+                    <div class="control-group">
+                    <label class="control-label">Unidade:</label>
+                    <div class="controls">
+                        <input type="text" value="<?php echo $oProduto->getNoUnidade();?>" class="span5" placeholder="Ex: Cx,Kg,Un"  name="ds_unidade" />
+                    </div>
+                  </div>
+                 </div>
+         
+                 <div class="widget-content nopadding">
+                    <div class="form-actions">
+                      <button type="submit" class="btn btn-success">Salvar</button>
+                      <a href="<?php echo $this->url('representadas', array('action' => 'detalhes', 'id' => $this->idrep)); ?>" class="btn">Voltar</a>
+                    </div>                         
+                  </div>
+               </form> 
+             
+            </div>
+          </div>        
+        </div>
+        <hr>     
+</div>    
