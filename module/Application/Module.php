@@ -13,6 +13,9 @@ namespace Application;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\ModuleManager\ModuleManager;
+use Zend\Authentication\Storage;
+use Zend\Authentication\AuthenticationService;
+use Zend\Session\Container;
 
 class Module {
 
@@ -37,6 +40,23 @@ class Module {
         define("DDI", "55");
         define("MAP_ENDERECO", false);
         define("COTACAO_DOLLAR", '2');
+        
+        
+        define("CO_PEDIDO_ABERTO", 1);
+        define("CO_PEDIDO_PENDENTE_PRODUTO", 2);
+        define("CO_PEDIDO_PENDENTE_ENTREGA_PARCIAL", 3);
+        define("CO_PEDIDO_PENDENTE_CADASTRO_CLIENTE", 4);
+        define("CO_PEDIDO_FECHADO", 5);
+        define("CO_PEDIDO_FATURADO", 6);
+        define("CO_PEDIDO_CANCELADO", 7);
+        
+        
+        $session = new Container('base');
+        $oPessoa = $session->offsetGet('user');
+        
+        define("CO_PESSOA", $oPessoa->co_pessoa);
+        
+        
     }
 
     /**

@@ -12,10 +12,10 @@ class PedidosController extends AbstractActionController {
     // GET /clientes
     public function indexAction() {
 
-        $colaborador = \ColaboradorQuery::create()->find();
+        $oPedido = \PedidoQuery::create()->find();
 
         return array('message' => $this->getFlashMessenger(),
-            'aColaboradores' => $colaborador);
+            'oPedido' => $oPedido);
     }
 
     // GET /clientes/novo
@@ -23,11 +23,11 @@ class PedidosController extends AbstractActionController {
         
 
         $oRepresentadas = \RepresentadaQuery::create()->find();
-        #$form = new Colaborador();
-        #$form->populateValues($oColaborador);  
-        // dados eviados para editar.phtml
+        $oCliente = \ClienteQuery::create()->find();
+        
         return array('id' => $id,
             'representada' => $oRepresentadas,
+            'cliente' => $oCliente,
             'message' => $this->getFlashMessenger());
     }
 
@@ -53,25 +53,25 @@ class PedidosController extends AbstractActionController {
                 
                 try {
 
-                    \ColaboradorPeer::gravaColaborador($postData);
+                    \PedidoPeer::criarPedido($postData);
                 } catch (Exception $e) {
                     // adicionar mensagem de sucesso
                     $this->flashMessenger()->addSuccessMessage($e->getMessage());
                     #$this->logger()->info($e->getMessage());
 
-                    return $this->redirect()->toRoute('colaboradores');
+                    return $this->redirect()->toRoute('pedidos');
                 }
                 // adicionar mensagem de sucesso
-                $this->flashMessenger()->addSuccessMessage("Colaborador adicionado com sucesso");
+                $this->flashMessenger()->addSuccessMessage("Pedido criado com sucesso");
 
                 // redirecionar para action index no controller clientes
-                return $this->redirect()->toRoute('colaboradores');
+                return $this->redirect()->toRoute('pedidos');
             } else {
                 // adicionar mensagem de erro
-                $this->flashMessenger()->addErrorMessage("Erro ao criar colaborador");
+                $this->flashMessenger()->addErrorMessage("Erro ao criar pedido");
 
                 // redirecionar para action novo no controllers clientes
-                return $this->redirect()->toRoute('colaboradores', array('action' => 'novo'));
+                return $this->redirect()->toRoute('pedidos', array('action' => 'novo'));
             }
         }
     }

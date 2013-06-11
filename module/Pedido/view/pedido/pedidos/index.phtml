@@ -1,35 +1,37 @@
  <div id="content-header">
     <div id="breadcrumb"> 
         <a href="/" title="Principal" class="tip-bottom"><i class="icon-home"></i> Principal</a>
-        <a href="/colaboradores/index" title="Colaboradores" class="tip-bottom"><i class="icon-user"></i> Colaboradores</a>
+        <a href="/pedidos/index" title="Pedidos" class="tip-bottom current"><i class="icon-inbox"></i> Pedidos</a>
     </div>
   </div>
 <div class="container-fluid">
     <br>
-    <a class="btn btn-success" href="<?php echo $this->url('colaboradores', array('action' => 'novo'))?>">Novo Colaborador</a>
+    <a class="btn btn-success" href="<?php echo $this->url('pedidos', array('action' => 'novo'))?>">Novo Pedido</a>
     <div class="row-fluid">
       <div class="span12">
           
         <div class="widget-box">
           <div class="widget-title">
              <span class="icon"><i class="icon-th"></i></span> 
-            <h5>Lista de Colaboradores</h5>
+            <h5>Lista de Pedidos</h5>
           </div>
           <div class="widget-content nopadding">
             <table class="table table-bordered data-table">
               <thead>
                 <tr>
-                   <th>#</th>
-                    <th>Nome</th>
-                    <th>Tipo</th>                      
-                    <th>Tel. Principal</th>
+                   <th>Pedido</th>
+                    <th>Representada</th>
+                    <th>Cliente</th>                      
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Vendedor</th>
                     <th>Ação</th>  
                 </tr>
               </thead>
               <tbody>
                   <?php 
                   $i=0;
-                  foreach($this->aColaboradores as $oColaboradores){ 
+                  foreach($oPedido as $Pedido){ 
                       if($i%2){
                           $grade = "gradeX";
                       }else{
@@ -37,16 +39,16 @@
                       }
                       ?>
                     <tr class="<?php echo $grade; ?>">
-                        <td><?php echo $oColaboradores->getCoColaborador(); ?></td>
-                        <td><?php echo $oColaboradores->getNoColaborador(); ?></td>
-                        <td><?php echo $oColaboradores->getTipoPessoa(); ?></td>
-                        <td><?php echo $oColaboradores->getDsTelefone(); ?></td>
+                        <td><?php echo $Pedido->getCoPedido(); ?></td>
+                        <td><?php echo $Pedido->getNoRepresentada(); ?></td>
+                        <td><?php echo $Pedido->getNoCliente(); ?></td>
+                        <td>R$ <?php echo PedidoPeer::getValorTotal($Pedido->getCoPedido()); ?></td>
+                        <td><?php echo $Pedido->getNoStatus();?></td>
+                        <td><?php echo $Pedido->getNoColaborador();?></td>
                         <td>
-                            <a class="btn btn-mini btn-info" href="<?php echo $this->url('colaboradores', array("action" => "detalhes", "id" => $oColaboradores->getCoColaborador())); ?>">Visualizar</a>
-                            <a class="btn btn-mini btn-warning" href="<?php echo $this->url('colaboradores', array("action" => "editar", "id" => $oColaboradores->getCoColaborador())); ?>">Editar</a>
-                            <?php if(!$oColaboradores->getTpAdministrador()){ ?>
-                            <a class="btn btn-mini btn-danger" href="<?php echo $this->url('colaboradores', array("action" => "deletar", "id" => $oColaboradores->getCoColaborador())); ?>">Apagar</a>
-                            <?php } ?>
+                            <a class="btn btn-mini btn-info" href="<?php echo $this->url('pedidos', array("action" => "detalhes", "id" => $Pedido->getCoPedido())); ?>">Visualizar</a>
+                            <a class="btn btn-mini btn-warning" href="<?php echo $this->url('pedidos', array("action" => "editar", "id" => $Pedido->getCoPedido())); ?>">Editar</a>
+                            <a class="btn btn-mini btn-danger" href="<?php echo $this->url('pedidos', array("action" => "deletar", "id" => $Pedido->getCoPedido())); ?>">Apagar</a>
                         </td>
                     </tr>
                 <?php } ?>                

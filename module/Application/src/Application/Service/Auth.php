@@ -6,6 +6,7 @@ use Application\Service\Service;
 use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Adapter\DbTable as AuthAdapter;
 use Zend\Db\Sql\Select;
+use Zend\Session\Container;
 
 /**
  * Serviço responsável pela autenticação da aplicação
@@ -64,7 +65,10 @@ class Auth extends Service {
         //salva o user na sessão
         $session = $this->getServiceManager()->get('Session');
         $session->offsetSet('user', $data = $authAdapter->getResultRowObject());
-
+        
+        $session = new Container('base');
+        $session->offsetSet('user', $data);
+        
         $oUsuario = \UsuarioQuery::create()
                 ->filterByCoUsuario($data->co_usuario)
                 ->findOne();

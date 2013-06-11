@@ -279,7 +279,9 @@ class RepresentadasController extends ActionController
                     $oPessoa = \PessoaQuery::create()->filterByCoPessoa($id)->findOne();
                     
                     if($oRepresentada){
-                        $pdo->beginTransaction();                        
+                        
+                        $pdo->beginTransaction();
+                        $oRepresentada->getProdutoRepresentadas()->delete();
                         $oRepresentada->delete();
                         $oPessoa->delete();
                         $pdo->commit();
