@@ -39,8 +39,21 @@ return array(
                         'action'     => 'novo',
                     ),
                 ),
+            ),
+            'produto' => array(
+                'type'    => 'segment',
+                'options' => array(
+                    'route'    => '/produto[/:id]',
+                    'constraints' => array(
+                        'id'     => '[0-9]*',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Representada\Controller\Produto',
+                        'action'     => 'produto',
+                    ),
+                ),
             )
-        ),
+       )
     ),
     'view_manager' => array( //the module can have a specific layout
         'template_path_stack' => array(

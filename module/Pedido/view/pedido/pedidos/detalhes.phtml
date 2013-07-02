@@ -1,115 +1,152 @@
+<script src="/js/lightbox.js" type="text/javascript" charset="utf-8"></script>
+<link href="/css/lightbox.css" rel="stylesheet" />
+
+<style>
+    textarea {resize: none;height: 150px}
+    .control-label{font-weight: bold !important}
+</style>
+
 <div id="content-header">
     <div id="breadcrumb"> 
         <a href="/" title="Principal" class="tip-bottom"><i class="icon-home"></i> Principal</a>
-        <a href="/colaboradores/index" title="Lista de colaboradores" class="tip-bottom">
-            <i class="icon-user"></i> Colaboradores</a>
-        <a href="/colaboradores/detalhes/<?php echo $id;?>" title="Detalhes Colaborador" class="tip-bottom">Detalhes</a>
+        <a href="/pedidos/index" title="Pedido    " class="tip-bottom">
+            <i class="icon-thumbs-up"></i> Pedido</a>
+        <a href="/pedidos/detalhes/<?php echo $this->id; ?>" title="Detalhes do Pedido" class="tip-bottom current">Detalhes</a>
     </div>
   </div>
- <div class="container-fluid">
-        <div class="row-fluid">
-          <div class="span6">
-            <div class="widget-box">
-              <div class="widget-title"> <span class="icon"> <i class="icon-align-justify"></i> </span>
-                <h5>Detalhes do Colaborador</h5>
-              </div>
-              <div class="widget-content nopadding">
-                 <form method="POST" action="<?php echo $this->url('colaboradores', array('action' => 'atualizar')); ?>" class="form-horizontal">
-                    
-                  <div class="control-group">
-                    <label class="control-label">Nome:</label>
-                    <div class="controls">                      
-                        <?php echo $form->getNoColaborador(); ?>
-                    </div>
-                  </div>
-                  <div class="control-group">
-                    <label class="control-label">E-Mail:</label>
-                    <div class="controls" id="addEmail">
-                        <?php echo $form->getDsEmail(); ?>
-                    </div>
-                  </div>
-                     <div class="control-group">
-                    <label class="control-label">Telefone:</label>
-                    <div class="controls" id="addEmail">
-                        <?php echo $form->getDsTelefone(); ?>
-                    </div>
-                  </div>
-                  <div class="control-group">
-                    <label class="control-label">Tipo:</label>
-                    <div class="controls">
-                        <?php if($form->getTpAdministrador()){ ?>Administrador<?php }else{ ?>Colaborador<?php } ?>
-                   </div>    
-                  <div class="control-group">
-                   
-                        <div class="widget-box">
-                            <div class="widget-title"> <span class="icon">
-                              <div class="checker" id="uniform-title-checkbox">
-                                  <span class="">
-                                      <!-- <input type="checkbox" id="title-checkbox" name="title-checkbox" > -->
-                                      &nbsp;
-                                      &nbsp;
-                                  </span></div>
-                              </span>
-                              <h5>Lista de Representadas</h5>
-                              
-                            </div>
-                            <div class="widget-content nopadding">
-                              <table class="table table-bordered table-striped">
-                                <thead>
-                                  <tr>
-                                    <th>Representada</th>
-                                    <th>Comissão</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                    <?php if($representada){ 
-                                                foreach($representada as $oRepresentada){ ?>
-                                    
-                                  <tr>
-                                    <td>
-                                        <?php echo $oRepresentada->getNoRepresentada(); ?>
-                                       
-                                    </td>
-                                    <td>
-                                        <div>
-                                            <?php
-                                                if($aRepresentadasCol[$oRepresentada->getCoRepresentada()]['NuComissao'] == ""){
-                                                    echo "0";
-                                                }else{
-                                                    echo $aRepresentadasCol[$oRepresentada->getCoRepresentada()]['NuComissao'];
-                                                }
-                                                ?>
-                                            <span class="add-on">%</span> 
-                                        </div> 
-                                        
-                                    </td>
-                                  </tr>
-                                    <?php } } ?>
-                                 
-                                </tbody>
-                              </table>
-                                
-                            </div>
-                            <!-- 
-                            <span class="help-block">Quais representadas este colaborador vai ter acesso e sua comissão.</span>
-                            -->
-                          </div>
-                   
-                      
-                  </div> 
+<div class="widget-content">
+<p>
+    <a href="<?php echo $this->url('pedidos', array('action' => 'nova-nota-fiscal', 'id' => $this->id)); ?>" class="btn btn-primary">Adicionar Nota Fiscal</a>
+    <a href="<?php echo $this->url('pedidos', array('action' => 'novo-boleto', 'id' => $this->id)); ?>" class="btn btn-primary">Adicionar Boleto</a>
+    <!--<a href="<?php echo $this->url('produtos', array('action' => 'novo', 'idrep' => $this->id)); ?>" class="btn btn-info">Importar Produto</a>-->
+    <a target="_Blank" href="<?php echo $this->url('report', array('action' => 'pedido-pdf', 'id' => $this->id,'nome'=>$nomePedido)); ?>" class="btn btn-success">Imprimir Pedido</a>
+    <a href="<?php echo $this->url('pedidos'); ?>" class="btn">Voltar</a>
+           
+</p>
+</div>
 
-                  
-                   <div class="form-actions">
-                    <a href="<?php echo $this->url('colaboradores', array('action' => 'editar', 'id' => $this->id)); ?>" class="btn btn-warning">Editar Colaborador</a>
-                    <a href="<?php echo $this->url('colaboradores'); ?>" class="btn">Voltar</a>
-                  </div>
-                 </form>
-              </div>
-            </div>
-          </div>        
-        </div>
-        <hr>    
+<div class="container-fluid">    
+<div class="row-fluid">       
+<div class="span7">
+    <form method="POST" action="<?php echo $this->url('pedidos', array('action' => 'detalhes','id'=>$id)); ?>" class="form-horizontal">
+        <input type="hidden" value="<?php echo $id;?>" name="id"><br>
+     <?php echo $this->message($this->message); ?>
      
-</div>    
+     <div class="widget-box ">
+        
+        <div class="widget-title">
+                <span class="icon">
+                        <i class="icon-arrow-right"></i>
+                </span>
+                <h5>Produtos</h5> 
+                <button type="submit" class="btn-mini btn-warning" style="top: 6px;position: absolute;">Atualizar</button>
+        </div>        
+        
+        <div class="widget-content nopadding">
+           
+           <table class="table table-bordered table-striped">
+                      <thead>
+                        <tr>
+                          <th>Produto</th>
+                          <th>Qnt.</th>
+                          <th>Qnt. Entregue</th>
+                          <th>V. Original</th>
+                          <th>Desc</th>
+                          <th>Comissão</th>
+                          <th>Total</th>
+                          <!--<th>Ação</th>-->
+                        </tr>
+                      </thead>
+                      <tbody>
+                           <?php 
+                        if($oProdutoPedido){ 
+                            foreach($oProdutoPedido as $oProdutoP){ ?>
+                        <tr class="odd gradeX">
+                          <td><?php echo $oProdutoP->getNoProduto(); ?></td>
+                          <td><?php echo $oProdutoP->getQntOriginal(); ?></td>
+                          <td>
+                              <input class="input-mini" type="text" value="<?php echo $oProdutoP->getQntEntregue(); ?>" name="qnt_entregue[<?php echo $oProdutoP->getCoProduto();?>]">                              
+                          </td>
+                          <td><?php echo $oProdutoP->getNoMoeda() . " " . PedidoPeer::convertMoedaCasaDecimal($oProdutoP->getVlOriginal()); ?></td>
+                          <td><?php echo $oProdutoP->getVlDesconto(); ?>%</td>
+                          <td><?php echo $oProdutoP->getVlComissao(); ?>%</td>
+                          <td><?php echo $oProdutoP->getNoMoeda() . " " .PedidoPeer::convertMoedaCasaDecimal($oProdutoP->getTotal()); ?></td>
+                          
+                          <!--<td><a href="<?php echo $this->url('pedidos',array('action'=>'apagar-produto-pedido','id'=>$id,'produto'=>$oProdutoP->getCoProduto())); ?>" class="btn btn-mini">Apagar</a></td>-->
+                        </tr>
+                        <?php } } ?>
+                      </tbody>
+                    </table>
+        </div>
+</div>
+    </form>
+</div>
+     
+      <div class="span4">
+          <div class="widget-box form-horizontal">
+          <div class="widget-title"> <span class="icon"> <i class="icon-align-justify"></i> </span>
+            <h5>Detalhes do Cliente</h5>
+          </div>
+             <div class="widget-content nopadding">
+                <div class="control-group">
+                <label class="control-label">Razão Social:</label>
+                <div class="controls">
+                    <?php echo $oCliente->getDsRazaoSocial();?>
+                </div>
+              </div>
+                <div class="control-group">
+                <label class="control-label">CNPJ:</label>
+                <div class="controls">
+                    <?php echo $oCliente->getNuCnpj();?>
+                </div>
+              </div>
+        </div>
+      </div>   
+        
+        <div class="widget-box form-horizontal" >
+          <div class="widget-title"> <span class="icon"> <i class="icon-align-justify"></i> </span>
+            <h5>Detalhes da Representada</h5>
+          </div>
+             <div class="widget-content nopadding">
+                <div class="control-group">
+                <label class="control-label">Razão Social:</label>
+                <div class="controls">
+                    <?php echo $oRepresentada->getDsRazaoSocial();?>
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="control-label">CNPJ</label>
+                <div class="controls">
+                    <?php echo $oRepresentada->getNuCnpj();?>
+                </div>
+              </div>
+             </div>
+       
+        </div>
+          <?php if($oTransportadora){ ?>
+        <div class="widget-box form-horizontal" >
+          <div class="widget-title"> <span class="icon"> <i class="icon-align-justify"></i> </span>
+            <h5>Detalhes da Transportadora</h5>
+          </div>
+             <div class="widget-content nopadding">
+                <div class="control-group">
+                <label class="control-label">Nome:</label>
+                <div class="controls">
+                    <?php echo $oTransportadora->getNoTransportadora();?>
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="control-label">Site</label>
+                <div class="controls">
+                    <a href="<?php echo $oTransportadora->getNoSite();?>" target="_Blank"><?php echo $oTransportadora->getNoSite();?></a>
+                </div>
+              </div>
+             </div>
+       
+        </div>
+          <?php } ?>
+    </div>
+    <hr>     
+</div>
 
-<script src="/js/maruti.form_common.js"></script> 
+</div>

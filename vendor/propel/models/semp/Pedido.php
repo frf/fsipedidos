@@ -35,4 +35,11 @@ class Pedido extends BasePedido
             return $this->getColaborador()->getNoColaborador(); 
         }
     }
+    public function getCodigoPedidoFormatado(){
+        if(strlen($this->getCoPedido()) < 5){
+            return str_pad($this->getCoPedido(), 6, "0", STR_PAD_LEFT);
+        }else{
+            return $this->getCoPedido();
+        }
+    }
 }

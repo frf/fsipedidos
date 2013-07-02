@@ -1,0 +1,140 @@
+<script src="/js/lightbox.js" type="text/javascript" charset="utf-8"></script>
+<link href="/css/lightbox.css" rel="stylesheet" />
+
+<style>
+    textarea {resize: none;height: 150px}
+    
+</style>
+
+<div id="content-header">
+    <div id="breadcrumb"> 
+        <a href="/" title="Principal" class="tip-bottom"><i class="icon-home"></i> Principal</a>
+        <a href="/pedidos/index" title="Pedido    " class="tip-bottom">
+            <i class="icon-thumbs-up"></i> Pedidos</a>
+        <a href="/pedidos/detalhes/<?php echo $this->id; ?>" title="Detalhes" class="tip-bottom current">Pedido: <?php echo $oPedido->getCodigoPedidoFormatado();?></a>
+        <a href="/pedidos/nova-nota-fiscal/<?php echo $id; ?>" title="Detalhes do Pedido" class="tip-bottom current">Nova Nota Fiscal</a>
+    </div>
+  </div>
+<div class="container-fluid">    
+<div class="row-fluid">       
+<div class="span7">
+
+            <div class="widget-box">
+              <div class="widget-title"> <span class="icon"> <i class="icon-align-justify"></i> </span>
+                <h5>Cadastro de Nota Fiscal</h5>
+              </div>
+                <form method="POST" action="<?php echo $this->url('pedidos', array('action' => 'adicionar-nota-fiscal')); ?>" class="form-horizontal"  name="basic_validate_produto" id="basic_validate_produto" novalidate="novalidate" enctype="multipart/form-data">
+                    <input type="hidden" value="<?php echo $id; ?>" name="co_pedido" id="required">
+                    <div class="widget-content nopadding">
+                        <div class="control-group">
+                          <label class="control-label">Número Nota Fiscal:</label>
+                          <div class="controls">       
+                              <input type="text"  class="span11" name="nu_nota_fiscal" id="required">
+                          </div>
+                        </div>
+                        <div class="control-group">
+                          <label class="control-label">Tipo Nota Fiscal:</label>
+                          <div class="controls">       
+                              <select  class="span6" name="co_tipo_nota">
+                                  <option value="<?php echo CO_TIPO_NOTA_FISCAL; ?>" selected="selected">Nota Fiscal</option>
+                                  <option value="<?php echo CO_TIPO_NOTA_FISCAL_DEVOLUCAO; ?>">Nota Fiscal Devolução</option>
+                              </select>
+                          </div>
+                        </div>
+                          <div class="control-group">
+                          <label class="control-label">Arquvio Nota Fiscal:</label>
+                          <div class="controls">
+                              <input type="file" class="span8"  name="no_file_nota_fiscal" />
+                          </div>
+                        </div>
+                       
+                        <div class="form-actions">
+                          <button type="submit" class="btn btn-success">Salvar</button>
+                          <a href="<?php echo $this->url('pedidos',array('action'=>'detalhes','id'=>$id)); ?>" class="btn">Cancelar</a>
+                        </div>
+                      </div>
+                 </form>
+              </div>
+
+
+     <?php echo $this->message($this->message); ?>
+        <div class="widget-box ">
+        <div class="widget-title">
+                <span class="icon">
+                        <i class="icon-arrow-right"></i>
+                </span>
+                <h5>Nota Fiscal</h5>
+        </div>        
+        <div class="widget-content nopadding">
+           <table class="table table-bordered table-striped">
+                      <thead>
+                        <tr>
+                          <th>Número</th>
+                          <th>Anexo</th>
+                          <th>Tipo Nota</th>
+                          <th>Ação</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                           <?php 
+                        if($oNotaFiscal){ 
+                            foreach($oNotaFiscal as $oNota){ ?>
+                        <tr class="odd gradeX">
+                          <td><?php echo $oNota->getNuNotaFiscal(); ?></td>
+                          <td><a href='/nota-fiscal/<?php echo $oNota->getNoFileNotaFiscal(); ?>' class="icon-file"></a></td>
+                          <td><?php echo PedidoPeer::getNoNotaFiscal($oNota->getCoTipoNota()) ?></td>
+                          <td><a href="<?php echo $this->url('nota',array('action'=>'deletar-nota-fiscal','id'=>$oNota->getCoNota(),'pedido'=>$oNota->getCoPedido())); ?>" class="btn btn-mini">Apagar</a></td>
+                        </tr>
+                        <?php } } ?>
+                      </tbody>
+                    </table>
+        </div>
+</div>
+</div>
+     
+      <div class="span4">
+          <div class="widget-box form-horizontal">
+          <div class="widget-title"> <span class="icon"> <i class="icon-align-justify"></i> </span>
+            <h5>Detalhes do Cliente</h5>
+          </div>
+             <div class="widget-content nopadding">
+                <div class="control-group">
+                <label class="control-label">Razão Social:</label>
+                <div class="controls">
+                    <?php echo $oCliente->getDsRazaoSocial();?>
+                </div>
+              </div>
+                <div class="control-group">
+                <label class="control-label">CNPJ:</label>
+                <div class="controls">
+                    <?php echo $oCliente->getNuCnpj();?>
+                </div>
+              </div>
+        </div>
+      </div>   
+        
+        <div class="widget-box form-horizontal" >
+          <div class="widget-title"> <span class="icon"> <i class="icon-align-justify"></i> </span>
+            <h5>Detalhes da Representada</h5>
+          </div>
+             <div class="widget-content nopadding">
+                <div class="control-group">
+                <label class="control-label">Razão Social:</label>
+                <div class="controls">
+                    <?php echo $oRepresentada->getDsRazaoSocial();?>
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="control-label">CNPJ</label>
+                <div class="controls">
+                    <?php echo $oRepresentada->getNuCnpj();?>
+                </div>
+              </div>
+             </div>
+       
+        </div>
+    </div>
+    <hr>     
+</div>
+
+</div>

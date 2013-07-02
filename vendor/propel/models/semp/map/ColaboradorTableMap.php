@@ -52,6 +52,7 @@ class ColaboradorTableMap extends TableMap
     {
         $this->addRelation('Pessoa', 'Pessoa', RelationMap::MANY_TO_ONE, array('co_colaborador' => 'co_pessoa', ), 'RESTRICT', 'CASCADE');
         $this->addRelation('ClienteColaborador', 'ClienteColaborador', RelationMap::ONE_TO_MANY, array('co_colaborador' => 'co_colaborador', ), null, null, 'ClienteColaboradors');
+        $this->addRelation('Pedido', 'Pedido', RelationMap::ONE_TO_MANY, array('co_colaborador' => 'co_colaborador', ), 'RESTRICT', 'CASCADE', 'Pedidos');
         $this->addRelation('RepresentadaColaborador', 'RepresentadaColaborador', RelationMap::ONE_TO_MANY, array('co_colaborador' => 'co_colaborador', ), null, null, 'RepresentadaColaboradors');
     } // buildRelations()
 

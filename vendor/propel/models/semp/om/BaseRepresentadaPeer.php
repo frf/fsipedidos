@@ -377,6 +377,9 @@ abstract class BaseRepresentadaPeer
      */
     public static function clearRelatedInstancePool()
     {
+        // Invalidate objects in PedidoPeer instance pool,
+        // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
+        PedidoPeer::clearInstancePool();
     }
 
     /**

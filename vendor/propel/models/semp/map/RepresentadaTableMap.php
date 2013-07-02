@@ -52,6 +52,7 @@ class RepresentadaTableMap extends TableMap
     public function buildRelations()
     {
         $this->addRelation('Pessoa', 'Pessoa', RelationMap::MANY_TO_ONE, array('co_representada' => 'co_pessoa', ), 'RESTRICT', 'CASCADE');
+        $this->addRelation('Pedido', 'Pedido', RelationMap::ONE_TO_MANY, array('co_representada' => 'co_representada', ), 'CASCADE', 'CASCADE', 'Pedidos');
         $this->addRelation('ProdutoRepresentada', 'ProdutoRepresentada', RelationMap::ONE_TO_MANY, array('co_representada' => 'co_representada', ), 'RESTRICT', 'CASCADE', 'ProdutoRepresentadas');
         $this->addRelation('RepresentadaColaborador', 'RepresentadaColaborador', RelationMap::ONE_TO_MANY, array('co_representada' => 'co_representada', ), null, null, 'RepresentadaColaboradors');
     } // buildRelations()

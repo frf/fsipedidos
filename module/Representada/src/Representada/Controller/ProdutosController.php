@@ -6,7 +6,8 @@ namespace Representada\Controller;
 use Propel;
 use Application\Controller\ActionController;
 use Zend\Filter\File\Rename;
- 
+use Zend\View\Model\ViewModel;
+
 class ProdutosController extends ActionController
 {
 
@@ -28,7 +29,34 @@ class ProdutosController extends ActionController
                     'id'=>$id,
                     'idrep'=>$idrep);
     }
- 
+    
+    
+    public function produtoAction()
+    {
+
+        $id = (int) $this->params()->fromRoute('id', 0);
+        
+        if($id == ""){
+            $content = json_encode(array('erro'=>'Nenhum produto informado!'));
+        }
+        
+        $oProduto = \ProdutoRepresentadaQuery::create()
+                ->filterByCoProduto($id)
+                ->findOne();
+        
+        if($oProduto){
+            $content = $oProduto->toJSON();
+        }else{
+            $content = json_encode(array('erro'=>'Nenhum produto encontrado!'));
+        }
+      
+        
+        $response = $this->getResponse();
+        $response->setStatusCode(200);
+        $response->setContent($content);
+        return $response;
+        
+    }
     // POST /clientes/adicionar
     public function adicionarAction()
     {
@@ -47,7 +75,7 @@ class ProdutosController extends ActionController
                     $mime2ext['image/gif'] = '.gif';
 
                     $File = $this->params()->fromFiles('no_foto');
-                    $diretorio = $request->getServer('DOCUMENT_ROOT', false) . "/produto";
+                    $diretorio = $request->getServer('DOCUMENT_ROOT', false) . "/produto-representada";
                     /*
                      * Gravar arquivo
                      */

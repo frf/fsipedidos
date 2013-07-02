@@ -57,6 +57,7 @@ class ClienteTableMap extends TableMap
         $this->addRelation('ClienteTributacao', 'ClienteTributacao', RelationMap::MANY_TO_ONE, array('co_tributacao' => 'co_tributacao', ), 'CASCADE', 'CASCADE');
         $this->addRelation('Pessoa', 'Pessoa', RelationMap::MANY_TO_ONE, array('co_cliente' => 'co_pessoa', ), null, null);
         $this->addRelation('ClienteColaborador', 'ClienteColaborador', RelationMap::ONE_TO_MANY, array('co_cliente' => 'co_cliente', ), null, null, 'ClienteColaboradors');
+        $this->addRelation('Pedido', 'Pedido', RelationMap::ONE_TO_MANY, array('co_cliente' => 'co_cliente', ), 'CASCADE', 'CASCADE', 'Pedidos');
     } // buildRelations()
 
 } // ClienteTableMap

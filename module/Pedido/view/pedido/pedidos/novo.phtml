@@ -35,15 +35,27 @@ $(document).ready(function(){
         <a href="/pedidos/novo" title="Novo Pedido" class="tip-bottom current">Novo</a>
     </div>
   </div>
+<br>
+     
  <div class="container-fluid">
+   
         <div class="row-fluid">
           <div class="span6">
+                 
+<div class="progress progress-info">
+        <div class="bar" style="width: 30%;">
+                    <b style="float: left; margin-left: 30px;">1 - Representada e Cliente </b>
+        </div>
+    </div>
+             
             <div class="widget-box">
               <div class="widget-title"> <span class="icon"> <i class="icon-align-justify"></i> </span>
                 <h5>Cadastro de Pedido</h5>
               </div>
             
               <div class="widget-content nopadding">
+                  
+               
                  <form method="POST" action="<?php echo $this->url('pedidos', array('action' => 'adicionar')); ?>" class="form-horizontal"  name="basic_validate_pedido" id="basic_validate_pedido" novalidate="novalidate">
                   <div class="control-group">
                     <label class="control-label">Representada:</label>

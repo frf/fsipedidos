@@ -1,0 +1,188 @@
+<script src="/js/jquery.maskedinput.js" type="text/javascript"></script>
+<script src="/js/jquery.maskMoney.js" type="text/javascript"></script>
+<script>
+    $(document).ready(function(){
+        $('input[name="preco_liquido"]').maskMoney({thousands:'.', decimal:',', symbolStay: true});
+    });
+    function convertMoeda(){
+        
+        var tp_moeda = $("#tp_moeda").select2("data").id;
+        var no_moeda = $("#tp_moeda").select2("data").text;
+        var co_produto = $("#co_produto").select2("data");
+        
+        if(co_produto != null){
+            //alert($("#co_produto").select2("val"));
+        }
+        
+        var precoL = $("#preco_liquido").val();
+        precoL = precoL.replace(/,/g,".");
+    
+        if(<?php echo TP_MOEDA_DOLLAR;?> == tp_moeda){
+            var resultConvert = (<?php echo COTACAO_DOLLAR; ?> * precoL);
+        }
+        if(<?php echo TP_MOEDA_REAL;?> == tp_moeda){
+            $("#valor_convertido").html('');
+            return false;
+        }
+        
+        $("#valor_convertido").html(no_moeda + " " + resultConvert);
+    }
+    function getInformacaoProduto(){
+        
+        var coProduto = $('input[name="co_produto"]').val();        
+        
+       
+        //$("#co_produto").select2("val");
+        var jqxhr = $.getJSON( "<?php echo $this->url('produto'); ?>/"+$("#co_produto").select2("val"), function(data) {
+            console.log( "success" );
+            $("#preco_liquido").val(data.DsValor);
+            $("#tipo_medida").html(data.NoUnidade);
+             convertMoeda();
+          });
+          
+    }
+    
+</script>
+<div id="content-header">
+    <div id="breadcrumb"> 
+        <a href="/" title="Principal" class="tip-bottom"><i class="icon-home"></i> Principal</a>
+        <a href="/pedidos/index" title="Lista de Pedidos" class="tip-bottom">
+            <i class="icon-inbox"></i> Pedidos</a>
+        <a href="/pedidos/novo-produto/<?php echo $id;?>" title="Cadastro de Produto" class="tip-bottom current">Pedido (<?php echo $id; ?>) - Cadastro de Produto</a>
+    </div>
+  </div>
+<br>
+     
+ <div class="container-fluid">
+   
+        <div class="row-fluid">
+          <div class="span6">                 
+            <div class="progress progress-info">
+                    <div class="bar" style="width: 60%;">
+                                <b style="float: left; margin-left: 30px;">1 - Representada e Cliente </b>
+                                <b style="float: left; margin-left: 40px;">2 - Cadastro Produto</b>
+                    </div>
+            </div>             
+            <div class="widget-box">
+              <div class="widget-title"> <span class="icon"> <i class="icon-align-justify"></i> </span>
+                <h5>Cadastro de Produto - Representada: <?php echo $oRepresentada->getNoRepresentada(); ?></h5>
+              </div>
+            
+              <div class="widget-content nopadding">
+                  
+               
+                 <form method="POST" action="<?php echo $this->url('pedidos', array('action' => 'adicionar-produto')); ?>" class="form-horizontal"  name="basic_validate_pedido" id="basic_validate_pedido" novalidate="novalidate">
+                     <input type="hidden"  class="span4"  name="co_pedido" id="co_pedido" value="<?php echo $id; ?>">
+                  <div class="control-group">
+                    <label class="control-label">Produto:</label>
+                    <div class="controls">       
+                        <select name="co_produto" id="co_produto" onchange="getInformacaoProduto()">
+                            <option value=""></option>
+                          <?php 
+                         if($produtoRepresentada){ 
+                             foreach($produtoRepresentada as $oProduto){ ?>
+                            <option value="<?php echo $oProduto->getCoProduto(); ?>"><?php echo $oProduto->getNoProduto(); ?></option>
+                        <?php } } ?>
+                        </select>
+                    </div>
+                  </div>
+                  <div class="control-group">
+                    <label class="control-label">Quantidade:</label>
+                    <div class="controls" id="addQuantidade">                        
+                        <div class="input-prepend"> <span class="add-on" id="tipo_medida"></span>
+                        <input type="text"  class="span4"  name="nu_quantidade" id="nu_quantidade" value="">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="control-group">
+                    <label class="control-label">Preço Original:</label>
+                    <div class="controls" id="addEmail">
+                        <select name="tp_moeda" id="tp_moeda" onchange="convertMoeda()" style="width: 80px">
+                            <option value="1" >R$</option>
+                            <option value="2" >US$</option>
+                        </select> 
+                        <input type="text" class="span3" name="preco_liquido" id="preco_liquido">
+                        <span id="valor_convertido"></span>
+                    </div>
+                  </div>
+                  <div class="control-group">
+                    <label class="control-label">Desconto:</label>
+                    <div class="controls" id="addEmail">
+                        
+                        <div class="input-prepend"> <span class="add-on">%</span>
+                        <input type="text"  class="span3"  name="vl_desconto" id="vl_desconto" value="">%
+                      </div>
+                    </div>
+                  </div>
+                  <div class="control-group">
+                    <label class="control-label">Comissão:</label>
+                    <div class="controls" id="addEmail">
+                        
+                        <div class="input-prepend"> <span class="add-on">%</span>
+                        <input type="text"  class="span3"  name="vl_comissao" id="vl_comissao" value="">%
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Adicionar</button>
+                    <a href="<?php echo $this->url('pedidos',array('action'=>'informacoes-adicionais','id'=>$id)); ?>" class="btn btn-info">Informações Adicionais</a>
+                    <a href="<?php echo $this->url('pedidos'); ?>" class="btn btn-success">Concluir</a>
+                  </div>
+                </div>
+                 </form>
+              </div>
+            </div>
+            
+           
+          </div>
+            
+        </div>
+        <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span8">
+        <div class="widget-box">
+                <div class="widget-title">
+                        <span class="icon">
+                                <i class="icon-th-list"></i>
+                        </span>
+                        <h5>Produtos</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered table-striped">
+                      <thead>
+                        <tr>
+                          <th>Produto</th>
+                          <th>Quantidade</th>
+                          <th>V. Original</th>
+                          <th>Total</th>
+                          <th>Desc</th>
+                          <th>Comissão</th>
+                          <th>Ação</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                           <?php 
+                        if($oProdutoPedido){ 
+                            foreach($oProdutoPedido as $oProdutoP){ ?>
+                        <tr class="odd gradeX">
+                          <td><?php echo $oProdutoP->getNoProduto(); ?></td>
+                          <td><?php echo $oProdutoP->getQntOriginal(); ?></td>
+                          <td><?php echo $oProdutoP->getNoMoeda() . " " .PedidoPeer::convertMoedaCasaDecimal($oProdutoP->getTotal()); ?></td>
+                          <td><?php echo $oProdutoP->getNoMoeda() . " " . PedidoPeer::convertMoedaCasaDecimal($oProdutoP->getVlOriginal()); ?></td>
+                          <td><?php echo $oProdutoP->getVlDesconto(); ?>%</td>
+                          <td><?php echo $oProdutoP->getVlComissao(); ?>%</td>
+                          <td><a href="<?php echo $this->url('pedidos',array('action'=>'apagar-produto-pedido','id'=>$id,'produto'=>$oProdutoP->getCoProduto())); ?>" class="btn btn-mini">Apagar</a></td>
+                        </tr>
+                        <?php } } ?>
+                      </tbody>
+                    </table>
+                  </div>
+                        </div>
+                </div>
+            </div>     
+     </div>
+        <hr>    
+     
+</div>    
+
+<script src="/js/maruti.form_common.js"></script>  

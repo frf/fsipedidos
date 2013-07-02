@@ -3,8 +3,50 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "b735c016cc704d162bd4a909e32aa62f",
+    "hash": "7d4772c375f86425c46b2e051c5ec024",
     "packages": [
+        {
+            "name": "dino/dompdf-module",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/raykolbe/DOMPDFModule.git",
+                "reference": "e234ac3c7c2af3ccd916a4079e529c1820eff60b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/raykolbe/DOMPDFModule/zipball/e234ac3c7c2af3ccd916a4079e529c1820eff60b",
+                "reference": "e234ac3c7c2af3ccd916a4079e529c1820eff60b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "DOMPDFModule": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Raymond Kolbe",
+                    "email": "raymond.kolbe@maine.edu"
+                }
+            ],
+            "description": "A Zend Framework 2 module for incorporating DOMPDF support.",
+            "homepage": "http://raymondkolbe.com",
+            "keywords": [
+                "dompdf",
+                "pdf",
+                "zf2"
+            ],
+            "time": "2013-04-25 10:31:36"
+        },
         {
             "name": "phing/phing",
             "version": "2.5.0",
@@ -180,16 +222,16 @@
         },
         {
             "name": "zendframework/zendframework",
-            "version": "2.2.0",
+            "version": "2.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zf2.git",
-                "reference": "release-2.2.0"
+                "reference": "release-2.2.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zf2/zipball/release-2.2.0",
-                "reference": "release-2.2.0",
+                "url": "https://api.github.com/repos/zendframework/zf2/zipball/release-2.2.1",
+                "reference": "release-2.2.1",
                 "shasum": ""
             },
             "require": {
@@ -288,7 +330,7 @@
                 "framework",
                 "zf2"
             ],
-            "time": "2013-05-15 10:27:32"
+            "time": "2013-06-12 20:13:34"
         }
     ],
     "packages-dev": [
@@ -298,9 +340,9 @@
 
     ],
     "minimum-stability": "stable",
-    "stability-flags": [
-
-    ],
+    "stability-flags": {
+        "dino/dompdf-module": 20
+    },
     "platform": {
         "php": ">=5.3.3"
     },

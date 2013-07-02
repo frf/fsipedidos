@@ -95,6 +95,12 @@ abstract class BaseCliente extends BaseObject implements Persistent
     protected $collClienteColaboradorsPartial;
 
     /**
+     * @var        PropelObjectCollection|Pedido[] Collection to store aggregation of Pedido objects.
+     */
+    protected $collPedidos;
+    protected $collPedidosPartial;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      * @var        boolean
@@ -119,6 +125,12 @@ abstract class BaseCliente extends BaseObject implements Persistent
      * @var		PropelObjectCollection
      */
     protected $clienteColaboradorsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $pedidosScheduledForDeletion = null;
 
     /**
      * Applies default values to this object.
@@ -578,6 +590,8 @@ abstract class BaseCliente extends BaseObject implements Persistent
             $this->aPessoa = null;
             $this->collClienteColaboradors = null;
 
+            $this->collPedidos = null;
+
         } // if (deep)
     }
 
@@ -732,6 +746,24 @@ abstract class BaseCliente extends BaseObject implements Persistent
 
             if ($this->collClienteColaboradors !== null) {
                 foreach ($this->collClienteColaboradors as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->pedidosScheduledForDeletion !== null) {
+                if (!$this->pedidosScheduledForDeletion->isEmpty()) {
+                    foreach ($this->pedidosScheduledForDeletion as $pedido) {
+                        // need to save related object because we set the relation to null
+                        $pedido->save($con);
+                    }
+                    $this->pedidosScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collPedidos !== null) {
+                foreach ($this->collPedidos as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -937,6 +969,14 @@ abstract class BaseCliente extends BaseObject implements Persistent
                     }
                 }
 
+                if ($this->collPedidos !== null) {
+                    foreach ($this->collPedidos as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
+                    }
+                }
+
 
             $this->alreadyInValidation = false;
         }
@@ -1043,6 +1083,9 @@ abstract class BaseCliente extends BaseObject implements Persistent
             }
             if (null !== $this->collClienteColaboradors) {
                 $result['ClienteColaboradors'] = $this->collClienteColaboradors->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collPedidos) {
+                $result['Pedidos'] = $this->collPedidos->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1237,6 +1280,12 @@ abstract class BaseCliente extends BaseObject implements Persistent
                 }
             }
 
+            foreach ($this->getPedidos() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addPedido($relObj->copy($deepCopy));
+                }
+            }
+
             $relObj = $this->getPessoa();
             if ($relObj) {
                 $copyObj->setPessoa($relObj->copy($deepCopy));
@@ -1403,6 +1452,9 @@ abstract class BaseCliente extends BaseObject implements Persistent
     {
         if ('ClienteColaborador' == $relationName) {
             $this->initClienteColaboradors();
+        }
+        if ('Pedido' == $relationName) {
+            $this->initPedidos();
         }
     }
 
@@ -1650,6 +1702,324 @@ abstract class BaseCliente extends BaseObject implements Persistent
     }
 
     /**
+     * Clears out the collPedidos collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return Cliente The current object (for fluent API support)
+     * @see        addPedidos()
+     */
+    public function clearPedidos()
+    {
+        $this->collPedidos = null; // important to set this to null since that means it is uninitialized
+        $this->collPedidosPartial = null;
+
+        return $this;
+    }
+
+    /**
+     * reset is the collPedidos collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialPedidos($v = true)
+    {
+        $this->collPedidosPartial = $v;
+    }
+
+    /**
+     * Initializes the collPedidos collection.
+     *
+     * By default this just sets the collPedidos collection to an empty array (like clearcollPedidos());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initPedidos($overrideExisting = true)
+    {
+        if (null !== $this->collPedidos && !$overrideExisting) {
+            return;
+        }
+        $this->collPedidos = new PropelObjectCollection();
+        $this->collPedidos->setModel('Pedido');
+    }
+
+    /**
+     * Gets an array of Pedido objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this Cliente is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @return PropelObjectCollection|Pedido[] List of Pedido objects
+     * @throws PropelException
+     */
+    public function getPedidos($criteria = null, PropelPDO $con = null)
+    {
+        $partial = $this->collPedidosPartial && !$this->isNew();
+        if (null === $this->collPedidos || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collPedidos) {
+                // return empty collection
+                $this->initPedidos();
+            } else {
+                $collPedidos = PedidoQuery::create(null, $criteria)
+                    ->filterByCliente($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collPedidosPartial && count($collPedidos)) {
+                      $this->initPedidos(false);
+
+                      foreach($collPedidos as $obj) {
+                        if (false == $this->collPedidos->contains($obj)) {
+                          $this->collPedidos->append($obj);
+                        }
+                      }
+
+                      $this->collPedidosPartial = true;
+                    }
+
+                    $collPedidos->getInternalIterator()->rewind();
+                    return $collPedidos;
+                }
+
+                if($partial && $this->collPedidos) {
+                    foreach($this->collPedidos as $obj) {
+                        if($obj->isNew()) {
+                            $collPedidos[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collPedidos = $collPedidos;
+                $this->collPedidosPartial = false;
+            }
+        }
+
+        return $this->collPedidos;
+    }
+
+    /**
+     * Sets a collection of Pedido objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param PropelCollection $pedidos A Propel collection.
+     * @param PropelPDO $con Optional connection object
+     * @return Cliente The current object (for fluent API support)
+     */
+    public function setPedidos(PropelCollection $pedidos, PropelPDO $con = null)
+    {
+        $pedidosToDelete = $this->getPedidos(new Criteria(), $con)->diff($pedidos);
+
+        $this->pedidosScheduledForDeletion = unserialize(serialize($pedidosToDelete));
+
+        foreach ($pedidosToDelete as $pedidoRemoved) {
+            $pedidoRemoved->setCliente(null);
+        }
+
+        $this->collPedidos = null;
+        foreach ($pedidos as $pedido) {
+            $this->addPedido($pedido);
+        }
+
+        $this->collPedidos = $pedidos;
+        $this->collPedidosPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Pedido objects.
+     *
+     * @param Criteria $criteria
+     * @param boolean $distinct
+     * @param PropelPDO $con
+     * @return int             Count of related Pedido objects.
+     * @throws PropelException
+     */
+    public function countPedidos(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collPedidosPartial && !$this->isNew();
+        if (null === $this->collPedidos || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collPedidos) {
+                return 0;
+            }
+
+            if($partial && !$criteria) {
+                return count($this->getPedidos());
+            }
+            $query = PedidoQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByCliente($this)
+                ->count($con);
+        }
+
+        return count($this->collPedidos);
+    }
+
+    /**
+     * Method called to associate a Pedido object to this object
+     * through the Pedido foreign key attribute.
+     *
+     * @param    Pedido $l Pedido
+     * @return Cliente The current object (for fluent API support)
+     */
+    public function addPedido(Pedido $l)
+    {
+        if ($this->collPedidos === null) {
+            $this->initPedidos();
+            $this->collPedidosPartial = true;
+        }
+        if (!in_array($l, $this->collPedidos->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddPedido($l);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	Pedido $pedido The pedido object to add.
+     */
+    protected function doAddPedido($pedido)
+    {
+        $this->collPedidos[]= $pedido;
+        $pedido->setCliente($this);
+    }
+
+    /**
+     * @param	Pedido $pedido The pedido object to remove.
+     * @return Cliente The current object (for fluent API support)
+     */
+    public function removePedido($pedido)
+    {
+        if ($this->getPedidos()->contains($pedido)) {
+            $this->collPedidos->remove($this->collPedidos->search($pedido));
+            if (null === $this->pedidosScheduledForDeletion) {
+                $this->pedidosScheduledForDeletion = clone $this->collPedidos;
+                $this->pedidosScheduledForDeletion->clear();
+            }
+            $this->pedidosScheduledForDeletion[]= $pedido;
+            $pedido->setCliente(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Cliente is new, it will return
+     * an empty collection; or if this Cliente has previously
+     * been saved, it will retrieve related Pedidos from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Cliente.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Pedido[] List of Pedido objects
+     */
+    public function getPedidosJoinColaborador($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = PedidoQuery::create(null, $criteria);
+        $query->joinWith('Colaborador', $join_behavior);
+
+        return $this->getPedidos($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Cliente is new, it will return
+     * an empty collection; or if this Cliente has previously
+     * been saved, it will retrieve related Pedidos from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Cliente.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Pedido[] List of Pedido objects
+     */
+    public function getPedidosJoinRepresentada($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = PedidoQuery::create(null, $criteria);
+        $query->joinWith('Representada', $join_behavior);
+
+        return $this->getPedidos($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Cliente is new, it will return
+     * an empty collection; or if this Cliente has previously
+     * been saved, it will retrieve related Pedidos from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Cliente.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Pedido[] List of Pedido objects
+     */
+    public function getPedidosJoinPedidoStatus($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = PedidoQuery::create(null, $criteria);
+        $query->joinWith('PedidoStatus', $join_behavior);
+
+        return $this->getPedidos($query, $con);
+    }
+
+
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this Cliente is new, it will return
+     * an empty collection; or if this Cliente has previously
+     * been saved, it will retrieve related Pedidos from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in Cliente.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Pedido[] List of Pedido objects
+     */
+    public function getPedidosJoinTransportadora($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = PedidoQuery::create(null, $criteria);
+        $query->joinWith('Transportadora', $join_behavior);
+
+        return $this->getPedidos($query, $con);
+    }
+
+    /**
      * Clears the current object and sets all attributes to their default values
      */
     public function clear()
@@ -1690,6 +2060,11 @@ abstract class BaseCliente extends BaseObject implements Persistent
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collPedidos) {
+                foreach ($this->collPedidos as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->aClienteTributacao instanceof Persistent) {
               $this->aClienteTributacao->clearAllReferences($deep);
             }
@@ -1704,6 +2079,10 @@ abstract class BaseCliente extends BaseObject implements Persistent
             $this->collClienteColaboradors->clearIterator();
         }
         $this->collClienteColaboradors = null;
+        if ($this->collPedidos instanceof PropelCollection) {
+            $this->collPedidos->clearIterator();
+        }
+        $this->collPedidos = null;
         $this->aClienteTributacao = null;
         $this->aPessoa = null;
     }

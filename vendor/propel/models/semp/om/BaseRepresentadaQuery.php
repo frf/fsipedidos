@@ -26,6 +26,10 @@
  * @method RepresentadaQuery rightJoinPessoa($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Pessoa relation
  * @method RepresentadaQuery innerJoinPessoa($relationAlias = null) Adds a INNER JOIN clause to the query using the Pessoa relation
  *
+ * @method RepresentadaQuery leftJoinPedido($relationAlias = null) Adds a LEFT JOIN clause to the query using the Pedido relation
+ * @method RepresentadaQuery rightJoinPedido($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Pedido relation
+ * @method RepresentadaQuery innerJoinPedido($relationAlias = null) Adds a INNER JOIN clause to the query using the Pedido relation
+ *
  * @method RepresentadaQuery leftJoinProdutoRepresentada($relationAlias = null) Adds a LEFT JOIN clause to the query using the ProdutoRepresentada relation
  * @method RepresentadaQuery rightJoinProdutoRepresentada($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProdutoRepresentada relation
  * @method RepresentadaQuery innerJoinProdutoRepresentada($relationAlias = null) Adds a INNER JOIN clause to the query using the ProdutoRepresentada relation
@@ -487,6 +491,80 @@ abstract class BaseRepresentadaQuery extends ModelCriteria
         return $this
             ->joinPessoa($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Pessoa', 'PessoaQuery');
+    }
+
+    /**
+     * Filter the query by a related Pedido object
+     *
+     * @param   Pedido|PropelObjectCollection $pedido  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 RepresentadaQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByPedido($pedido, $comparison = null)
+    {
+        if ($pedido instanceof Pedido) {
+            return $this
+                ->addUsingAlias(RepresentadaPeer::CO_REPRESENTADA, $pedido->getCoRepresentada(), $comparison);
+        } elseif ($pedido instanceof PropelObjectCollection) {
+            return $this
+                ->usePedidoQuery()
+                ->filterByPrimaryKeys($pedido->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByPedido() only accepts arguments of type Pedido or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Pedido relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return RepresentadaQuery The current query, for fluid interface
+     */
+    public function joinPedido($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Pedido');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Pedido');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Pedido relation Pedido object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   PedidoQuery A secondary query class using the current class as primary query
+     */
+    public function usePedidoQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinPedido($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Pedido', 'PedidoQuery');
     }
 
     /**

@@ -38,8 +38,10 @@ class Module {
         define("CO_EMPRESA", 1);
         define("VERSAO", "1.0");
         define("DDI", "55");
-        define("MAP_ENDERECO", false);
+        define("MAP_ENDERECO", true);
         define("COTACAO_DOLLAR", '2');
+        define("TP_MOEDA_DOLLAR", '2');
+        define("TP_MOEDA_REAL", '1');
         
         
         define("CO_PEDIDO_ABERTO", 1);
@@ -50,6 +52,8 @@ class Module {
         define("CO_PEDIDO_FATURADO", 6);
         define("CO_PEDIDO_CANCELADO", 7);
         
+        define("CO_TIPO_NOTA_FISCAL", 1);
+        define("CO_TIPO_NOTA_FISCAL_DEVOLUCAO", 2);
         
         $session = new Container('base');
         $oPessoa = $session->offsetGet('user');

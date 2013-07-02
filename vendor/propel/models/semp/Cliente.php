@@ -45,4 +45,18 @@ class Cliente extends BaseCliente
             return $this->getClienteTributacao()->getNoTributacao();
         }
     }
+    public function getTelefone(){
+        if($this->getPessoa()){
+            if($oTelefone = $this->getPessoa()->getTelefones()){
+                return "(" . $oTelefone[0]->getNuDdd() . ") " . $oTelefone[0]->getNuTelefone();
+            }
+        }
+    }
+    public function getEndereco(){
+        if($this->getPessoa()){
+            if($oEndereco = $this->getPessoa()->getEnderecos()){
+                return $oEndereco[0];
+            }
+        }
+    }
 }
