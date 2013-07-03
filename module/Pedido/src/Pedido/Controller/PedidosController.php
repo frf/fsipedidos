@@ -539,19 +539,25 @@ class PedidosController extends AbstractActionController {
                  */
                 if ($request->isPost()) {
                     $postData = $request->getPost()->toArray();
+                    
+                    if(isset($postData['co_status'])){
+                        $oPedido->setCoStatus($postData['co_status']);
+                        $oPedido->save();
+                    }
+                    
                     $id = $postData['id'];
                     $aQntEntregue = $postData['qnt_entregue'];
                     foreach($aQntEntregue as $coProduto => $qtdEntregue){
                         if($qtdEntregue > 0){
                             $oProdPedido = \ProdutoPedidoQuery::create()->filterByCoPedido($id)->filterByCoProduto($coProduto)->findOne();
                             if($qtdEntregue <= $oProdPedido->getQntOriginal()){
+                                $this->flashMessenger()->addSuccessMessage("Atualizado com sucesso");                                
                                 $oProdPedido->setQntEntregue($qtdEntregue);
                                 $oProdPedido->save();
+                                return $this->redirect()->toRoute('pedidos',array('action' => 'detalhes', "id" => $id));
                             }else{
                                 $this->flashMessenger()->addErrorMessage("Valor maior que original");
                                 return $this->redirect()->toRoute('pedidos',array('action' => 'detalhes', "id" => $id));
-                                $oProdPedido->setQntEntregue($oProdPedido->getQntOriginal());
-                                $oProdPedido->save();
                             }
                         }else{
                             $this->flashMessenger()->addErrorMessage("Preencha um valor maior que 0");
@@ -576,14 +582,18 @@ class PedidosController extends AbstractActionController {
                 ->filterByCoCliente($oPedido->getCoCliente())
                 ->findOne();
         
+        $oStatus = \PedidoStatusQuery::create()->find();
+        
         $oTransportadora = $oPedido->getTransportadora();
         
         return array('id' => $id,
             'oPedido' => $oPedido,
+            'CoStatus' => $oPedido->getCoStatus(),
             'nomePedido' => "PEDIDO-" . $oPedido->getCodigoPedidoFormatado() . "-" . $oPedido->getDtEmissao('d-m-Y'),
             'oRepresentada' => $oRepresentadas,
             'oCliente' => $oCliente,
             'oProdutoPedido' => $oProdutoPedido,
+            'oStatus' => $oStatus,
             'oTransportadora' => $oTransportadora,
             'message' => $this->getFlashMessenger());
     }

@@ -1,9 +1,15 @@
 <script src="/js/lightbox.js" type="text/javascript" charset="utf-8"></script>
 <link href="/css/lightbox.css" rel="stylesheet" />
-
+<script>
+    function saveStatus(){
+        $('#target').submit();
+    }
+</script>
 <style>
     textarea {resize: none;height: 150px}
     .control-label{font-weight: bold !important}
+    .alert { margin-top: 20px !important }
+    select {border:0px !important;}
 </style>
 
 <div id="content-header">
@@ -15,25 +21,42 @@
     </div>
   </div>
 <div class="widget-content">
-<p>
-    <a href="<?php echo $this->url('pedidos', array('action' => 'nova-nota-fiscal', 'id' => $this->id)); ?>" class="btn btn-primary">Adicionar Nota Fiscal</a>
-    <a href="<?php echo $this->url('pedidos', array('action' => 'novo-boleto', 'id' => $this->id)); ?>" class="btn btn-primary">Adicionar Boleto</a>
-    <!--<a href="<?php echo $this->url('produtos', array('action' => 'novo', 'idrep' => $this->id)); ?>" class="btn btn-info">Importar Produto</a>-->
-    <a target="_Blank" href="<?php echo $this->url('report', array('action' => 'pedido-pdf', 'id' => $this->id,'nome'=>$nomePedido)); ?>" class="btn btn-success">Imprimir Pedido</a>
-    <a href="<?php echo $this->url('pedidos'); ?>" class="btn">Voltar</a>
-           
-</p>
-</div>
+    <form id="target" method="POST" action="<?php echo $this->url('pedidos', array('action' => 'detalhes','id'=>$id)); ?>" class="form-horizontal">
+        <input type="hidden" value="<?php echo $id;?>" name="id">
+        <div class="btn-group">
+            <a href="<?php echo $this->url('pedidos', array('action' => 'nova-produto', 'id' => $this->id)); ?>" class="btn btn-primary">Adicionar Produto</a>
+        </div>
+        <div class="btn-group">
+            <a href="<?php echo $this->url('pedidos', array('action' => 'nova-nota-fiscal', 'id' => $this->id)); ?>" class="btn btn-primary">Adicionar Nota Fiscal</a>
+        </div>
+        <div class="btn-group">
+            <a href="<?php echo $this->url('pedidos', array('action' => 'novo-boleto', 'id' => $this->id)); ?>" class="btn btn-primary">Adicionar Boleto</a>
+        </div>
+        <!--<a href="<?php echo $this->url('produtos', array('action' => 'novo', 'idrep' => $this->id)); ?>" class="btn btn-info">Importar Produto</a>-->
+        <div class="btn-group">
+            <a target="_Blank" href="<?php echo $this->url('report', array('action' => 'pedido-pdf', 'id' => $this->id,'nome'=>$nomePedido)); ?>" class="btn btn-success">Imprimir Pedido</a>
+        </div>
+        <div class="btn-group">
+            <select class="btn btn-warning" name="co_status" onchange="saveStatus()">
+            <?php 
+                 if($oStatus){ 
+                     foreach($oStatus as $Status){ ?>
+                <option <?php if($Status->getCoStatus() == $CoStatus){ ?> selected="selected" <?php } ?> value="<?php echo $Status->getCoStatus(); ?>"><?php echo $Status->getNoStatus(); ?></option>   
+                 <?php }} ?>
+            </select>
+        </div>
+        <div class="btn-group">
+            <a href="<?php echo $this->url('pedidos'); ?>" class="btn">Voltar</a>>
+        </div>
+    </form>
 
 <div class="container-fluid">    
 <div class="row-fluid">       
 <div class="span7">
     <form method="POST" action="<?php echo $this->url('pedidos', array('action' => 'detalhes','id'=>$id)); ?>" class="form-horizontal">
-        <input type="hidden" value="<?php echo $id;?>" name="id"><br>
+        <input type="hidden" value="<?php echo $id;?>" name="id">
      <?php echo $this->message($this->message); ?>
-     
      <div class="widget-box ">
-        
         <div class="widget-title">
                 <span class="icon">
                         <i class="icon-arrow-right"></i>
@@ -53,7 +76,7 @@
                           <th>V. Original</th>
                           <th>Desc</th>
                           <th>Comissão</th>
-                          <th>Total</th>
+                          <th>Total Orig.</th>
                           <!--<th>Ação</th>-->
                         </tr>
                       </thead>
