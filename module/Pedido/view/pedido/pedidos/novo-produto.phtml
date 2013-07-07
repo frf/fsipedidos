@@ -54,6 +54,7 @@
 <br>
      
  <div class="container-fluid">
+     <?php echo $this->message($this->message); ?>
    
         <div class="row-fluid">
           <div class="span6">                 
@@ -66,6 +67,7 @@
             <div class="widget-box">
               <div class="widget-title"> <span class="icon"> <i class="icon-align-justify"></i> </span>
                 <h5>Cadastro de Produto - Representada: <?php echo $oRepresentada->getNoRepresentada(); ?></h5>
+               
               </div>
             
               <div class="widget-content nopadding">
@@ -119,14 +121,14 @@
                     <div class="controls" id="addEmail">
                         
                         <div class="input-prepend"> <span class="add-on">%</span>
-                        <input type="text"  class="span3"  name="vl_comissao" id="vl_comissao" value="">%
+                        <input type="text"  class="span3"  name="vl_comissao" id="vl_comissao" value="<?php echo $oRepresentada->getComissao();?>">%
                       </div>
                     </div>
                   </div>
                   <div class="form-actions">
                     <button type="submit" class="btn btn-primary">Adicionar</button>
                     <a href="<?php echo $this->url('pedidos',array('action'=>'informacoes-adicionais','id'=>$id)); ?>" class="btn btn-info">Informações Adicionais</a>
-                    <a href="<?php echo $this->url('pedidos'); ?>" class="btn btn-success">Concluir</a>
+                    <a href="<?php echo $this->url('pedidos',array('action'=>'detalhes','id'=>$id)); ?>" class="btn btn-success">Concluir</a>
                   </div>
                 </div>
                  </form>
@@ -176,6 +178,7 @@
                         <?php } } ?>
                       </tbody>
                     </table>
+                    
                   </div>
                         </div>
                 </div>

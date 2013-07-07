@@ -32,10 +32,10 @@ $(document).ready(function(){
         <a href="/" title="Principal" class="tip-bottom"><i class="icon-home"></i> Principal</a>
         <a href="/clientes/index" title="Lista de Clientes" class="tip-bottom">
             <i class="icon-user"></i> Clientes</a>
-        <a href="<?php echo $this->url('clientes', array('action' => 'detalhes', 'id' => $idcli)); ?>" title="Detalhes Cliente" class="tip-bottom">
+        <a href="<?php echo $this->url('clientes', array('action' => 'detalhes', 'id' => $co_pessoa)); ?>" title="Detalhes Cliente" class="tip-bottom">
             <i class="icon-user"></i>  <?php echo $cliente->getNoCliente();?></a>
         <a href="<?php echo $this->url('emails', array('action' => 'editar', 'idcli' => $co_pessoa,
-            'id'=>$co_email)); ?>" title="Editando Email" class="tip-bottom">Editar</a>
+            'id'=>$co_email)); ?>" title="Editando Email" class="tip-bottom current">Editar</a>
   
         
     </div>

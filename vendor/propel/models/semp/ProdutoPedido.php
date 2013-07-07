@@ -21,11 +21,9 @@ class ProdutoPedido extends BaseProdutoPedido
         }
         
     }
-    public function getNoMoeda(){
-        if($this->getProdutoRepresentada()){
-            if($this->getProdutoRepresentada()->getMoeda()){
-                  return $this->getProdutoRepresentada()->getMoeda()->getNoMoeda();
-            }
+    public function getNoMoeda(){ 
+        if($this->getMoeda()){
+            return $this->getMoeda()->getNoMoeda();
         }
     }
     public function getTotal(){

@@ -208,6 +208,9 @@
     <foreign-key foreignTable="produto_representada" foreignSchema="representada" name="produto_pedido_co_produto_fkey" onDelete="RESTRICT" onUpdate="CASCADE">
       <reference local="co_produto" foreign="co_produto"/>
     </foreign-key>
+    <foreign-key foreignTable="moeda" name="produto_pedido_tp_moeda_fkey" onDelete="CASCADE" onUpdate="CASCADE">
+      <reference local="tp_moeda" foreign="co_moeda"/>
+    </foreign-key>
   </table>
   <table name="representada.produto_representada"  phpName="ProdutoRepresentada" idMethod="native">
     <column name="co_produto" phpName="CoProduto" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>

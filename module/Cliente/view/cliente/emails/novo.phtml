@@ -34,7 +34,7 @@ $(document).ready(function(){
             <i class="icon-user"></i> Clientes</a>
         <a href="<?php echo $this->url('clientes', array('action' => 'detalhes', 'id' => $idcli)); ?>" title="Detalhes Cliente" class="tip-bottom">
             <i class="icon-user"></i>  <?php echo $cliente->getNoCliente();?></a>
-        <a href="<?php echo $this->url('emails', array('action' => 'novo', 'idcli' => $idcli)); ?>" title="Cadastro de Email" class="tip-bottom">Novo Email</a>
+        <a href="<?php echo $this->url('emails', array('action' => 'novo', 'idcli' => $idcli)); ?>" title="Cadastro de Email" class="tip-bottom current">Novo Email</a>
   
         
     </div>

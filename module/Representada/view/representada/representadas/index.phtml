@@ -41,9 +41,10 @@
                         <td><?php echo $oRepresentada->getNuCnpj(); ?></td>
                         <td><?php echo $oRepresentada->getDtCadastro("d/m/Y"); ?></td>
                         <td>
-                            <a class="btn btn-mini btn-info" href="<?php echo $this->url('representadas', array("action" => "detalhes", "id" => $oRepresentada->getCoRepresentada(),)); ?>">Visualizar</a>
-                            <a class="btn btn-mini btn-warning" href="<?php echo $this->url('representadas', array("action" => "editar", "id" => $oRepresentada->getCoRepresentada(),)); ?>">Editar</a>
-                            <a class="btn btn-mini btn-danger" href="<?php echo $this->url('representadas', array("action" => "deletar", "id" => $oRepresentada->getCoRepresentada(),)); ?>">Apagar</a>
+                            <a class="btn btn-mini btn-info" href="<?php echo $this->url('representadas', array("action" => "detalhes", "id" => $oRepresentada->getCoRepresentada())); ?>">Visualizar</a>
+                            <a class="btn btn-mini btn-success" href="<?php echo $this->url('representadas', array('action' => 'pedidos', 'id' => $oRepresentada->getCoRepresentada())); ?>">Lista Pedidos</a>
+                            <a class="btn btn-mini btn-warning" href="<?php echo $this->url('representadas', array("action" => "editar", "id" => $oRepresentada->getCoRepresentada())); ?>">Editar</a>
+                            <a class="btn btn-mini btn-danger" href="<?php echo $this->url('representadas', array("action" => "deletar", "id" => $oRepresentada->getCoRepresentada())); ?>">Apagar</a>
                         </td>
                     </tr>
                 <?php } ?>                

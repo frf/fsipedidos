@@ -11,7 +11,7 @@
     var marker;
 
     function initialize() {
-        var latlng = new google.maps.LatLng(<?php echo $oEndereco->getNuLatitude(); ?>, <?php echo $oEndereco->getNuLongitude(); ?>);
+        var latlng = new google.maps.LatLng(-22.96842,-43.64109);
         
         var options = {
             zoom: 15,
@@ -163,6 +163,19 @@
                 </div>
             </div>
         </div> 
+         <?php if(MAP_ENDERECO){ ?>
+            <div class="span4">
+                <div class="widget-box">
+                    <div class="widget-title"> <span class="icon"> 
+                            <i class="icon-align-justify"></i> </span>
+                        <h5>Mapa do Endereço</h5>
+                    </div>
+                    <div class="widget-content nopadding">
+                        <div id="mapa" style="width: 396px; height: 255px"></div>
+                    </div>
+                </div>
+            </div>
+        <?php } ?>
     </div>
     <hr>     
 </div>   

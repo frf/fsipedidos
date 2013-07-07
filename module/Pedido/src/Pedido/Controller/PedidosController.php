@@ -6,6 +6,7 @@ namespace Pedido\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Propel;
+use \Criteria;
 
 class PedidosController extends AbstractActionController {
 
@@ -546,28 +547,32 @@ class PedidosController extends AbstractActionController {
                     }
                     
                     $id = $postData['id'];
-                    $aQntEntregue = $postData['qnt_entregue'];
-                    foreach($aQntEntregue as $coProduto => $qtdEntregue){
-                        if($qtdEntregue > 0){
-                            $oProdPedido = \ProdutoPedidoQuery::create()->filterByCoPedido($id)->filterByCoProduto($coProduto)->findOne();
+                    $aQntEntregue = $postData['qnt_entregue'];                   
+                   
+                    foreach($aQntEntregue as $coProduto => $qtdEntregue){                        
+                        if($qtdEntregue !== ""){                            
+                            $oProdPedido = \ProdutoPedidoQuery::create()
+                                    ->filterByCoPedido($id)
+                                    ->filterByCoProduto($coProduto)
+                                    ->findOne();
+                            
                             if($qtdEntregue <= $oProdPedido->getQntOriginal()){
                                 $this->flashMessenger()->addSuccessMessage("Atualizado com sucesso");                                
                                 $oProdPedido->setQntEntregue($qtdEntregue);
                                 $oProdPedido->save();
-                                return $this->redirect()->toRoute('pedidos',array('action' => 'detalhes', "id" => $id));
-                            }else{
-                                $this->flashMessenger()->addErrorMessage("Valor maior que original");
-                                return $this->redirect()->toRoute('pedidos',array('action' => 'detalhes', "id" => $id));
                             }
-                        }else{
-                            $this->flashMessenger()->addErrorMessage("Preencha um valor maior que 0");
-                            return $this->redirect()->toRoute('pedidos',array('action' => 'detalhes', "id" => $id));
+                            
                         }
                     }
+                    
+                    return $this->redirect()->toRoute('pedidos',array('action' => 'detalhes', "id" => $id));
+                     
                 }
 
-                
-                $oProdutoPedido = $oPedido->getProdutoPedidos();
+                $orderCriteria = new Criteria();
+                $orderCriteria->addDescendingOrderByColumn(\ProdutoPedidoPeer::DT_CADASTRO);
+                        
+                $oProdutoPedido = $oPedido->getProdutoPedidos($orderCriteria);
             }
         }else{
              $this->flashMessenger()->addErrorMessage("Pedido não encontrado");
@@ -713,6 +718,38 @@ class PedidosController extends AbstractActionController {
 
         // redirecionar para action index
         return $this->redirect()->toRoute('pedidos');
+    }
+
+    // DELETE /clientes/deletar/id
+    public function apagarProdutoPedidoAction() {
+      
+        $id = (int) $this->params()->fromRoute('id', 0);
+        $produto = (int) $this->params()->fromRoute('produto', 0);
+        
+        if (!$id) {
+          
+            $this->flashMessenger()->addErrorMessage("Pedido não encotrado");
+        } else {
+
+            try {
+                $oProdutoPedido = \ProdutoPedidoQuery::create()
+                        ->filterByCoPedido($id)
+                        ->filterByCoProduto($produto)
+                        ->delete();
+                
+            } catch (Exception $e) {
+                // adicionar mensagem de sucesso
+                $this->flashMessenger()->addSuccessMessage($e->getMessage());
+                #$this->logger()->info($e->getMessage());
+
+                return $this->redirect()->toRoute('pedidos');
+            }
+            // adicionar mensagem de sucesso
+            $this->flashMessenger()->addSuccessMessage("Produto deletado com sucesso");
+        }
+
+        // redirecionar para action index
+        return $this->redirect()->toRoute('pedidos',array('action' => 'novo-produto', "id" =>$id));
     }
 
     // Filter Flash Messenger

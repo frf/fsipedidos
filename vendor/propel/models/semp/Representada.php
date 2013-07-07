@@ -30,4 +30,10 @@ class Representada extends BaseRepresentada
             return $this->getPessoa()->getNuCpf();
         }
     }
+    public function getComissao(){
+        if($this->getRepresentadaColaboradors()->count()){
+            $repCol = $this->getRepresentadaColaboradors();
+            return $repCol[0]->getNuComissao();
+        }
+    }
 }

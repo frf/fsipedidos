@@ -55,7 +55,27 @@ class RepresentadasController extends ActionController
            }
            return $retorno;
        }
-    // GET /clientes
+      // GET /clientes
+    public function pedidosAction() {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        
+        if($id == ""){
+            $this->flashMessenger()->addErrorMessage("Erro representada não existe.");
+            return $this->redirect()->toRoute('representadas');
+        }
+        $oPedido = \PedidoQuery::create()
+                ->filterByCoRepresentada($id)
+                ->find();
+        
+        $oRepresentada = \RepresentadaQuery::create()
+                ->filterByCoRepresentada($id)
+                ->findOne();
+
+        return array('message' => $this->getFlashMessenger(),
+            'oPedido' => $oPedido,
+            'oRepresentada' => $oRepresentada,
+            'id'=>$id);
+    }
     public function indexAction()
     {
         
@@ -182,6 +202,7 @@ class RepresentadasController extends ActionController
         // dados eviados para detalhes.phtml
         return array('id' => $id, 
                     'form' => $representada, 
+                    'oRepresentada' => $representada, 
                     'produtos' => $produtos,
                     'message' => $this->getFlashMessenger());
     }

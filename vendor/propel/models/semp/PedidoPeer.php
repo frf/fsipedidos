@@ -66,17 +66,21 @@ class PedidoPeer extends BasePedidoPeer
             
             foreach ($oPedidoProduto as $Produto){
                 $vl_produto = $Produto->getQntOriginal() * $Produto->getVlOriginal();
+                /*
+                 * Validar quando aplicar desconto
+                 */
                 
                 if($Produto->getVlDesconto() != "" || $Produto->getVlDesconto() > 0){
                     $vl_para_desconto = (($vl_produto * $Produto->getVlDesconto()) / 100);
                 }
 
                 if($vl_para_desconto > 0){
-                    $vl_produto = $vl_produto - $vl_para_desconto;
+                #    $vl_total_pedido = $vl_produto - $vl_para_desconto;
+                }else{
+                #    $vl_total_pedido = $vl_total_pedido + $vl_produto;
                 }
                 
-                
-                $vl_total_pedido = $vl_produto + $vl_total_pedido;
+                 $vl_total_pedido = $vl_total_pedido + $vl_produto;
             }
             
             

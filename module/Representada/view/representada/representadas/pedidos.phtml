@@ -1,0 +1,68 @@
+ <div id="content-header">
+    <div id="breadcrumb"> 
+        <a href="/" title="Principal" class="tip-bottom"><i class="icon-home"></i> Principal</a>
+        <a href="/representadas" title="Representadas" class="tip-bottom "><i class="icon-thumbs-up"></i> Representadas </a>
+        <a href="/representadas/detalhes/<?php echo $id;?>" title="Representada (<?php echo $oRepresentada->getNoRepresentada(); ?>)" class="tip-bottom "><i class="icon-thumbs-up"></i> Representada (<?php echo $oRepresentada->getNoRepresentada(); ?>) </a>
+        <a href="/representadas/pedidos/<?php echo $id;?>" title="Pedidos" class="tip-bottom current"><i class="icon-inbox"></i> Pedidos</a>
+    </div>
+  </div>
+<div class="container-fluid">
+    <br>
+    <?php echo $this->message($this->message); ?>
+    <a class="btn btn-success" href="<?php echo $this->url('pedidos', array('action' => 'novo'))?>">Novo Pedido</a>
+    <div class="row-fluid">
+      <div class="span12">
+          
+        <div class="widget-box">
+          <div class="widget-title">
+             <span class="icon"><i class="icon-th"></i></span> 
+            <h5>Lista de Pedidos</h5>
+          </div>
+          <div class="widget-content nopadding">
+            <table class="table table-bordered data-table">
+              <thead>
+                <tr>
+                   <th>Pedido</th>
+                    <th>Representada</th>
+                    <th>Cliente</th>                      
+                    <th>Total Entregue</th>
+                    <th>Total Original</th>
+                    <th>Status</th>
+                    <th>Vendedor</th>
+                    <th>Ação</th>  
+                </tr>
+              </thead>
+              <tbody>
+                  <?php 
+                  $i=0;
+                  foreach($oPedido as $Pedido){ 
+                      if($i%2){
+                          $grade = "gradeX";
+                      }else{
+                          $grade = "gradeC";
+                      }
+                      ?>
+                    <tr class="<?php echo $grade; ?>">
+                        <td><?php echo $Pedido->getCoPedido(); ?></td>
+                        <td><?php echo $Pedido->getNoRepresentada(); ?></td>
+                        <td><?php echo $Pedido->getNoCliente(); ?></td>
+                        <td>R$ <?php echo PedidoPeer::getValorTotalEntregue($Pedido->getCoPedido()); ?></td>
+                        <td>R$ <?php echo PedidoPeer::getValorTotalNaoEntregue($Pedido->getCoPedido()); ?></td>
+                        <td><?php echo $Pedido->getNoStatus();?></td>
+                        <td><?php echo $Pedido->getNoColaborador();?></td>
+                        <td>
+                            <a class="btn btn-mini btn-info" href="<?php echo $this->url('pedidos', array("action" => "detalhes", "id" => $Pedido->getCoPedido())); ?>">Visualizar</a>
+                            <!--<a class="btn btn-mini btn-warning" href="<?php echo $this->url('pedidos', array("action" => "editar", "id" => $Pedido->getCoPedido())); ?>">Editar</a>-->
+                            <a  target="_Blank"  class="btn btn-mini btn-success" href="<?php echo $this->url('report', array('action' => 'pedido-pdf', 'id' => $Pedido->getCoPedido(),'nome'=>"PEDIDO-" . $Pedido->getCodigoPedidoFormatado() . "-" . $Pedido->getDtEmissao('d-m-Y'))); ?>" >Imprimir Pedido</a>
+                            <a class="btn btn-mini btn-danger" href="<?php echo $this->url('pedidos', array("action" => "deletar", "id" => $Pedido->getCoPedido())); ?>">Apagar</a>
+                            
+                        </td>
+                    </tr>
+                <?php } ?>                
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>

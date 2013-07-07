@@ -11,12 +11,13 @@
         <a href="/" title="Principal" class="tip-bottom"><i class="icon-home"></i> Principal</a>
         <a href="/representadas/index" title="Lista de Representada" class="tip-bottom">
             <i class="icon-thumbs-up"></i> Representada</a>
-        <a href="/representadas/detalhes/<?php echo $this->id; ?>" title="Detalhes Representada" class="tip-bottom current">Detalhes</a>
+        <a href="/representadas/detalhes/<?php echo $this->id; ?>" title="Detalhes Representada (<?php echo $oRepresentada->getNoRepresentada(); ?>)" class="tip-bottom current">Detalhes (<?php echo $oRepresentada->getNoRepresentada(); ?>)</a>
     </div>
   </div>
 <div class="widget-content">
 <p>
     <a href="<?php echo $this->url('produtos', array('action' => 'novo', 'idrep' => $this->id)); ?>" class="btn btn-primary">Adicionar Produto</a>
+    <a href="<?php echo $this->url('representadas', array('action' => 'pedidos', 'id' => $this->id)); ?>" class="btn btn-success">Lista Pedidos</a>
     <!--<a href="<?php echo $this->url('produtos', array('action' => 'novo', 'idrep' => $this->id)); ?>" class="btn btn-info">Importar Produto</a>-->
     <a href="<?php echo $this->url('representadas', array('action' => 'editar', 'id' => $this->id)); ?>" class="btn btn-warning">Editar Representada</a>
     <a href="<?php echo $this->url('representadas'); ?>" class="btn">Voltar</a>

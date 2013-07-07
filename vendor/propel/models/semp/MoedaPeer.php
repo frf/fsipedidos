@@ -15,4 +15,8 @@
  */
 class MoedaPeer extends BaseMoedaPeer
 {
+     public static function getNoMoeda($co_moeda){
+         #$oMoeda = MoedaQuery::create($co_moeda)->filterByCoMoeda()->findOne();
+        # return $oMoeda->getNoMoeda();
+     }
 }

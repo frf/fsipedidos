@@ -24,7 +24,7 @@
     <form id="target" method="POST" action="<?php echo $this->url('pedidos', array('action' => 'detalhes','id'=>$id)); ?>" class="form-horizontal">
         <input type="hidden" value="<?php echo $id;?>" name="id">
         <div class="btn-group">
-            <a href="<?php echo $this->url('pedidos', array('action' => 'nova-produto', 'id' => $this->id)); ?>" class="btn btn-primary">Adicionar Produto</a>
+            <a href="<?php echo $this->url('pedidos', array('action' => 'novo-produto', 'id' => $this->id)); ?>" class="btn btn-primary">Adicionar/Editar Produto</a>
         </div>
         <div class="btn-group">
             <a href="<?php echo $this->url('pedidos', array('action' => 'nova-nota-fiscal', 'id' => $this->id)); ?>" class="btn btn-primary">Adicionar Nota Fiscal</a>
@@ -70,13 +70,13 @@
            <table class="table table-bordered table-striped">
                       <thead>
                         <tr>
-                          <th>Produto</th>
                           <th>Qnt.</th>
                           <th>Qnt. Entregue</th>
                           <th>V. Original</th>
                           <th>Desc</th>
                           <th>Comissão</th>
                           <th>Total Orig.</th>
+                          <th>Total Entreg.</th>
                           <!--<th>Ação</th>-->
                         </tr>
                       </thead>
@@ -84,8 +84,10 @@
                            <?php 
                         if($oProdutoPedido){ 
                             foreach($oProdutoPedido as $oProdutoP){ ?>
+                          <tr class="odd gradeX">
+                              <td colspan="7"><b>Produto:</b> <?php echo $oProdutoP->getNoProduto(); ?> </td>
+                          </tr>
                         <tr class="odd gradeX">
-                          <td><?php echo $oProdutoP->getNoProduto(); ?></td>
                           <td><?php echo $oProdutoP->getQntOriginal(); ?></td>
                           <td>
                               <input class="input-mini" type="text" value="<?php echo $oProdutoP->getQntEntregue(); ?>" name="qnt_entregue[<?php echo $oProdutoP->getCoProduto();?>]">                              
@@ -93,6 +95,7 @@
                           <td><?php echo $oProdutoP->getNoMoeda() . " " . PedidoPeer::convertMoedaCasaDecimal($oProdutoP->getVlOriginal()); ?></td>
                           <td><?php echo $oProdutoP->getVlDesconto(); ?>%</td>
                           <td><?php echo $oProdutoP->getVlComissao(); ?>%</td>
+                          <td><?php echo $oProdutoP->getNoMoeda() . " " .PedidoPeer::convertMoedaCasaDecimal($oProdutoP->getTotal()); ?></td>
                           <td><?php echo $oProdutoP->getNoMoeda() . " " .PedidoPeer::convertMoedaCasaDecimal($oProdutoP->getTotal()); ?></td>
                           
                           <!--<td><a href="<?php echo $this->url('pedidos',array('action'=>'apagar-produto-pedido','id'=>$id,'produto'=>$oProdutoP->getCoProduto())); ?>" class="btn btn-mini">Apagar</a></td>-->
