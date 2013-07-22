@@ -175,6 +175,7 @@ class PedidoPeer extends BasePedidoPeer
             $co_pedido       = $aDados['co_pedido'];
             $co_produto      = $aDados['co_produto'];
             $nu_quantidade   = $aDados['nu_quantidade'];
+            $no_unidade      = $aDados['no_unidade'];
             $tp_moeda        = $aDados['tp_moeda'];
             $preco_liquido   = self::convertMoedaInternacional($aDados['preco_liquido']);
             $vl_desconto     = $aDados['vl_desconto'];
@@ -200,6 +201,8 @@ class PedidoPeer extends BasePedidoPeer
             $oProdutoPedido->setVlOriginal($preco_liquido);
             $oProdutoPedido->setVlDesconto($vl_desconto);
             $oProdutoPedido->setVlComissao($vl_comissao);
+            $oProdutoPedido->setNoMedida($no_unidade);
+            
             
             $oProdutoPedido->save();
             

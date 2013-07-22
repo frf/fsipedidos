@@ -39,6 +39,7 @@ class ProdutoRepresentadaPeer extends BaseProdutoRepresentadaPeer
             $no_imagem          = $aDados['no_imagem'];
             $tp_moeda           = $aDados['tp_moeda'];
             $ncm_sh           = $aDados['ncm_sh'];
+            
         
             $oProduto = ProdutoRepresentadaQuery::create()
                         ->filterByCoProduto($co_produto)
@@ -60,7 +61,16 @@ class ProdutoRepresentadaPeer extends BaseProdutoRepresentadaPeer
                 $oProduto->setNoImagem($no_imagem);
             }
             $oProduto->save();
-                
+            
+            $oPedidoProduto = ProdutoPedidoQuery::create()->filterByCoProduto($co_produto)->find();
+            
+            if($oPedidoProduto->count()){
+                foreach ($oPedidoProduto as $oPP){
+                    $oPP->setNoMedida($no_unidade);
+                    $oPP->save();
+                }
+            }    
+            
             $pdo->commit();
         }  catch (Exception $e){
             $pdo->rollBack();

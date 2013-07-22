@@ -37,6 +37,7 @@
             console.log( "success" );
             $("#preco_liquido").val(data.DsValor);
             $("#tipo_medida").html(data.NoUnidade);
+            $("#no_unidade").val(data.NoUnidade);
              convertMoeda();
           });
           
@@ -91,9 +92,9 @@
                   <div class="control-group">
                     <label class="control-label">Quantidade:</label>
                     <div class="controls" id="addQuantidade">                        
-                        <div class="input-prepend"> <span class="add-on" id="tipo_medida"></span>
+                        <div class="input-prepend"> <span class="add-on" id="tipo_medida"></span></div>
+                        <input type="hidden"  name="no_unidade" id="no_unidade" value="">
                         <input type="text"  class="span4"  name="nu_quantidade" id="nu_quantidade" value="">
-                      </div>
                     </div>
                   </div>
                   <div class="control-group">

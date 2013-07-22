@@ -48,9 +48,10 @@
                          <td><?php echo $oCliente->getDsRamoAtividade(); ?></td>
                         <td><?php echo $oCliente->getDtCadastro("d/m/Y"); ?></td>
                         <td>
-                            <a class="btn btn-mini btn-info" href="<?php echo $this->url('clientes', array("action" => "detalhes", "id" => $oCliente->getCoCliente(),)); ?>">Visualizar</a>
-                            <a class="btn btn-mini btn-warning" href="<?php echo $this->url('clientes', array("action" => "editar", "id" => $oCliente->getCoCliente(),)); ?>">Editar</a>
-                            <a class="btn btn-mini btn-danger" href="<?php echo $this->url('clientes', array("action" => "deletar", "id" => $oCliente->getCoCliente(),)); ?>">Apagar</a>
+                            <a class="btn btn-mini btn-info" href="<?php echo $this->url('clientes', array("action" => "detalhes", "id" => $oCliente->getCoCliente())); ?>">Visualizar</a>
+                                                        <a class="btn btn-mini btn-success" href="<?php echo $this->url('clientes', array('action' => 'pedidos', 'id' => $oCliente->getCoCliente())); ?>">Lista Pedidos</a>
+                            <a class="btn btn-mini btn-warning" href="<?php echo $this->url('clientes', array("action" => "editar", "id" => $oCliente->getCoCliente())); ?>">Editar</a>
+                            <a class="btn btn-mini btn-danger" href="<?php echo $this->url('clientes', array("action" => "deletar", "id" => $oCliente->getCoCliente())); ?>">Apagar</a>
                         </td>
                     </tr>
                 <?php } ?>                

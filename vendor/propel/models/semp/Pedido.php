@@ -42,4 +42,8 @@ class Pedido extends BasePedido
             return $this->getCoPedido();
         }
     }
+    
+    public function getQntOriginal(){
+        
+    }
 }

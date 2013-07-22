@@ -18,7 +18,27 @@ class ClientesController extends AbstractActionController
         return array('message' => $this->getFlashMessenger(),
                     'aCliente'=>$cliente);
     }
+   // GET /clientes
+    public function pedidosAction() {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        
+        if($id == ""){
+            $this->flashMessenger()->addErrorMessage("Erro representada não existe.");
+            return $this->redirect()->toRoute('representadas');
+        }
+        $oPedido = \PedidoQuery::create()
+                ->filterByCoCliente($id)
+                ->find();
+        
+        $oCliente = \ClienteQuery::create()
+                ->filterByCoCliente($id)
+                ->findOne();
 
+        return array('message' => $this->getFlashMessenger(),
+            'oPedido' => $oPedido,
+            'oCliente' => $oCliente,
+            'id'=>$id);
+    }
     // GET /clientes/novo
     public function novoAction()
     {
