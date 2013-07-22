@@ -184,7 +184,7 @@ class RepresentadasController extends ActionController
         // se id = 0 ou não informado redirecione para clientes
         if (!$id) {
             // adicionar mensagem de erro
-            $this->flashMessenger()->addErrorMessage("Representada não encotrada");
+            $this->flashMessenger()->addErrorMessage("Representada não encontrada");
 
             // redirecionar para action index
             return $this->redirect()->toRoute('representadas');
@@ -196,6 +196,14 @@ class RepresentadasController extends ActionController
 
         // formulário com dados preenchidos
         $representada = \RepresentadaQuery::create()->filterByCoRepresentada($id)->findOne();
+        
+        if(!$representada){
+            // adicionar mensagem de erro
+            $this->flashMessenger()->addErrorMessage("Representada não encontrada");
+
+            // redirecionar para action index
+            return $this->redirect()->toRoute('representadas');
+        }
         $produtos = \ProdutoRepresentadaQuery::create()
                     ->filterByCoRepresentada($id)
                     ->find();

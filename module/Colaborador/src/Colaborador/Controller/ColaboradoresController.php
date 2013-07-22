@@ -85,7 +85,7 @@ class ColaboradoresController extends AbstractActionController {
         // se id = 0 ou não informado redirecione para clientes
         if (!$id) {
             // adicionar mensagem de erro
-            $this->flashMessenger()->addErrorMessage("Contato não encotrado");
+            $this->flashMessenger()->addErrorMessage("Contato não encontrado");
 
             // redirecionar para action index
             return $this->redirect()->toRoute('clientes');
@@ -99,6 +99,14 @@ class ColaboradoresController extends AbstractActionController {
                 ->innerJoinPessoa()
                 ->filterByCoColaborador($id)
                 ->findOne();
+        
+        if(!$oColaborador){
+             // adicionar mensagem de erro
+            $this->flashMessenger()->addErrorMessage("Contato não encontrado");            
+            // redirecionar para action index
+            return $this->redirect()->toRoute('clientes');
+            
+        }
 
         $oRepresentadas = \RepresentadaQuery::create()->find();
         $oRepresentadasCol = \RepresentadaColaboradorQuery::create()

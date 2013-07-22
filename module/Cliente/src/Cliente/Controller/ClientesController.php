@@ -104,7 +104,7 @@ class ClientesController extends AbstractActionController
         // se id = 0 ou não informado redirecione para clientes
         if (!$id) {
             // adicionar mensagem de erro
-            $this->flashMessenger()->addErrorMessage("Cliente não encotrado");
+            $this->flashMessenger()->addErrorMessage("Cliente não encontrado");
 
             
             // redirecionar para action index
@@ -117,6 +117,16 @@ class ClientesController extends AbstractActionController
 
         // formulário com dados preenchidos
          $cliente = \ClienteQuery::create()->filterByCoCliente($id)->findOne();
+         
+         if(!$cliente){
+              // adicionar mensagem de erro
+            $this->flashMessenger()->addErrorMessage("Cliente não encontrado");
+
+            
+            // redirecionar para action index
+            return $this->redirect()->toRoute('clientes');
+         }
+         
          $endereco = \EnderecoQuery::create()->filterByCoPessoa($id)->find();
          $email = \EmailQuery::create()->filterByCoPessoa($id)->find();
          $telefone = \TelefoneQuery::create()->filterByCoPessoa($id)->find();
