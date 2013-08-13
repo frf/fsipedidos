@@ -7,7 +7,7 @@ return array(
         ),
     ),
     'db' => array(
-        'driver' => 'Pdo',
+        'driver' => 'pdo',
         'dsn' => "pgsql:host=localhost;dbname=representante"
     )
 );
