@@ -97,7 +97,7 @@
                           <td><?php echo $oProdutoP->getVlDesconto(); ?>%</td>
                           <td><?php echo $oProdutoP->getVlComissao(); ?>%</td>
                           <td><?php echo $oProdutoP->getNoMoeda() . " " .PedidoPeer::convertMoedaCasaDecimal($oProdutoP->getTotal()); ?></td>
-                          <td><?php echo $oProdutoP->getNoMoeda() . " " .PedidoPeer::convertMoedaCasaDecimal($oProdutoP->getTotal()); ?></td>
+                          <td><?php echo $oProdutoP->getNoMoeda() . " " .PedidoPeer::convertMoedaCasaDecimal($oProdutoP->getTotalEntregue()); ?></td>
                           
                           <!--<td><a href="<?php echo $this->url('pedidos',array('action'=>'apagar-produto-pedido','id'=>$id,'produto'=>$oProdutoP->getCoProduto())); ?>" class="btn btn-mini">Apagar</a></td>-->
                         </tr>

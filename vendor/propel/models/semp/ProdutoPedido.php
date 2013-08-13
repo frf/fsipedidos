@@ -29,6 +29,14 @@ class ProdutoPedido extends BaseProdutoPedido
     public function getTotal(){
         return $this->getQntOriginal() * $this->getVlOriginal();
     }
+
+    public function getTotalEntregue(){
+	if($this->getQntEntregue()  > 0){
+	        return $this->getQntEntregue() * $this->getVlOriginal();
+	}else{
+		return 0;
+	}
+    }
     public function getVlComissao() {
         if(parent::getVlComissao() == ""){
             return "0";
