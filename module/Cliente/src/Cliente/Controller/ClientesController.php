@@ -45,6 +45,47 @@ class ClientesController extends AbstractActionController
         $cliente_tributacao = \ClienteTributacaoQuery::create()->find();
         return array('cliente_tributacao'=>$cliente_tributacao,'message' => $this->getFlashMessenger());
     }
+    // GET /clientes/novo
+    public function importarAction()
+    {
+        $cliente_tributacao = \ClienteTributacaoQuery::create()->find();
+        
+        // obtém a requisição
+        $request = $this->getRequest();
+
+        // verifica se a requisição é do tipo post
+        if ($request->isPost()) {
+            $File = $this->params()->fromFiles('no_file');
+           
+            $conteudoCsv = file_get_contents($File['tmp_name']);
+            
+            if(strlen($conteudoCsv)){
+                $aListArquivo = explode("\n",$conteudoCsv);
+               
+                if(is_array($aListArquivo)){
+                    array_shift($aListArquivo);
+                    foreach($aListArquivo as $lineFile){
+                        $aDadosCsv = explode(",",$lineFile);
+                        if($aDadosCsv[1] != ""){
+                            $aDados['co_cliente']   = 33;
+                            $aDados['pessoa_tipo']  = "J";
+                            $aDados['r_social']     = $aDadosCsv[0];
+                            $aDados['no_cliente']   = $aDadosCsv[1];
+                            $aDados['cnpj']         = $aDadosCsv[2];
+                            $aDados['i_estadual']   = $aDadosCsv[3];
+                        }
+                        \ClientePeer::gravaCliente($aDados);
+                    }
+                    $this->flashMessenger()->addSuccessMessage("Cliente importado sucesso");                   
+                    return $this->redirect()->toRoute('clientes');
+                }
+                
+            }
+           
+        }
+        
+        return array('cliente_tributacao'=>$cliente_tributacao,'message' => $this->getFlashMessenger());
+    }
  
     // POST /clientes/adicionar
     public function adicionarAction()

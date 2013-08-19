@@ -1,0 +1,45 @@
+<script src="/js/maruti.form_validation.js"></script>
+<script src="/js/maruti.form_common.js"></script>
+
+<div id="content-header">
+    <div id="breadcrumb"> 
+        <a href="/" title="Principal" class="tip-bottom"><i class="icon-home"></i> Principal</a>
+        <a href="/clientes/index" title="Lista de Clientes" class="tip-bottom">
+            <i class="icon-user"></i> Clientes</a>
+        <a href="/clientes/novo" title="Cadastro de Cliente" class="tip-bottom current">Importar Clientes</a>
+    </div>
+  </div>
+ <div class="container-fluid">
+        <div class="row-fluid">
+          <div class="span6">
+            <div class="widget-box">
+              <div class="widget-title"> <span class="icon"> <i class="icon-align-justify"></i> </span>
+                <h5>Importar de Cliente</h5>
+              </div>
+              <div class="widget-content nopadding">
+                <form method="POST" class="form-horizontal" action="<?php echo $this->url('clientes', array('action' => 'importar')); ?>" name="basic_validate_cliente" id="basic_validate_cliente" novalidate="novalidate"  enctype="multipart/form-data">
+                  
+                    <div class="control-group" id="r_social"> 
+                
+                    <div class="controls">
+                        <a href='/modelo/ModeloClientes.csv'>Planilha Modelo - Download</a>
+                    </div>
+                  </div>
+                    <div class="control-group" id="r_social"> 
+                    <label class="control-label">Arquivo CSV:</label>
+                    <div class="controls">
+                      <input type="file" name="no_file" class="span11" placeholder="" />
+                    </div>
+                  </div>
+                  
+                  <div class="form-actions">
+                     <button type="submit" class="btn btn-success">Importar</button>
+                    <a href="<?php echo $this->url('clientes'); ?>" class="btn">Voltar</a>
+                  </div>
+               </form> 
+              </div>
+            </div>
+          </div>        
+        </div>
+        <hr>     
+</div>   
